@@ -3,6 +3,33 @@
   "reactNativePath": "/Users/chaeheesong/Documents/GitHub/AI-DreDaline_FE/node_modules/react-native",
   "reactNativeVersion": "0.81",
   "dependencies": {
+    "react-native-pager-view": {
+      "root": "/Users/chaeheesong/Documents/GitHub/AI-DreDaline_FE/node_modules/react-native-pager-view",
+      "name": "react-native-pager-view",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/chaeheesong/Documents/GitHub/AI-DreDaline_FE/node_modules/react-native-pager-view/react-native-pager-view.podspec",
+          "version": "6.9.1",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/chaeheesong/Documents/GitHub/AI-DreDaline_FE/node_modules/react-native-pager-view/android",
+          "packageImportPath": "import com.reactnativepagerview.PagerViewPackage;",
+          "packageInstance": "new PagerViewPackage()",
+          "buildTypes": [],
+          "libraryName": "pagerview",
+          "componentDescriptors": [
+            "RNCViewPagerComponentDescriptor"
+          ],
+          "cmakeListsPath": "/Users/chaeheesong/Documents/GitHub/AI-DreDaline_FE/node_modules/react-native-pager-view/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-safe-area-context": {
       "root": "/Users/chaeheesong/Documents/GitHub/AI-DreDaline_FE/node_modules/react-native-safe-area-context",
       "name": "react-native-safe-area-context",
