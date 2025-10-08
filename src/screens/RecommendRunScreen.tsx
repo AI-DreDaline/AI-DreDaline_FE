@@ -1,15 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, {useState} from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, button } from 'react-native';
 import runner from '../assets/images/runner.png';
+import runner_active from '../assets/images/runner_active.png';
 import baseball from '../assets/images/baseball.png';
+import baseball_active from '../assets/images/baseball_active.png';
 import butterfly from '../assets/images/butterfly.png';
+import butterfly_active from '../assets/images/butterfly_active.png';
 import duck from '../assets/images/duck.png';
+import duck_active from '../assets/images/duck_active.png';
 import horse from '../assets/images/horse.png';
+import horse_active from '../assets/images/horse_active.png';
 import clover from '../assets/images/clover.png';
+import clover_active from '../assets/images/clover_active.png';
 import round from '../assets/images/round.png';
 import map from '../assets/images/map.png';
+import plus from '../assets/images/plus.png';
+import minus from '../assets/images/minus.png';
+import pin from '../assets/images/pin.png';
+import graph from '../assets/images/graph.png';
+import setting from '../assets/images/setting.png';
 
-export default function RecommendedRouteScreen() {
+
+export default function TemplateSelector() {
+    const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+    const templates = [
+        { id: 'runner', label: '러닝', img: runner, imgActive: runner_active },
+        { id: 'baseball', label: '야구공', img: baseball, imgActive: baseball_active },
+        { id: 'butterfly', label: '나비', img: butterfly, imgActive: butterfly_active },
+        { id: 'duck', label: '오리', img: duck, imgActive: duck_active },
+        { id: 'horse', label: '체스말', img: horse, imgActive: horse_active },
+        { id: 'clover', label: '클로버', img: clover, imgActive: clover_active },
+    ];
+
+    const [km, setKm] = useState(5.00);
+
+    const handleMinus = () => {
+        setKm(prev => Math.max(0, parseFloat((prev - 0.25).toFixed(2)))); // 0 밑으로 안내려가게
+    };
+
+    const handlePlus = () => {
+        setKm(prev => parseFloat((prev + 0.25).toFixed(2)));
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.topline}>
@@ -17,48 +50,33 @@ export default function RecommendedRouteScreen() {
                 <Text style={styles.more}>더보기</Text>
             </View>
             <View style={styles.template}>
-                <View style={styles.eachtemplate}>
-                    <Image
-                        source={runner}
-                        style={{ width: 52, height: 52}}
-                    />
-                    <Text style={styles.eachtitle}>러닝</Text>
-                </View>
-                <View style={styles.eachtemplate}>
-                    <Image
-                        source={baseball}
-                        style={{ width: 52, height: 52}}
-                    />
-                    <Text style={styles.eachtitle}>야구공</Text>
-                </View>
-                <View style={styles.eachtemplate}>
-                    <Image
-                        source={butterfly}
-                        style={{ width: 52, height: 52}}
-                    />
-                    <Text style={styles.eachtitle}>나비</Text>
-                </View>
-                <View style={styles.eachtemplate}>
-                    <Image
-                        source={duck}
-                        style={{ width: 52, height: 52}}
-                    />
-                    <Text style={styles.eachtitle}>오리</Text>
-                </View>
-                <View style={styles.eachtemplate}>
-                    <Image
-                        source={horse}
-                        style={{ width: 52, height: 52}}
-                    />
-                    <Text style={styles.eachtitle}>체스말</Text>
-                </View>
-                <View style={styles.eachtemplate}>
-                    <Image
-                        source={clover}
-                        style={{ width: 52, height: 52}}
-                    />
-                    <Text style={styles.eachtitle}>클로버</Text>
-                </View>
+                {templates.map((item) => {
+                    const isActive = selectedTemplate === item.id;
+                    return (
+                        <TouchableOpacity
+                            key={item.id}
+                            style={styles.eachtemplate}
+                            onPress={() => setSelectedTemplate(item.id)}
+                            activeOpacity={0.7}
+                        >
+                            <Image
+                                source={isActive ? item.imgActive : item.img}
+                                style={{
+                                    width: isActive ? 65 : 52,
+                                    height: isActive ? 65 : 52,
+                                }}
+                            />
+                            <Text
+                                style={[
+                                    styles.eachtitle,
+                                    isActive && { color: '#39FF14', fontWeight: '900' },
+                                ]}
+                            >
+                                {item.label}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
 
             <View style={styles.map}>
@@ -66,14 +84,50 @@ export default function RecommendedRouteScreen() {
                     source={map}
                     style={styles.mapsize}
                 />
-                <View style={styles.mapgreen}/>
+                <Image
+                    source={pin}
+                    style={{
+                        width:26,
+                        height:26,
+                        position: 'absolute',
+                        top: 325,
+                        left: 195,
+                    }}
+                />
+                <View style={styles.mapgreen}>
+                    <Text style={styles.subtitle}>오늘의 목표</Text>
+                    <View style={[styles.kmview, { zIndex: 10 }]}>
+                        <TouchableOpacity onPress={handleMinus}>
+                            <Image source={minus} style={{ width: 30, height: 30, marginTop: 9 }} />
+                        </TouchableOpacity>
+                            <View style={{width: 160}}>
+                                <Text style={styles.km}>{km.toFixed(2)} km</Text>
+                            </View>
+                        <TouchableOpacity onPress={handlePlus}>
+                            <Image source={plus} style={{ width: 30, height: 30, marginTop: 9 }} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.sub}>지도를 터치해 시작 위치를 선택할 수 있습니다</Text>
+                </View>
                 <Image
                     source={round}
                     style={styles.round}
                 />
             </View>
             
-            {/* 나중에 지도나 코스 리스트 들어갈 부분 */}
+            <View style={styles.buttonview}>
+                <Image
+                    source={graph}
+                    style={{width:20, height: 25}}
+                />
+                <TouchableOpacity style={styles.button} onPress={() => console.log('버튼 눌림!')}>
+                    <Text style={styles.buttonText}>경로 생성</Text>
+                </TouchableOpacity>
+                <Image
+                    source={setting}
+                    style={{width:23, height: 24}}
+                />
+            </View>
         </View>
     );
 }
@@ -94,18 +148,18 @@ const styles = StyleSheet.create({
     },
     title: {
         color: 'rgba(255, 255, 255, 0.95)',
-        fontSize: 17,
-        fontWeight: '300',
+        fontSize: 16,
+        fontWeight: '200',
     },
     more: {
         color: '#39FF14',
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: '600',
         marginTop: 3,
         textDecorationLine: 'underline',
     },
     template:{
-        height: 79,
+        height: 92, //79
         backgroundColor: '#141414',
         paddingTop: 9,
         paddingHorizontal: 17,
@@ -113,7 +167,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     eachtemplate:{
-        backgroundColor: 'brown',
+        backgroundColor: '#141414',
         width: 53,
         alignItems: 'center',
         marginRight: 20,
@@ -131,12 +185,12 @@ const styles = StyleSheet.create({
         width: 330,
         height: 330,
         position: 'absolute',
-        top: 30,
+        top: 22,
         left: 32,
     },
     map:{
-        backgroundColor: 'purple',
-        height: 389,
+        backgroundColor: '#141414',
+        height: 376,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -145,11 +199,57 @@ const styles = StyleSheet.create({
         height: 168,
         backgroundColor: 'rgba(57, 255, 20, 0.36)',
         position: 'absolute',
-        top: 76,
+        top: 62,
         left: 32,
     },
     subtitle: {
-        color: '#ccc',
-        fontSize: 16,
+        color: 'black',
+        fontSize: 17,
+        fontWeight: '900',
+        paddingTop: 27,
+        textAlign: 'center',
+    },
+    kmview:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        columnGap: 5,
+    },
+    km:{
+        color: 'black',
+        fontSize: 32,
+        fontWeight: '500',
+        paddingTop: 10,
+        textAlign: 'center',
+    },
+    sub:{
+        color: 'black',
+        fontSize: 12,
+        fontWeight: '300',
+        paddingTop: 40,
+        textAlign: 'center',
+    },
+    buttonview:{
+        backgroundColor:'#141414',
+        height: 77,
+        paddingTop: 9,
+        paddingHorizontal: 45,
+        paddingBottom: 22,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    button: {
+        backgroundColor: '#39FF14',
+        width: 186,
+        height: 52,
+        borderRadius: 8,
+        alignItems: 'center',
+        paddingTop: 15,
+    },
+    buttonText: {
+        color: 'black',
+        fontSize: 18,
+        fontWeight: '700',
     },
 });
