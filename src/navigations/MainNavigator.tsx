@@ -1,15 +1,24 @@
+// src/navigations/MainNavigator.tsx
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import MainScreen from '../screens/MainScreen';
 
-// 스크린들
-import RecommendRunScreen from '../screens/MainScreen';
+export type MainStackParamList = {
+  Home: undefined;
+  MyRecord: undefined;
+  Main: undefined;
+};
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<MainStackParamList>();
 
 export default function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName="RR">
-      <Stack.Screen name="RR" component={RecommendRunScreen} options={{ headerShown: false }} />
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false, // 헤더 숨기기 (필요시 true)
+      }}
+    >
+      <Stack.Screen name="Main" component={MainScreen} />
     </Stack.Navigator>
   );
 }
