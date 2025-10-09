@@ -1,15 +1,24 @@
+// src/navigators/MyRecordNavigator.tsx
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import MyRecordScreen from '../screens/RecordScreen.tsx';
 
-// 스크린들
-import LoginScreen from './screens/LoginScreen';
+export type MyRecordStackParamList = {
+  MyRecord: undefined;
+  RecordDetail: { id: string }; // 예: 특정 기록의 상세 보기
+};
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<MyRecordStackParamList>();
 
 export default function MyRecordNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Navigator
+      initialRouteName="MyRecord"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="MyRecord" component={MyRecordScreen} />
     </Stack.Navigator>
   );
 }
