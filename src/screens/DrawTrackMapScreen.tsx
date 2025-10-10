@@ -1,8 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, Image, TextInput, Alert } from "react-native";
 import MapLibreGL from "@maplibre/maplibre-react-native";
-import type { Feature, LineString } from 'geojson';
-import { useNavigation } from "@react-navigation/native";
 import useTabBarVisibility from "../assets/useTabBarVisibility";
 import MapView from 'react-native-maps';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -25,14 +23,15 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
     useTabBarVisibility(false);
     const mapRef = useRef<MapView>(null);
 
-    const [address, setAddress] = useState('위치를 불러오는 중...');
+    const [address, setAddress] = useState('');
+    
     const cameraRef = useRef<MapLibreGL.CameraRef>(null);
     const [query, setQuery] = useState('');
     const [centerCoord, setCenterCoord] = useState<[number, number]>([126.9780, 37.5665]);
     const [lineCoords, setLineCoords] = useState<[number, number][]>([]);
     const [selectedTool, setSelectedTool] = useState<'draw' | 'mountain' | 'camera' | null>(null);
 
-    const handleMapPress = (e: any) => {
+    const handleMapPress = async (e: any) => {
         if (selectedTool !== 'draw') return;
         const [lng, lat] = e.geometry.coordinates;
 
@@ -45,11 +44,16 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
             // 이미 있는 점이면 제거
             setLineCoords(prev => prev.filter((_, i) => i !== index));
         } else {
-            // 없으면 추가
+            // 새 점 추가
             setLineCoords(prev => [...prev, [lng, lat]]);
+
+            // 첫 번째 좌표라면 주소 가져오기
+            if (lineCoords.length === 0) {
+                const newAddress = await fetchAddressFromCoord(lng, lat);
+                setAddress(newAddress);
+            }
         }
     };
-
 
     async function searchPlace(query: string) {
         console.log("검색 활성화",query);
@@ -78,6 +82,21 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
         }
     };
 
+    async function fetchAddressFromCoord(lng: number, lat: number) {
+        try {
+            const url = `https://api.maptiler.com/geocoding/${lng},${lat}.json?key=${API_KEY}`;
+            const response = await fetch(url);
+            const result = await response.json();
+            if (result.features && result.features.length > 0) {
+                return result.features[0].place_name;
+            }
+            return '알 수 없는 위치';
+        } catch (err) {
+            console.error(err);
+            return '주소 불러오기 실패';
+        }
+    }
+
 
     return (
         <View style={{ flex: 1 }}>
@@ -93,7 +112,15 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         />
                     </TouchableOpacity>
                     <Text style={styles.title}>지도에서 그리기</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate('MainScreen', {
+                                screen: 'DrawTrackRun', // 두 번째 탭 이름
+                                address,
+                                mode: 'drawReady',       // Ready 상태
+                            })
+                        }
+                    >
                         <Text style={styles.subtitle}>완료</Text>
                     </TouchableOpacity>
                 </View>
@@ -166,6 +193,10 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                     </>
                 )}
             </MapLibreGL.MapView>
+            {selectedTool === 'mountain' && (
+                <View style={styles.mountain}>
+                </View>
+            )}
 
             <View style={styles.addressBox}>
                 <TouchableOpacity onPress={() => setSelectedTool(prev => (prev === 'draw' ? null : 'draw'))}>
@@ -242,6 +273,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         paddingTop: 2,
         paddingLeft: 65,
+    },
+    mountain: {
+        backgroundColor: '#96d49c',
+        height: 78,
+        width: '100%',
+        position: 'absolute',
+        bottom: 86,
+        left: 0,
     },
     addressBox: {
         position: 'absolute',

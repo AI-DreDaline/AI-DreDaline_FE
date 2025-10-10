@@ -38,7 +38,7 @@ function RecommendRunScreen({ navigation, route }: Props) {
     ];
 
     const [km, setKm] = useState(5.00);
-    const address = route.params?.address;
+    const { address, mode } = route.params;
     const [message, setMessage] = React.useState(
         '지도를 터치해 시작 위치를 선택할 수 있습니다'
     );
@@ -138,7 +138,13 @@ function RecommendRunScreen({ navigation, route }: Props) {
                     source={graph}
                     style={{width:20, height: 25}}
                 />
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Loading')}>
+                <TouchableOpacity
+                    style={styles.button}
+                    disabled={!address}
+                    onPress={() =>
+                        navigation.navigate('MainScreen', { address: address ?? '', mode: 'recommendReady' })
+                    }
+                >
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
                 <Image

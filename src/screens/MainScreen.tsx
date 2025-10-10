@@ -7,6 +7,8 @@ import { RootStackParamList } from '../navigations/types';
 import Myprofile from '../assets/images/Myprofile.png';
 import RecommendRunScreen from './RecommendRunScreen';
 import DrawTrackRunScreen from './DrawTrackRunScreen';
+import RecommendReadyScreen from './RecommendReadyScreen';
+import DrawTrackReadyScreen from './DrawTrackReadyScreen';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { Route } from '@react-navigation/native';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
@@ -38,6 +40,23 @@ function SecondTab() {
 type Props = NativeStackScreenProps<RootStackParamList, 'MainScreen'>;
 
 const MainScreen: React.FC<Props> = ({ route }) => {
+  // route.params?.mode으로 전달받은 값 (optional)
+  const mode = route.params?.mode;
+  // 상태: 어떤 화면을 보여줄지 관리
+  const [screenState, setScreenState] = useState({
+    recommend: 'run', // 'run' | 'ready'
+    draw: 'run', // 'run' | 'ready'
+  });
+
+  // route.params.mode가 들어왔을 때 상태 업데이트
+  React.useEffect(() => {
+    if (mode === 'recommendReady') {
+      setScreenState(prev => ({ ...prev, recommend: 'ready' }));
+    } else if (mode === 'drawReady') {
+      setScreenState(prev => ({ ...prev, draw: 'ready' }));
+    }
+  }, [mode]);
+
   const [address, setAddress] = useState(route.params?.address || '');
   useTabBarVisibility(true);
   
@@ -92,19 +111,74 @@ const MainScreen: React.FC<Props> = ({ route }) => {
                 </View>
               );
             }}
-          >
+        >
           <Tab.Screen
             name="RecommendRun"
-            options={{ title: '추천 경로로 달리기' }} 
-            component={RecommendRunScreen}
-            initialParams={{ address: address }}
-          />
-          <Tab.Screen name="DrawTrackRun" component={DrawTrackRunScreen} options={{ title: '나만의 경로 그리기' }} />
+            options={{ title: '추천 경로로 달리기' }}
+          >
+            {props => (
+              screenState.recommend === 'run' ? (
+                <RecommendRunScreen
+                  {...props} // navigation, route 포함
+                  route={{ 
+                    ...props.route, 
+                    params: { 
+                      address, 
+                      mode: screenState.recommend // 'run' | 'ready'
+                    } 
+                  }}
+                />
+              ) : (
+                <RecommendReadyScreen
+                  {...props}
+                  route={{
+                    ...props.route,
+                    params: {
+                      address,
+                      mode: screenState.recommend
+                    }
+                  }}
+                />
+              )
+            )}
+          </Tab.Screen>
+
+          <Tab.Screen
+            name="DrawTrackRun"
+            options={{ title: '나만의 경로 그리기' }}
+          >
+            {props => (
+              screenState.draw === 'run' ? (
+                <DrawTrackRunScreen
+                  {...props} // navigation, route 포함
+                  route={{
+                    ...props.route,
+                    params: {
+                      address,
+                      mode: screenState.draw, // 'run' | 'ready'
+                    },
+                  }}
+                />
+              ) : (
+                <DrawTrackReadyScreen
+                  {...props}
+                  route={{
+                    ...props.route,
+                    params: {
+                      address,
+                      mode: screenState.draw,
+                    },
+                  }}
+                />
+              )
+            )}
+          </Tab.Screen>
+
         </Tab.Navigator>
       </View>
     </View>
   );
-}
+};
 export default MainScreen;
 
 const styles = StyleSheet.create({
