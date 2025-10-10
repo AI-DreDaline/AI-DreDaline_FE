@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -6,10 +7,16 @@ import { RootStackParamList } from '../navigations/types';
 import Myprofile from '../assets/images/Myprofile.png';
 import RecommendRunScreen from './RecommendRunScreen';
 import DrawTrackRunScreen from './DrawTrackRunScreen';
+import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
+import { Route } from '@react-navigation/native';
+import useTabBarVisibility from "../assets/useTabBarVisibility";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'RecommendRun'>;
+type MainTabParamList = {
+  RecommendRun: {address?: string};
+  DrawTrackRun: undefined;
+};
 
-const Tab = createMaterialTopTabNavigator();
+const Tab = createMaterialTopTabNavigator<MainTabParamList>();
 
 // 탭에 들어갈 화면들
 function FirstTab() {
@@ -28,7 +35,12 @@ function SecondTab() {
   );
 }
 
-export default function MainScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, 'MainScreen'>;
+
+const MainScreen: React.FC<Props> = ({ route }) => {
+  const [address, setAddress] = useState(route.params?.address || '');
+  useTabBarVisibility(true);
+  
   return (
     <View style={styles.container}>
       <View style={styles.topview}/>
@@ -47,43 +59,53 @@ export default function MainScreen() {
             tabBarStyle: { backgroundColor: 'transparent', elevation: 0, shadowOpacity: 0 },
             tabBarIndicatorStyle: { backgroundColor: 'transparent' }, // 밑줄 제거
           }}
-          tabBar={({ state, descriptors, navigation }) => (
-            <View style={styles.tabContainer}>
-              {state.routes.map((route, index) => {
-                const { options } = descriptors[route.key];
-                const label =
-                  options.tabBarLabel !== undefined
-                  ? options.tabBarLabel
-                  : options.title !== undefined
-                  ? options.title
-                  : route.name;
-                const isFocused = state.index === index;
+          tabBar={(props: MaterialTopTabBarProps) => {
+            const { state, descriptors, navigation } = props;
 
-                return (
-                  <TouchableOpacity
-                    key={route.key}
-                    onPress={() => navigation.navigate(route.name)}
-                    style={[
-                      styles.tabButton,
-                      isFocused ? styles.tabButtonActive : styles.tabButtonInactive,
-                    ]}
-                  >
-                    <Text style={[styles.tabTextToggle, isFocused && styles.tabTextActive]}>
-                      {typeof label === 'string' ? label : route.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
-        >
-          <Tab.Screen name="First" component={RecommendRunScreen} options={{ title: '추천 경로로 달리기' }} />
-          <Tab.Screen name="Second" component={DrawTrackRunScreen} options={{ title: '나만의 경로 그리기' }} />
+              return (
+                <View style={styles.tabContainer}>
+                  {state.routes.map((route: Route<string>, index: number) => {
+                    const { options } = descriptors[route.key];
+                    const label =
+                      options.tabBarLabel !== undefined
+                        ? options.tabBarLabel
+                        : options.title !== undefined
+                        ? options.title
+                        : route.name;
+                    const isFocused = state.index === index;
+
+                    return (
+                      <TouchableOpacity
+                        key={route.key}
+                        onPress={() => navigation.navigate(route.name)}
+                        style={[
+                          styles.tabButton,
+                          isFocused ? styles.tabButtonActive : styles.tabButtonInactive,
+                        ]}
+                      >
+                        <Text style={[styles.tabTextToggle, isFocused && styles.tabTextActive]}>
+                          {typeof label === 'string' ? label : route.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              );
+            }}
+          >
+          <Tab.Screen
+            name="RecommendRun"
+            options={{ title: '추천 경로로 달리기' }} 
+            component={RecommendRunScreen}
+            initialParams={{ address: address }}
+          />
+          <Tab.Screen name="DrawTrackRun" component={DrawTrackRunScreen} options={{ title: '나만의 경로 그리기' }} />
         </Tab.Navigator>
       </View>
     </View>
   );
 }
+export default MainScreen;
 
 const styles = StyleSheet.create({
   container: {
