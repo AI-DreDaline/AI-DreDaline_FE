@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, button } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigations/types';
+
 import runner from '../assets/images/runner.png';
 import runner_active from '../assets/images/runner_active.png';
 import baseball from '../assets/images/baseball.png';
@@ -20,8 +23,9 @@ import pin from '../assets/images/pin.png';
 import graph from '../assets/images/graph.png';
 import setting from '../assets/images/setting.png';
 
+type Props = NativeStackScreenProps<RootStackParamList, 'RecommendRun'>;
 
-export default function TemplateSelector() {
+function RecommendRunScreen({ navigation, route }: Props) {
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
     const templates = [
@@ -34,6 +38,16 @@ export default function TemplateSelector() {
     ];
 
     const [km, setKm] = useState(5.00);
+    const address = route.params?.address;
+    const [message, setMessage] = React.useState(
+        '지도를 터치해 시작 위치를 선택할 수 있습니다'
+    );
+
+    React.useEffect(() => {
+        if (address) {
+        setMessage('시작 위치가 설정되었습니다');
+        }
+    }, [address]);
 
     const handleMinus = () => {
         setKm(prev => Math.max(0, parseFloat((prev - 0.25).toFixed(2)))); // 0 밑으로 안내려가게
@@ -80,10 +94,12 @@ export default function TemplateSelector() {
             </View>
 
             <View style={styles.map}>
-                <Image
-                    source={map}
-                    style={styles.mapsize}
-                />
+                <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
+                    <Image
+                        source={map}
+                        style={styles.mapsize}
+                    />
+                </TouchableOpacity>
                 <Image
                     source={pin}
                     style={{
@@ -107,12 +123,14 @@ export default function TemplateSelector() {
                             <Image source={plus} style={{ width: 30, height: 30, marginTop: 9 }} />
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.sub}>지도를 터치해 시작 위치를 선택할 수 있습니다</Text>
+                    <Text style={styles.sub}>{message}</Text>
                 </View>
-                <Image
-                    source={round}
-                    style={styles.round}
-                />
+                <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
+                    <Image
+                        source={round}
+                        style={styles.round}
+                    />
+                </TouchableOpacity>
             </View>
             
             <View style={styles.buttonview}>
@@ -120,7 +138,7 @@ export default function TemplateSelector() {
                     source={graph}
                     style={{width:20, height: 25}}
                 />
-                <TouchableOpacity style={styles.button} onPress={() => console.log('버튼 눌림!')}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Loading')}>
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
                 <Image
@@ -131,6 +149,7 @@ export default function TemplateSelector() {
         </View>
     );
 }
+export default RecommendRunScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -180,13 +199,15 @@ const styles = StyleSheet.create({
     round: {
         width: 350,
         height: 350,
+        pointerEvents: 'none',
     },
     mapsize: {
         width: 330,
         height: 330,
         position: 'absolute',
-        top: 22,
-        left: 32,
+        top: 10,
+        left: -165,
+        pointerEvents: 'none',
     },
     map:{
         backgroundColor: '#141414',
@@ -201,6 +222,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 62,
         left: 32,
+        pointerEvents: 'box-none',
     },
     subtitle: {
         color: 'black',
