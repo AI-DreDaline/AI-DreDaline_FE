@@ -10,6 +10,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@maplibre/maplibre-react-native": "^10.2.1",
+    "@maptiler/geocoding-control": "^2.1.7",
+    "@maptiler/sdk": "^3.8.0",
+    "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native/new-app-screen": "0.81.4",
     "@react-navigation/bottom-tabs": "^7.4.8",
     "@react-navigation/material-top-tabs": "^7.3.7",
@@ -18,7 +22,9 @@
     "chalk": "^5.6.2",
     "react": "19.1.0",
     "react-native": "0.81.4",
+    "react-native-maps": "^1.26.14",
     "react-native-pager-view": "^6.9.1",
+    "react-native-permissions": "^5.4.2",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.16.0",
     "react-native-tab-view": "^4.1.3"
