@@ -15,7 +15,13 @@ import recordActiveIcon from '../assets/images/myrecord_active.png';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomBar() {
+interface BottomBarProps {
+  visible?: boolean;
+}
+
+const BottomBar: React.FC<BottomBarProps> = ({ visible = true }) => {
+  if (!visible) return null;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -78,4 +84,5 @@ export default function BottomBar() {
       <Tab.Screen name="RecordTab" component={MyRecordNavigator} />
     </Tab.Navigator>
   );
-}
+};
+export default BottomBar;
