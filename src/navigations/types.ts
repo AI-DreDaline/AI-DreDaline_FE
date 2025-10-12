@@ -2,6 +2,8 @@ export type RootStackParamList = {
   Logo: undefined;
   RecommendRun: { address?: string; mode?: 'run' | 'ready'  };
   RecommendMap: undefined;
+  RecommendReady: undefined;
+  RecommendReadyMap: undefined;
   MainScreen: { 
     address: string; 
     mode?: 'recommendReady' | 'drawReady';
@@ -10,6 +12,9 @@ export type RootStackParamList = {
   Loading: { address?: string };
   DrawTrackRun: { address?: string; mode?: 'run' | 'ready'  };
   DrawTrackMap: undefined;
+  DrawTrackReady: undefined;
+  DrawTrackReadyMap: undefined;
+  Navigate: undefined;
 };
 
 export type MainTabParamList = {
