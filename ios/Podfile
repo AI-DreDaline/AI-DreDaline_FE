@@ -31,5 +31,7 @@ target 'AIDreDaline' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    # MapLibre GL Native iOS 설정
+    $MLRN.post_install(installer)
   end
 end
