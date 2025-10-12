@@ -178,6 +178,7 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
 
                 <TouchableOpacity
                     style={styles.button}
+                    onPress={()=>{navigation.navigate('Navigate')}}
                 >
                     <Text style={styles.buttonText}>안내 시작</Text>
                 </TouchableOpacity>

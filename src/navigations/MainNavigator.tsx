@@ -15,7 +15,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function MainNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* 탭에서 보이는 화면 */}
       <Stack.Screen 
         name="MainScreen" 
         component={MainScreen} 
@@ -24,7 +23,6 @@ export default function MainNavigator() {
         name="Navigate" 
         component={NavigateScreen} 
       />
-      {/* BottomBar 숨길 화면 */}
       <Stack.Screen 
         name="RecommendMap" 
         component={RecommendMapScreen}

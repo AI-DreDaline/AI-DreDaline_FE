@@ -14,7 +14,6 @@ const API_KEY = "QhGgr94B6Frh1kFgQHuB";
 
 // 올바른 방법
 function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'RecommendMap'>) {
-    
     useTabBarVisibility(false);
     const mapRef = useRef<MapView>(null);
 
