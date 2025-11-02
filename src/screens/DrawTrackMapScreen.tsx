@@ -1,10 +1,12 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, Image, TextInput, Alert } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Image, TextInput, Alert, PermissionsAndroid, Platform } from "react-native";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import useTabBarVisibility from "../assets/useTabBarVisibility";
 import MapView from 'react-native-maps';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
+import Geolocation from 'react-native-geolocation-service';
 
 import back from '../assets/images/back.png';
 import draw from '../assets/images/draw.png';
@@ -29,10 +31,11 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
     const [query, setQuery] = useState('');
     const [centerCoord, setCenterCoord] = useState<[number, number]>([126.9780, 37.5665]);
     const [lineCoords, setLineCoords] = useState<[number, number][]>([]);
-    const [selectedTool, setSelectedTool] = useState<'draw' | 'mountain' | 'camera' | null>(null);
+    const [selectedTool, setSelectedTool] = useState<'here' | 'mountain' | 'camera' | null>(null);
 
+    
     const handleMapPress = async (e: any) => {
-        if (selectedTool !== 'draw') return;
+        //if (selectedTool !== 'here') return;
         const [lng, lat] = e.geometry.coordinates;
 
         // 기존 좌표와 같은 점이 있는지 검사 (오차 허용)
@@ -53,6 +56,36 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                 setAddress(newAddress);
             }
         }
+    };
+    
+    // cameraRef는 MapLibreGL.Camera의 ref를 전달받아야 합니다.
+    const FocusHere = async (cameraRef: React.RefObject<MapLibreGL.CameraRef | null>) => {
+        let hasPermission = true;
+
+        if (Platform.OS === 'android') {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            );
+            hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
+        }
+
+        if (!hasPermission) {
+            Alert.alert('권한 없음', '위치 권한이 필요합니다.');
+            return;
+        }
+
+        Geolocation.getCurrentPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                cameraRef.current?.setCamera({
+                    centerCoordinate: [longitude, latitude],
+                    zoomLevel: 15,
+                    animationDuration: 1000,
+                });
+            },
+            (err) => console.error(err),
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
     };
 
     async function searchPlace(query: string) {
@@ -127,81 +160,114 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
             </View>
             
             {/* 검색 바 */}
-            <MapLibreGL.MapView
-                style={styles.map}
-                mapStyle={MAP_STYLE_URL}
-                onPress={(e) => handleMapPress(e)}
-            >
-                <View style={styles.searchContainer}>
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="검색"
-                        placeholderTextColor="white" 
-                        value={query}
-                        onChangeText={setQuery}
-                        returnKeyType="search"          // 엔터키 모양을 검색으로 변경 (iOS/Android 모두)
-                        onSubmitEditing={() => searchPlace(query)} // 엔터 눌렀을 때 실행
-                    />
-                </View>
-                <MapLibreGL.Camera
-                    ref={cameraRef}
-                    zoomLevel={14}
-                    centerCoordinate={centerCoord}
-                />
-
-                {lineCoords.length > 0 && (
-                    <>
-                        {/* 라인 */}
-                        <MapLibreGL.ShapeSource
-                            id="userLine"
-                            shape={{
-                                type: "Feature",
-                                geometry: { type: "LineString", coordinates: lineCoords },
-                                properties: {},
-                            }}
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <TapGestureHandler
+                    numberOfTaps={1}
+                    minPointers={1} // 👈 한 손가락만 허용
+                    onActivated={(event) => handleMapPress(event)} // 한 손가락 탭 시에만 실행
+                >
+                    <View style={{ flex: 1 }}>
+                        <MapLibreGL.MapView
+                            style={styles.map}
+                            mapStyle={MAP_STYLE_URL}
+                            onPress={handleMapPress}
                         >
-                            <MapLibreGL.LineLayer
-                                id="userLineLayer"
-                                style={{
+                            <View style={styles.searchContainer}>
+                            <TextInput
+                                style={styles.searchInput}
+                                placeholder="검색"
+                                placeholderTextColor="white"
+                                value={query}
+                                onChangeText={setQuery}
+                                returnKeyType="search"
+                                onSubmitEditing={() => searchPlace(query)}
+                            />
+                            </View>
+
+                            <MapLibreGL.Camera
+                                ref={cameraRef}
+                                zoomLevel={14}
+                                centerCoordinate={centerCoord}
+                            />
+                            <MapLibreGL.UserLocation
+                                visible={true}
+                                showsUserHeadingIndicator={true} // 화살표 모양
+                            />
+
+                            <MapLibreGL.Camera
+                                ref={cameraRef}
+                                zoomLevel={14}
+                                centerCoordinate={centerCoord}
+                            />
+
+                            {lineCoords.length > 0 && (
+                            <>
+                                {/* 라인 */}
+                                <MapLibreGL.ShapeSource
+                                    id="userLine"
+                                    shape={{
+                                        type: "Feature",
+                                        geometry: { type: "LineString", coordinates: lineCoords },
+                                        properties: {},
+                                    }}
+                                >
+                                <MapLibreGL.LineLayer
+                                    id="userLineLayer"
+                                    style={{
                                     lineColor: "#d6ff5c",
                                     lineWidth: 6,
                                     lineJoin: "round",
                                     lineCap: "round",
-                                }}
-                            />
-                        </MapLibreGL.ShapeSource>
-
-                        {/* 꼭짓점 표시 */}
-                        {lineCoords.map(([lng, lat], idx) => (
-                            <MapLibreGL.PointAnnotation
-                                key={idx}
-                                id={`point-${idx}`}
-                                coordinate={[lng, lat]}
-                            >
-                                <View
-                                    style={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: 5,
-                                    backgroundColor: '#d6ff5c',
-                                    borderWidth: 1,
-                                    borderColor: '#ffffff',
                                     }}
                                 />
-                            </MapLibreGL.PointAnnotation>
-                        ))}
-                    </>
-                )}
-            </MapLibreGL.MapView>
+                                </MapLibreGL.ShapeSource>
+
+                                {/* 꼭짓점 표시 */}
+                                {lineCoords.map(([lng, lat], idx) => (
+                                <MapLibreGL.PointAnnotation
+                                    key={idx}
+                                    id={`point-${idx}`}
+                                    coordinate={[lng, lat]}
+                                >
+                                    <View
+                                        style={{
+                                            width: 8,
+                                            height: 8,
+                                            borderRadius: 5,
+                                            backgroundColor: '#d6ff5c',
+                                            borderWidth: 1,
+                                            borderColor: '#ffffff',
+                                        }}
+                                    />
+                                </MapLibreGL.PointAnnotation>
+                                ))}
+                            </>
+                            )}
+                        </MapLibreGL.MapView>
+                    </View>
+                </TapGestureHandler>
+            </GestureHandlerRootView>
+
+
             {selectedTool === 'mountain' && (
                 <View style={styles.mountain}>
                 </View>
             )}
 
             <View style={styles.addressBox}>
-                <TouchableOpacity onPress={() => setSelectedTool(prev => (prev === 'draw' ? null : 'draw'))}>
+                <TouchableOpacity 
+                    onPress={() => {
+                        // 1️⃣ 툴 상태 토글
+                        setSelectedTool(prev => (prev === 'here' ? null : 'here'));
+
+                        // 2️⃣ 선택된 상태일 때만 현위치로 이동
+                        if (selectedTool !== 'here') {
+                        FocusHere(cameraRef); // cameraRef는 MapLibreGL.Camera의 ref
+                        }
+                    }}
+                >
                     <Image
-                        source={selectedTool === 'draw' ? draw_active : draw}
+                        source={selectedTool === 'here' ? draw_active : draw}
                         style={{ width: 35, height: 35, marginLeft: 23, marginTop: 10 }}
                     />
                 </TouchableOpacity>

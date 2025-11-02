@@ -54,7 +54,7 @@ const LeftNavigateScreen = () => {
                 </View>
 
                 {race.map((r, index) => (
-                    <View>
+                    <View key={index}>
                         <View key={index} style={styles.list}>
                             <Text style={styles.lap}>{r.lap}</Text>
                             <Text style={styles.time}>{r.time}</Text>
