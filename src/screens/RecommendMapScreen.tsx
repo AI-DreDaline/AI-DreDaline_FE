@@ -115,11 +115,11 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                     <TextInput
                         style={styles.searchInput}
                         placeholder="검색"
-                        placeholderTextColor="white" 
+                        placeholderTextColor="white"
                         value={query}
                         onChangeText={setQuery}
-                        returnKeyType="search"          // 엔터키 모양을 검색으로 변경 (iOS/Android 모두)
-                        onSubmitEditing={() => searchPlace(query)} // 엔터 눌렀을 때 실행
+                        returnKeyType="search"
+                        onSubmitEditing={() => searchPlace(query)}
                     />
                 </View>
                 <MapLibreGL.Camera
@@ -128,6 +128,7 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                     centerCoordinate={centerCoord}
                 />
             </MapLibreGL.MapView>
+
 
             {/* 중앙 고정 핀 */}
             <View style={styles.pinContainer}>
