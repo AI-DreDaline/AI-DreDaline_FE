@@ -142,7 +142,8 @@ function RecommendRunScreen({ navigation, route }: Props) {
                     style={styles.button}
                     disabled={!address}
                     onPress={() =>
-                        navigation.navigate('MainScreen', { address: address ?? '', mode: 'recommendReady' })
+                        navigation.navigate('MainScreen',
+                        { address: address ?? '', mode: 'recommendReady' })
                     }
                 >
                     <Text style={styles.buttonText}>경로 생성</Text>

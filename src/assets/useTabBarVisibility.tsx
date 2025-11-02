@@ -11,9 +11,9 @@ const useTabBarVisibility = (visible) => {
     parentNavigator.setOptions({
       tabBarStyle: {
         display: visible ? 'flex' : 'none',
-        height: 60,
-        borderTopStartRadius: 20,
-        borderTopEndRadius: 20,
+        backgroundColor: '#1B1B1B',
+        height: 102,
+        borderTopWidth: 0,
         position: "absolute",
       },
     });
@@ -24,9 +24,9 @@ const useTabBarVisibility = (visible) => {
       if (parentNavigator) {
         parentNavigator.setOptions({
           tabBarStyle: {
-            height: 60,
-            borderTopStartRadius: 20,
-            borderTopEndRadius: 20,
+            backgroundColor: '#1B1B1B',
+            height: 102,
+            borderTopWidth: 0,
             position: "absolute",
           }, 
         });
