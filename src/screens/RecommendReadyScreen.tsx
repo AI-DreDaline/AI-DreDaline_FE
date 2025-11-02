@@ -43,7 +43,7 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
             </View>
             <View style={styles.runview}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('RecommendReadyMap')}
+                    onPress={() => setVisible(true)}
                 >
                     <View style={styles.runbox}>
                         <Image
@@ -66,7 +66,8 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
             
             <View style={styles.buttonview}>
                 <View>
-                    <TouchableOpacity onPress={() => setVisible(true)}>
+                    <TouchableOpacity
+                    >
                         <Image
                             source={graph}
                             style={{width:20, height: 25}}
@@ -106,16 +107,25 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
                                             source={map_ready} 
                                             style={{ width: 300, height: 300, marginBottom: 0 }} 
                                         />
-                                        <Image 
-                                            source={round_2} 
-                                            style={{ 
-                                                width: 305,
-                                                height: 305,
-                                                position: 'absolute',
-                                                top: 15,
-                                                left: 45,
-                                            }} 
-                                        />
+
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                navigation.navigate('RecommendReadyMap');
+                                                setVisible(false); // 탭바 또는 다른 상태를 true로 변경
+                                            }}
+                                        >
+                                            <Image 
+                                                source={round_2} 
+                                                style={{ 
+                                                    width: 305,
+                                                    height: 305,
+                                                    position: 'absolute',
+                                                    top: -302,
+                                                    left: -153,
+                                                }} 
+                                            />
+                                        </TouchableOpacity>
+                                        
                                     </View>
                                     <View style={styles.lastview}>
                                         <Text style={styles.listitle}>경로 정보</Text>

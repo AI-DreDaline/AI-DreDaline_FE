@@ -40,6 +40,7 @@ function SecondTab() {
 type Props = NativeStackScreenProps<RootStackParamList, 'MainScreen'>;
 
 const MainScreen: React.FC<Props> = ({ route }) => {
+  useTabBarVisibility(true);
   // route.params?.mode으로 전달받은 값 (optional)
   const mode = route.params?.mode;
   // 상태: 어떤 화면을 보여줄지 관리
@@ -58,7 +59,6 @@ const MainScreen: React.FC<Props> = ({ route }) => {
   }, [mode]);
 
   const [address, setAddress] = useState(route.params?.address || '');
-  useTabBarVisibility(true);
   
   return (
     <View style={styles.container}>
