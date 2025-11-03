@@ -20,33 +20,22 @@ type MainTabParamList = {
 
 const Tab = createMaterialTopTabNavigator<MainTabParamList>();
 
-// 탭에 들어갈 화면들
-function FirstTab() {
-  return (
-    <View style={styles.tabContent}>
-      <Text style={styles.tabText}>첫 번째 탭</Text>
-    </View>
-  );
-}
-
-function SecondTab() {
-  return (
-    <View style={styles.tabContent}>
-      <Text style={styles.tabText}>두 번째 탭</Text>
-    </View>
-  );
-}
-
 type Props = NativeStackScreenProps<RootStackParamList, 'MainScreen'>;
 
 const MainScreen: React.FC<Props> = ({ route }) => {
+  useTabBarVisibility(true);
   // route.params?.mode으로 전달받은 값 (optional)
   const mode = route.params?.mode;
+  const initialScreen = route.params?.screen; 
+  // 'RecommendRun' | 'DrawTrackRun'
+
   // 상태: 어떤 화면을 보여줄지 관리
   const [screenState, setScreenState] = useState({
     recommend: 'run', // 'run' | 'ready'
     draw: 'run', // 'run' | 'ready'
   });
+
+  const [currentScreen, setCurrentScreen] = useState(initialScreen || 'RecommendRun');
 
   // route.params.mode가 들어왔을 때 상태 업데이트
   React.useEffect(() => {
@@ -58,7 +47,6 @@ const MainScreen: React.FC<Props> = ({ route }) => {
   }, [mode]);
 
   const [address, setAddress] = useState(route.params?.address || '');
-  useTabBarVisibility(true);
   
   return (
     <View style={styles.container}>

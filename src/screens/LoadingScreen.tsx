@@ -6,8 +6,20 @@ import { RootStackParamList } from '../navigations/types'; // 스택 타입 정�
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Loading'>;
 
-const LoadingScreen: React.FC<Props> = ({ navigation, route }) => {
+const LoadingScreen: React.FC<Props> = ({ navigation}) => {
+    useTabBarVisibility(false);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+            navigation.replace('Navigate');
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, [navigation]);
+
+    /*
     const { address } = route.params; 
 
   useEffect(() => {
@@ -18,6 +30,7 @@ const LoadingScreen: React.FC<Props> = ({ navigation, route }) => {
 
     return () => clearTimeout(timer);
   }, [navigation]);
+  */
 
     return (
         <View style={styles.container}>
