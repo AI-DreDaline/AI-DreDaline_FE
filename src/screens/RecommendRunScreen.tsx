@@ -70,7 +70,11 @@ function RecommendRunScreen({ navigation, route }: Props) {
                         <TouchableOpacity
                             key={item.id}
                             style={styles.eachtemplate}
-                            onPress={() => setSelectedTemplate(item.id)}
+                            onPress={() =>
+                                setSelectedTemplate((prev) =>
+                                    prev === item.id ? null : item.id
+                                )
+                            }
                             activeOpacity={0.7}
                         >
                             <Image
@@ -83,7 +87,7 @@ function RecommendRunScreen({ navigation, route }: Props) {
                             <Text
                                 style={[
                                     styles.eachtitle,
-                                    isActive && { color: '#39FF14', fontWeight: '900' },
+                                    isActive && { fontWeight: '900' },
                                 ]}
                             >
                                 {item.label}
