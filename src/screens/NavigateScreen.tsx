@@ -7,17 +7,8 @@ import useTabBarVisibility from "../assets/useTabBarVisibility";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
 
-import map_ready from '../assets/images/map_ready.png';
-import arrow from '../assets/images/arrow.png';
-import run from '../assets/images/run.png';
-import x from '../assets/images/x.png';
 import round from '../assets/images/round.png';
 import runway_img from '../assets/images/runway.png';
-
-import thunder_white from '../assets/images/thunder_white.png';
-import thunder_blue from '../assets/images/thunder_blue.png';
-import thunder_yellow from '../assets/images/thunder_yellow.png';
-import thunder_orange from '../assets/images/thunder_orange.png';
 
 const { width } = Dimensions.get('window');
 
