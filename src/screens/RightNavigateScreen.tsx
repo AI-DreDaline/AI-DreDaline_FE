@@ -96,7 +96,7 @@ const RightNavigateScreen = () => {
                     {/* 카메라: 내 위치 따라가기 */}
                     <MapLibreGL.Camera
                         zoomLevel={15}
-                        centerCoordinate={userLocation || [126.5618, 33.4554]} // 제주대 기본값
+                        //centerCoordinate={userLocation || [126.5618, 33.4554]} // 제주대 기본값
                         followUserLocation={true}
                         followUserMode={UserTrackingMode.Follow}
                     />
@@ -104,6 +104,7 @@ const RightNavigateScreen = () => {
                     {/* 현재 위치 표시 */}
                     <MapLibreGL.UserLocation
                         visible={true}
+                        showsUserHeadingIndicator={true}
                         onUpdate={(location) => {
                             const { longitude, latitude } = location.coords;
                             setUserLocation([longitude, latitude]);

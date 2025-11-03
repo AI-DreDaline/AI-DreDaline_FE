@@ -71,6 +71,7 @@ const MainNavigateScreen = () => {
                         {/* 현재 위치 표시 */}
                         <MapLibreGL.UserLocation
                             visible={true}
+                            showsUserHeadingIndicator={true}
                             onUpdate={(location) => {
                                 const { longitude, latitude } = location.coords;
                                 setUserLocation([longitude, latitude]);
