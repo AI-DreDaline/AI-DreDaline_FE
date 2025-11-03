@@ -50,6 +50,19 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
         ['20:12', '167-179'],
         ['06:52', '180+']
     ];
+    const heartrate_count = heartrate.length;
+
+    const heartrateSeconds = heartrate.map(([time, _]) => {
+        const [minStr, secStr] = time.split(':');
+        const totalSeconds = parseInt(minStr, 10) * 60 + parseInt(secStr, 10);
+        return totalSeconds;
+    });
+
+    const totalHeartrateSeconds = heartrateSeconds.reduce((acc, curr) => acc + curr, 0);
+
+    const heartrateBars = heartrateSeconds.map(sec => {
+        return (sec / totalHeartrateSeconds) * 130;
+    });
 
     const pagerRef = useRef<PagerView>(null);
     const [currentPage, setCurrentPage] = useState(1); // 처음은 Main
@@ -59,14 +72,16 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     const [isPressed, setIsPressed] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
+    const zoneColors = ['#3ca3f9', '#42f1e1', '#bdff00', '#ff8208', '#ff0c6e'];
+
     const handlePressIn = () => {
         // 3초 타이머 시작
         timerRef.current = setTimeout(() => {
             setModalVisible(true);
             navigation.navigate('MainScreen', {
-                address: '서울시 강남구',
-                mode: 'drawReady',
-                screen: 'DrawTrackRun',
+                address: '',
+                mode: '',
+                screen: 'RecommendRun',
             });
         }, 3000);
     };
@@ -244,7 +259,7 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
                                                 </View>
                                             ))}
                                         </View>
-                                        <View style={styles.heartrateboxview}>
+                                        <View style={[styles.heartrateboxview, { height: 290 + (heartrate_count * 30) }]}>
                                             <Text style={styles.kmlisttitle}>심박수 정보</Text>
 
                                             <View style={styles.heartratetitlebox}>
@@ -255,7 +270,7 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
                                                 <Text style={styles.heartratetitle_2}>심박수 변화</Text>
                                                 <Image
                                                     source={heartrate_img}
-                                                    style={{width: 360, height: 90}}
+                                                    style={{width: 353, height: 83, marginTop: 0,}}
                                                 />
                                                 <Text style={styles.heartrateavg}>171 BPM AVG</Text>
                                                 <View style={styles.heartrateseparator_2}></View>
@@ -264,7 +279,16 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
                                                     {heartrate.map((r, index) => (
                                                         <View key={index}>
                                                             <View style={styles.heartratelist}>
-                                                                <Text style={styles.heartratezone}>Zone{index + 1}</Text>
+                                                                <Text style={[styles.heartratezone, { color: zoneColors[index % zoneColors.length] }]}>Zone {index + 1}</Text>
+                                                                <View 
+                                                                    style={[
+                                                                        styles.zoneBar, 
+                                                                        { 
+                                                                            backgroundColor: zoneColors[index % zoneColors.length],
+                                                                            width: heartrateBars[index], // 길이
+                                                                        }
+                                                                    ]} 
+                                                                />
                                                                 <Text style={styles.heartratetime}>{r[0]}</Text>
                                                                 <View style={styles.heartratetotalbpmview}>
                                                                     <Text style={styles.heartratetotalbpm}>{r[1]}BPM</Text>
@@ -529,11 +553,10 @@ const styles = StyleSheet.create({
     },
     heartrateboxview: {
         width: '100%',
-        height: 500,
+        height: 330,
         paddingTop: 2,
     },
     heartratetitlebox: {
-        //backgroundColor: 'green',
         height: '100%',
         width: '100%',
         paddingLeft: 24,
@@ -564,22 +587,22 @@ const styles = StyleSheet.create({
     },
     heartrateavg: {
         color: '#ff3819',
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: '400',
         paddingTop: 1,
     },
     heartrateseparator_2: {
         height: 0.3,              // 선 높이
         backgroundColor: '#98989f',
-        marginTop: 8,
-        marginBottom: 3,
+        marginTop: 10,
+        marginBottom: 7,
     },
     heartratelist: {
         width: '100%',
         flexDirection: 'row',
-        marginTop: 7.5,
+        marginTop: 6.2,
         alignContent: 'center',
-        backgroundColor: 'green',
+        //backgroundColor: 'green',
     },
     heartratezone: {
         color: 'rgba(57, 233, 230, 1)',
@@ -588,11 +611,17 @@ const styles = StyleSheet.create({
         width: 50,
         textAlign: 'left',
     },
+    zoneBar: {
+        height: 8,          // 바의 두께
+        borderRadius: 5,     // 모서리 둥글게
+        marginLeft: 5, // Zone과 시간 사이 간격
+        marginTop: 5.3,
+    },
     heartratetime: {
         color: '#ffffff',
         fontSize: 15,
         fontWeight: '500',
-        marginLeft: 10,
+        marginLeft: 8,
         width: 45,
         textAlign: 'left',
     },
@@ -600,7 +629,6 @@ const styles = StyleSheet.create({
         height: '100%',
         flex: 1,
         marginRight: 0,
-        backgroundColor:'red'
     },
     heartratetotalbpm: {
         color: '#98989f',
