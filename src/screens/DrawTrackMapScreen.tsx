@@ -189,15 +189,10 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                                 zoomLevel={14}
                                 centerCoordinate={centerCoord}
                             />
+                            
                             <MapLibreGL.UserLocation
                                 visible={true}
                                 showsUserHeadingIndicator={true} // 화살표 모양
-                            />
-
-                            <MapLibreGL.Camera
-                                ref={cameraRef}
-                                zoomLevel={14}
-                                centerCoordinate={centerCoord}
                             />
 
                             {lineCoords.length > 0 && (
@@ -262,7 +257,7 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
 
                         // 2️⃣ 선택된 상태일 때만 현위치로 이동
                         if (selectedTool !== 'here') {
-                        FocusHere(cameraRef); // cameraRef는 MapLibreGL.Camera의 ref
+                            FocusHere(cameraRef); // cameraRef는 MapLibreGL.Camera의 ref
                         }
                     }}
                 >

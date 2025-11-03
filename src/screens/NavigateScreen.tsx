@@ -1,14 +1,9 @@
 import React, { useRef, useState } from 'react';
-
 import { View, Text, TouchableOpacity, Dimensions, StyleSheet, Modal, Image, ScrollView } from 'react-native';
-
 import PagerView from 'react-native-pager-view';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
-
-import round from '../assets/images/round.png';
-import runway_img from '../assets/images/runway.png';
 
 const { width } = Dimensions.get('window');
 
@@ -77,21 +72,18 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     const [isPressed, setIsPressed] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const today = "2025년 9월 25일";
     const zoneColors = ['#3ca3f9', '#42f1e1', '#bdff00', '#ff8208', '#ff0c6e'];
-
 
     const handlePressIn = () => {
         // 3초 타이머 시작
         timerRef.current = setTimeout(() => {
             setModalVisible(true);
-
             navigation.navigate('MainScreen', {
                 address: '',
                 mode: '',
                 screen: 'RecommendRun',
             });
-        }, 3000);
+        }, 2000);
     };
 
     const handlePressOut = () => {
@@ -154,55 +146,6 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
                             >{buttonText}</Text>
                         </View>
                     </TouchableOpacity>
-
-                    {/* ✅ 모달 부분 */}
-                    <Modal
-                        transparent
-                        visible={modalVisible}
-                        animationType="slide"
-                        onRequestClose={() => setModalVisible(false)}
-                    >
-                        <View style={styles.modalBackground}>
-                            <View style={styles.modalBox}>
-                                <ScrollView contentContainerStyle={styles.scrollContainer}>
-
-                                    <View style={styles.header}>`
-                                        <View style={styles.titleview}>
-                                            <Image
-                                                source={run}
-                                                style={{width: 35, height: 35}}
-                                            />
-                                            <Text style={styles.title}>경로 세부사항</Text>
-                                        </View>
-                                        <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                            <Image
-                                                source={x}
-                                                style={styles.close}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View>
-                                        <View>
-                                            <Image
-                                                source={map_ready}
-                                                style={{}}
-                                            />
-                                            <Image
-                                                source={round}
-                                                style={{}}
-                                            />
-                                        </View>
-                                        <View>
-                                            
-                                        </View>
-                                    </View>
-
-
-                                </ScrollView>
-                            </View>
-                        </View>
-                    </Modal>
-
                     <Text style={styles.tabtitle}>러닝을 끝낼 경우 버튼을 3초 이상 눌러주세요.</Text>
 
                     {/* 모달 */}
@@ -427,44 +370,6 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         paddingTop: 15,
         paddingLeft: 50,
-    },
-    modalBackground: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        //justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalBox: {
-        width: '100%',
-        height: 1020, // ✅ 고정 높이
-        backgroundColor: '#1C1C1E',
-        padding: 10,
-        marginTop: 80,
-    },
-    scrollContainer: {
-        paddingVertical: 10,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingRight: 13,
-        paddingLeft: 106,
-    },
-    titleview: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    title: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: '600',
-        marginLeft: 6,
-    },
-    close: {
-        width: 25,
-        height: 25,
-
     },
     tabtitle: {
         color: '#39FF14',

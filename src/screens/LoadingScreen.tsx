@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
+import * as Progress from 'react-native-progress';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types'; // 스택 타입 정의
 
@@ -9,6 +10,18 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Loading'>;
 const LoadingScreen: React.FC<Props> = ({ navigation}) => {
     useTabBarVisibility(false);
     const [loading, setLoading] = useState(true);
+    const message = [
+        ['AI 경로 생성 시 10~20m 정도의 오차가 발생할 수 있습니다.'],
+        ['안전을 위해 횡단보도와 인도를 이용해주시기 바랍니다.'],
+    ];
+
+    const [randomMessage, setRandomMessage] = useState('');
+
+    useEffect(() => {
+        const randomIndex = Math.floor(Math.random() * message.length);
+        setRandomMessage(message[randomIndex][0]);
+    }, []);
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -18,6 +31,26 @@ const LoadingScreen: React.FC<Props> = ({ navigation}) => {
 
         return () => clearTimeout(timer);
     }, [navigation]);
+
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        let start = 0;
+        const duration = 2000; // 2초
+        const interval = 16; // 약 60fps
+        const increment = interval / duration;
+
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= 1) {
+                start = 1;
+                clearInterval(timer);
+            }
+            setProgress(start);
+        }, interval);
+
+        return () => clearInterval(timer);
+    }, []);
 
     /*
     const { address } = route.params; 
@@ -39,8 +72,9 @@ const LoadingScreen: React.FC<Props> = ({ navigation}) => {
                 style={styles.image}
             />
             <Text style={styles.fisttext}>경로 생성 중...</Text>
-            <Text style={styles.secondtext}>AI 경로 생성 시 10~20m 정도의 오차가 발생할 수 있습니다.</Text>
-                {loading && <ActivityIndicator size="large" color="#39FF14" />}
+            <Text style={styles.secondtext}>{randomMessage}</Text>
+            <View style={{marginTop: 46}}></View>
+                {loading && <Progress.Bar progress={progress} height={6} width={200} color="#39FF14" unfilledColor="#FFFFFF" borderWidth={0} />}
             <Text style={styles.thirdtext}>Loading...</Text>
         </View>
     );
@@ -75,6 +109,6 @@ const styles = StyleSheet.create({
     thirdtext: {
         fontSize: 14,
         color: 'rgba(245, 245, 245, 0.65)',
-        marginTop: 15,
+        marginTop: 10,
     },
 });
