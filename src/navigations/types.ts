@@ -9,7 +9,7 @@ export type RootStackParamList = {
     mode?: 'recommendReady' | 'drawReady';
     screen?: 'RecommendRun' | 'DrawTrackRun'; // 탭 선택용 추가
   };
-  Loading: { address?: string };
+  Loading: undefined;
   DrawTrackRun: { address?: string; mode?: 'run' | 'ready'  };
   DrawTrackMap: undefined;
   DrawTrackReady: undefined;

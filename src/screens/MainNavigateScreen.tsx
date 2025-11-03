@@ -24,6 +24,13 @@ const MainNavigateScreen = () => {
     const [percent, setPercent] = useState<number>(0);
     const [routeGeoJSON, setRouteGeoJSON] = useState<any>(null);
     const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+    const [cameraKey, setCameraKey] = useState(0);
+
+    useEffect(() => {
+        if (userLocation) {
+            setCameraKey(prev => prev + 1); // Camera 강제 리렌더링
+        }
+    }, [userLocation]);
 
     const exampleRoute = [
         [126.5618, 33.4553], // 제주대학교 근처
@@ -50,11 +57,13 @@ const MainNavigateScreen = () => {
         <View style={styles.container}>
             <View style={{flexDirection: 'row'}}>
                 <View style={styles.mapview}>
-                    <MapLibreGL.MapView style={{ flex: 1 }} mapStyle={MAP_STYLE_URL}>
+                    <MapLibreGL.MapView 
+                        style={{ flex: 1 }} 
+                        mapStyle={MAP_STYLE_URL}
+                    >
                         {/* 카메라: 내 위치 따라가기 */}
                         <MapLibreGL.Camera
                             zoomLevel={15}
-                            centerCoordinate={userLocation || [126.5618, 33.4554]} // 제주대 기본값
                             followUserLocation={true}
                             followUserMode={UserTrackingMode.Follow}
                         />
