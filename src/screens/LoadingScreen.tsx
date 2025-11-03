@@ -7,13 +7,14 @@ import { RootStackParamList } from '../navigations/types'; // 스택 타입 정�
 type Props = NativeStackScreenProps<RootStackParamList, 'Loading'>;
 
 const LoadingScreen: React.FC<Props> = ({ navigation}) => {
+    useTabBarVisibility(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
             navigation.replace('Navigate');
-        }, 3000);
+        }, 2000);
 
         return () => clearTimeout(timer);
     }, [navigation]);

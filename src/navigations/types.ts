@@ -6,7 +6,7 @@ export type RootStackParamList = {
   RecommendReadyMap: undefined;
   MainScreen: { 
     address: string; 
-    mode?: 'recommendReady' | 'drawReady';
+    mode?: 'recommendReady' | 'drawReady' | '';
     screen?: 'RecommendRun' | 'DrawTrackRun'; // 탭 선택용 추가
   };
   Loading: undefined;
