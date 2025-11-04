@@ -1,0 +1,8 @@
+# Node modules
+node_modules/
+
+# iOS Pods
+ios/Pods/
+
+ios/build/
+ios/*.xcworkspace/xcuserdata/
