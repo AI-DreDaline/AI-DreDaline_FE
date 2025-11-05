@@ -12,7 +12,7 @@ const API_KEY = "QhGgr94B6Frh1kFgQHuB";
 const centerCoord: [number, number] = [126.9780, 37.5665]; // 서울 좌표 예시
 
 // 올바른 방법
-function ReadyMapScreen({navigation}: NativeStackScreenProps<RootStackParamList, 'RecommendReadyMap'>) {
+function ReadyMapScreen({navigation}: NativeStackScreenProps<RootStackParamList, 'ReadyMap'>) {
     
     useTabBarVisibility(false);
     const mapRef = useRef<MapViewRef>(null);
@@ -47,7 +47,7 @@ function ReadyMapScreen({navigation}: NativeStackScreenProps<RootStackParamList,
 
     );
 }
-export default RecommendReadyMapScreen;
+export default ReadyMapScreen;
 
 const styles = StyleSheet.create({
     container: {

@@ -31,7 +31,7 @@ export default function RecordScreen() {
   const [Visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  // 📅 달력용 날짜 배열 생성 함수
+  // 달력용 날짜 배열 생성 함수
   const generateCalendarDays = (year: number, month: number) => {
     // month: 1~12로 받는다고 가정 (Date 객체는 0~11)
     const firstDay = new Date(year, month - 1, 1); // 이번 달 1일
@@ -43,7 +43,7 @@ export default function RecordScreen() {
 
     const calendarDays = [];
 
-    // 🔹 (1) 이전 달에서 채워야 할 부분
+    // (1) 이전 달에서 채워야 할 부분
     // 월요일 시작 기준으로 바꾸려면 일요일(0)을 7로 처리
     const startOffset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
 
@@ -54,7 +54,7 @@ export default function RecordScreen() {
       });
     }
 
-    // 🔹 (2) 이번 달 날짜
+    // (2) 이번 달 날짜
     for (let i = 1; i <= daysInMonth; i++) {
       calendarDays.push({
         date: new Date(year, month - 1, i),
@@ -62,7 +62,7 @@ export default function RecordScreen() {
       });
     }
 
-    // 🔹 (3) 다음 달 채우기 (필요할 때만)
+    // (3) 다음 달 채우기 (필요할 때만)
   const remainder = calendarDays.length % 7;
   if (remainder !== 0) {
     const nextMonthDays = 7 - remainder;
@@ -108,19 +108,19 @@ export default function RecordScreen() {
     '2025-11-28',
     '2026-01-27',
   ];
-  // 📅 중복 제거된 highlight 날짜 배열
+  // 중복 제거된 highlight 날짜 배열
   const uniqueHighlightedDates = Array.from(new Set(highlightedDates));
 
-  // 📅 이번 달 전체 날짜 수 계산
+  // 이번 달 전체 날짜 수 계산
   const totalDaysInMonth = new Date(year, month, 0).getDate();
 
-  // 📅 이번 달에 포함된 highlighted 날짜 수 계산
+  // 이번 달에 포함된 highlighted 날짜 수 계산
   const highlightedCountInMonth = uniqueHighlightedDates.filter(dateStr => {
     const [y, m] = dateStr.split('-').map(Number);
     return y === year && m === month;
   }).length;
 
-  // 📅 표시용 문구
+  // 표시용 문구
   const summaryText = `지난 ${totalDaysInMonth}일중 ${highlightedCountInMonth}일 러닝하셨네요!`;
 
   return (
@@ -148,7 +148,7 @@ export default function RecordScreen() {
                     return prevMonth - 1;
                   } else {
                     setYear(prevYear => prevYear - 1); // 🔽 연도 1 감소
-                    return 12; // 🔁 1월에서 넘어가면 12월로
+                    return 12; // 1월에서 넘어가면 12월로
                   }
                 });
               }}
@@ -165,7 +165,7 @@ export default function RecordScreen() {
                     return prevMonth + 1;
                   } else {
                     setYear(prevYear => prevYear + 1); // 🔼 연도 증가
-                    return 1; // 🔁 12월 → 1월
+                    return 1; // 12월 → 1월
                   }
                 });
               }}
@@ -214,15 +214,15 @@ export default function RecordScreen() {
               let textColor = 'gray';
 
               if (isHighlighted && isCurrent) {
-                // ✅ 이번 달 + 강조
+                // 이번 달 + 강조
                 dayStyle = { backgroundColor: '#39FF14' };
                 textColor = 'black';
               } else if (isHighlighted && !isCurrent) {
-                // ✅ 이번 달 아님 + 강조
+                // 이번 달 아님 + 강조
                 dayStyle = { backgroundColor: '#47494b' };
                 textColor = 'white';
               } else if (isCurrent) {
-                // ✅ 이번 달 일반 날짜
+                // 이번 달 일반 날짜
                 textColor = 'white';
               }
 
@@ -302,7 +302,7 @@ export default function RecordScreen() {
         <View style={styles.overlay}>
           <Modal_long
             selectedDate={selectedDate}
-            closeModal={() => setModalVisible(false)} // ✅ 닫기 기능 전달
+            closeModal={() => setModalVisible(false)} // 닫기 기능 전달
           />
         </View>
       </Modal>
