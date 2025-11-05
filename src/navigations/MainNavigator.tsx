@@ -7,6 +7,7 @@ import RecommendMapScreen from '../screens/RecommendMapScreen';
 import RecommendReadyMapScreen from '../screens/RecommendReadyMapScreen';
 import DrawTrackMapScreen from '../screens/DrawTrackMapScreen';
 import DrawTrackReadyMapScreen from '../screens/DrawTrackReadyMapScreen';
+import ReadyMapScreen from '../screens/ReadyMapScreen'
 import LoadingScreen from '../screens/LoadingScreen';
 import { RootStackParamList } from './types';
 
@@ -38,6 +39,10 @@ export default function MainNavigator() {
       <Stack.Screen 
         name="DrawTrackReadyMap" 
         component={DrawTrackReadyMapScreen}
+      />
+      <Stack.Screen 
+        name="ReadyMap" 
+        component={ReadyMapScreen}
       />
       <Stack.Screen 
         name="Loading"

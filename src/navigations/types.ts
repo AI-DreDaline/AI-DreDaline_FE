@@ -15,8 +15,11 @@ export type RootStackParamList = {
   DrawTrackReady: undefined;
   DrawTrackReadyMap: undefined;
   Navigate: undefined;
+  ReadyMap: undefined;
 };
 
-export type MainTabParamList = {
-  RecommendRun: { address?: string };
+export type MyRecordStackParamList = {
+  MyRecord: undefined;
+  RecordDetail: { id: string }; // 예: 특정 기록의 상세 보기
+  ReadyMap: undefined;
 };

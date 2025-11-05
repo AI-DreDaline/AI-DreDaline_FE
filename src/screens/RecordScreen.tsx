@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, Modal, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { MyRecordStackParamList } from '../navigations/types';
+
+type MyRecordNavigationProp = NativeStackNavigationProp<MyRecordStackParamList>;
 
 import run from '../assets/images/run.png';
 import left_allow from '../assets/images/left_allow.png';
@@ -7,8 +12,11 @@ import right_allow from '../assets/images/right_allow.png';
 import map_ready from '../assets/images/map_ready.png';
 
 import Modal_long from '../components/Modal_long';
+import Modal_short from '../components/Modal_short';
 
 export default function RecordScreen() {
+  const navigation = useNavigation<MyRecordNavigationProp>();
+
   const runingcollection_info = [
     [5.15, '제주시 혜안동'],
     [5.15, '제주시 혜안동'],
@@ -20,6 +28,7 @@ export default function RecordScreen() {
   const [month, setMonth] = useState(today.getMonth() + 1); // getMonth()는 0~11 반환
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [Visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // 📅 달력용 날짜 배열 생성 함수
@@ -73,6 +82,8 @@ export default function RecordScreen() {
   const calendarHeight = weekCount === 6 ? 356 : 336;
 
   const highlightedDates = [
+    '2025-01-27',
+    '2025-01-28',
     '2025-10-27',
     '2025-10-28',
     '2025-11-01',
@@ -94,12 +105,23 @@ export default function RecordScreen() {
     '2025-11-26',
     '2025-11-27',
     '2025-11-28',
+    '2025-11-28',
+    '2026-01-27',
   ];
+  // 📅 중복 제거된 highlight 날짜 배열
+  const uniqueHighlightedDates = Array.from(new Set(highlightedDates));
 
-  const formatDate = (date: Date) =>
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
-      date.getDate()
-  ).padStart(2, '0')}`;
+  // 📅 이번 달 전체 날짜 수 계산
+  const totalDaysInMonth = new Date(year, month, 0).getDate();
+
+  // 📅 이번 달에 포함된 highlighted 날짜 수 계산
+  const highlightedCountInMonth = uniqueHighlightedDates.filter(dateStr => {
+    const [y, m] = dateStr.split('-').map(Number);
+    return y === year && m === month;
+  }).length;
+
+  // 📅 표시용 문구
+  const summaryText = `지난 ${totalDaysInMonth}일중 ${highlightedCountInMonth}일 러닝하셨네요!`;
 
   return (
     <View style={styles.container}>
@@ -112,7 +134,7 @@ export default function RecordScreen() {
           />
           <Text style={styles.title}>나의 기록</Text>
         </View>
-        <Text style={styles.toptext}>지난 28일중 15일 러닝하셨네요!</Text>
+        <Text style={styles.toptext}>{summaryText}</Text>
       </View>
 
       <View style={[ styles.calendarboxview,{ height: calendarHeight }]}>
@@ -248,7 +270,11 @@ export default function RecordScreen() {
               contentContainerStyle={{ paddingHorizontal: 0 }}
           >
             {runingcollection_info.map(([distance, address], index) => (
-              <View key={index} style={styles.runingcollection}>
+              <TouchableOpacity
+                key={index}
+                style={styles.runingcollection}
+                onPress={() => setVisible(true)}
+              >
                 <Image
                   source={map_ready}
                   style={{
@@ -261,7 +287,7 @@ export default function RecordScreen() {
                 />
                 <Text style={styles.runingcollectionkm}>{distance}km</Text>
                 <Text style={styles.runingcollectionaddress}>{address}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
@@ -269,7 +295,7 @@ export default function RecordScreen() {
 
       <Modal
         transparent
-        animationType="fade"
+        animationType="slide"
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
@@ -277,6 +303,16 @@ export default function RecordScreen() {
           <Modal_long
             selectedDate={selectedDate}
             closeModal={() => setModalVisible(false)} // ✅ 닫기 기능 전달
+          />
+        </View>
+      </Modal>
+
+      <Modal visible={Visible} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <Modal_short 
+            title='경로 세부사항'
+            closeModal={() => setVisible(false)}
+            navigation={navigation}
           />
         </View>
       </Modal>
@@ -401,13 +437,13 @@ const styles = StyleSheet.create({
   },
   runingcollectionview: {
     flexDirection: 'row',
-    height: 153,
+    height: 183,
     marginTop: 20,
     marginHorizontal: 22,
   },
   runingcollection: {
     backgroundColor: '#1B1B1B',
-    height: '100%',
+    height: 153,
     width: 126,
     borderRadius: 10,
     marginRight: 15,
