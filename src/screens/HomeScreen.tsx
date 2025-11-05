@@ -1,5 +1,10 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { HomeStackParamList } from '../navigations/types';
+import { useNavigation } from '@react-navigation/native';
+
+type HomeNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 import small_rightarrow from '../assets/images/small_rightarrow.png';
 import fire from '../assets/images/fire.png';
@@ -11,6 +16,8 @@ import rank_view from '../assets/images/rank_view.png';
 import run_alam from '../assets/images/run_alam.png';
 import right_arrow from '../assets/images/right_arrow.png';
 
+import Modal_short from '../components/Modal_short';
+
 const rankImages: { [key: string]: any } = {
   rank_1,
   rank_2,
@@ -18,6 +25,8 @@ const rankImages: { [key: string]: any } = {
 };
 
 export default function HomeScreen() {
+  const navigation = useNavigation<HomeNavigationProp>();
+  
   const rank = [
     ['rank_1', '네잎클로버런', 1.5],
     ['rank_2', '네잎클로버런', 1.5],
@@ -28,6 +37,8 @@ export default function HomeScreen() {
     ['런런', '서울시 세종로 1-88', 8, '중'],
     ['런런', '서울시 세종로 1-88', 8, '중'],
   ];
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -59,41 +70,45 @@ export default function HomeScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} >
             {rank.map((item, index) => (
               <View key={index} style={styles.Rank}>
-                {/* 배경 이미지 */}
-                <Image
-                  source={map_ready}
-                  style={{ width: 132, height: 174, borderRadius: 4 }}
-                />
+                <TouchableOpacity
+                  onPress={() => setModalVisible(true)}
+                >
+                  {/* 배경 이미지 */}
+                  <Image
+                    source={map_ready}
+                    style={{ width: 132, height: 174, borderRadius: 4 }}
+                  />
 
-                {/* 랭크 이미지 */}
-                <Image
-                  source={rankImages[item[0]]} // rank_1, rank_2 등
-                  style={{
-                    width: 35,
-                    height: 47,
-                    position: 'absolute',
-                    top: 9,
-                    left: 3,
-                  }}
-                />
+                  {/* 랭크 이미지 */}
+                  <Image
+                    source={rankImages[item[0]]} // rank_1, rank_2 등
+                    style={{
+                      width: 35,
+                      height: 47,
+                      position: 'absolute',
+                      top: 9,
+                      left: 3,
+                    }}
+                  />
 
-                {/* 랭크 이름 */}
-                <Text style={styles.Ranktitle}>{item[1]}</Text>
+                  {/* 랭크 이름 */}
+                  <Text style={styles.Ranktitle}>{item[1]}</Text>
 
-                {/* 뷰 아이콘 */}
-                <Image
-                  source={rank_view}
-                  style={{
-                    width: 8,
-                    height: 8,
-                    position: 'absolute',
-                    bottom: 8.3,
-                    left: 7,
-                  }}
-                />
+                  {/* 뷰 아이콘 */}
+                  <Image
+                    source={rank_view}
+                    style={{
+                      width: 8,
+                      height: 8,
+                      position: 'absolute',
+                      bottom: 8.3,
+                      left: 7,
+                    }}
+                  />
 
-                {/* 뷰 수 */}
-                <Text style={styles.Rankviewtext}>{item[2]}M views</Text>
+                  {/* 뷰 수 */}
+                  <Text style={styles.Rankviewtext}>{item[2]}M views</Text>
+                </TouchableOpacity>
               </View>
             ))}
 
@@ -108,22 +123,26 @@ export default function HomeScreen() {
         <View style={styles.recentview}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {recent.map((item, index) => (
-              <View style={styles.recentbox}>
-                <Image
-                  source={map_ready}
-                  style={{
-                    width: 213,
-                    height: 166, 
-                    borderTopLeftRadius: 12,  // 왼쪽 위 둥글게
-                    borderTopRightRadius: 12,
-                  }}
-                />
-                <Text style={styles.recenttitle}>{item[0]}</Text>
-                <Text style={styles.recentaddress}>{item[1]}</Text>
-                <View style={{flexDirection:'row', justifyContent: 'space-between', paddingHorizontal: 8}}>
-                  <Text style={styles.recentkm}>{item[2]}km</Text>
-                  <Text style={styles.recentleve}>난의도 {item[3]}</Text>
-                </View>
+              <View key={index} style={styles.recentbox}>
+                <TouchableOpacity
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Image
+                    source={map_ready}
+                    style={{
+                      width: 213,
+                      height: 166, 
+                      borderTopLeftRadius: 12,  // 왼쪽 위 둥글게
+                      borderTopRightRadius: 12,
+                    }}
+                  />
+                  <Text style={styles.recenttitle}>{item[0]}</Text>
+                  <Text style={styles.recentaddress}>{item[1]}</Text>
+                  <View style={{flexDirection:'row', justifyContent: 'space-between', paddingHorizontal: 8}}>
+                    <Text style={styles.recentkm}>{item[2]}km</Text>
+                    <Text style={styles.recentleve}>난의도 {item[3]}</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             ))}
           </ScrollView>
@@ -153,6 +172,16 @@ export default function HomeScreen() {
           </View>
         </View>
       </ScrollView>
+
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <Modal_short 
+            title='경로 세부사항'
+            closeModal={() => setModalVisible(false)}
+            navigation={navigation}
+          />
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -324,5 +353,10 @@ const styles = StyleSheet.create({
     bottom: 80,     // 위쪽에서 10만큼
     right: 18,
     backgroundColor: '#ffffff',
-  }
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'flex-end', // 화면 하단에 붙게
+    backgroundColor: 'rgba(0,0,0,0.4)', // 살짝 어둡게
+  },
 });
