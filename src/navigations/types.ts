@@ -3,7 +3,7 @@ export type RootStackParamList = {
   RecommendRun: { address?: string; mode?: 'run' | 'ready'  };
   RecommendMap: undefined;
   RecommendReady: undefined;
-  RecommendReadyMap: undefined;
+  //RecommendReadyMap: undefined;
   MainScreen: { 
     address: string; 
     mode?: 'recommendReady' | 'drawReady' | '';
@@ -13,10 +13,27 @@ export type RootStackParamList = {
   DrawTrackRun: { address?: string; mode?: 'run' | 'ready'  };
   DrawTrackMap: undefined;
   DrawTrackReady: undefined;
-  DrawTrackReadyMap: undefined;
+  //DrawTrackReadyMap: undefined;
   Navigate: undefined;
+  ReadyMap: undefined;
 };
 
-export type MainTabParamList = {
-  RecommendRun: { address?: string };
+export type MyRecordStackParamList = {
+  MyRecord: undefined;
+  RecordDetail: { id: string }; // 예: 특정 기록의 상세 보기
+  ReadyMap: undefined;
+};
+
+export type HomeStackParamList = {
+  Home: undefined;
+  ReadyMap: undefined;
+};
+
+export type LoingStackParamList = {
+  Logo: undefined;
+  Guide: undefined;
+  GuideLeft: undefined;
+  GuideMain: undefined;
+  GuideRight: undefined;
+  Login: undefined;
 };

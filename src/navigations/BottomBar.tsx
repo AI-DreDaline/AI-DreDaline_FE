@@ -6,7 +6,7 @@ import MainNavigator from './MainNavigator';
 import HomeNavigator from './HomeNavigator';
 import MyRecordNavigator from './MyRecord';
 
-// 🔽 아이콘 이미지들
+// 아이콘 이미지들
 import homeIcon from '../assets/images/home.png';
 import homeActiveIcon from '../assets/images/home_active.png';
 import mainIcon from '../assets/images/main.png';
@@ -24,6 +24,7 @@ const BottomBar: React.FC<BottomBarProps> = ({ visible = true }) => {
 
   return (
     <Tab.Navigator
+      initialRouteName="MainTab"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {

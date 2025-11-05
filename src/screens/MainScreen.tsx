@@ -65,6 +65,7 @@ const MainScreen: React.FC<Props> = ({ route }) => {
           screenOptions={{
             tabBarStyle: { backgroundColor: 'transparent', elevation: 0, shadowOpacity: 0 },
             tabBarIndicatorStyle: { backgroundColor: 'transparent' }, // 밑줄 제거
+            swipeEnabled: false,
           }}
           tabBar={(props: MaterialTopTabBarProps) => {
             const { state, descriptors, navigation } = props;

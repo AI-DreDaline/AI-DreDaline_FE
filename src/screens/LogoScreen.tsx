@@ -1,26 +1,40 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useEffect} from 'react';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigations/types'; // 네비게이션 타입 정의한 파일
+import { useNavigation } from '@react-navigation/native';
+import { LoingStackParamList } from '../navigations/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Logo'>;
+type Props = NativeStackScreenProps<LoingStackParamList, 'Logo'>;
 
-export default function LogoScreen() {
+import mainIcon from '../assets/images/main.png';
+
+const LogoScreen = ({ navigation }: Props) => {
+  useEffect(() => {
+    // 1초 뒤 GuideScreen으로 이동
+    const timer = setTimeout(() => {
+      navigation.replace('Guide'); // 또는 replace('Guide')
+    }, 1000);
+
+    return () => clearTimeout(timer); // 언마운트 시 타이머 정리
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>logopage</Text>
+      <Image
+        source={mainIcon}
+        style={{width: 130, height: 130}}
+      />
     </View>
   );
 }
+export default LogoScreen;
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,                  // 화면 전체를 채움
       justifyContent: 'center', // 수직 가운데
       alignItems: 'center',     // 수평 가운데
+      backgroundColor: '#141414',
     },
-    text: {
-      fontSize: 24,
-      fontWeight: 'bold',
-    },
+
 });

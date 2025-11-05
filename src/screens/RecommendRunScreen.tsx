@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
 
@@ -64,37 +64,39 @@ function RecommendRunScreen({ navigation, route }: Props) {
                 <Text style={styles.more}>더보기</Text>
             </View>
             <View style={styles.template}>
-                {templates.map((item) => {
-                    const isActive = selectedTemplate === item.id;
-                    return (
-                        <TouchableOpacity
-                            key={item.id}
-                            style={styles.eachtemplate}
-                            onPress={() =>
-                                setSelectedTemplate((prev) =>
-                                    prev === item.id ? null : item.id
-                                )
-                            }
-                            activeOpacity={0.7}
-                        >
-                            <Image
-                                source={isActive ? item.imgActive : item.img}
-                                style={{
-                                    width: isActive ? 65 : 52,
-                                    height: isActive ? 65 : 52,
-                                }}
-                            />
-                            <Text
-                                style={[
-                                    styles.eachtitle,
-                                    isActive && { fontWeight: '900' },
-                                ]}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {templates.map((item) => {
+                        const isActive = selectedTemplate === item.id;
+                        return (
+                            <TouchableOpacity
+                                key={item.id}
+                                style={styles.eachtemplate}
+                                onPress={() =>
+                                    setSelectedTemplate((prev) =>
+                                        prev === item.id ? null : item.id
+                                    )
+                                }
+                                activeOpacity={0.7}
                             >
-                                {item.label}
-                            </Text>
-                        </TouchableOpacity>
-                    );
-                })}
+                                <Image
+                                    source={isActive ? item.imgActive : item.img}
+                                    style={{
+                                        width: isActive ? 65 : 52,
+                                        height: isActive ? 65 : 52,
+                                    }}
+                                />
+                                <Text
+                                    style={[
+                                        styles.eachtitle,
+                                        isActive && { fontWeight: '900' },
+                                    ]}
+                                >
+                                    {item.label}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </ScrollView>
             </View>
 
             <View style={styles.map}>

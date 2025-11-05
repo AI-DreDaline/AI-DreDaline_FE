@@ -4,9 +4,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainScreen from '../screens/MainScreen';
 import NavigateScreen from '../screens/NavigateScreen';
 import RecommendMapScreen from '../screens/RecommendMapScreen';
-import RecommendReadyMapScreen from '../screens/RecommendReadyMapScreen';
+//import RecommendReadyMapScreen from '../screens/RecommendReadyMapScreen';
 import DrawTrackMapScreen from '../screens/DrawTrackMapScreen';
-import DrawTrackReadyMapScreen from '../screens/DrawTrackReadyMapScreen';
+//import DrawTrackReadyMapScreen from '../screens/DrawTrackReadyMapScreen';
+import ReadyMapScreen from '../screens/ReadyMapScreen'
 import LoadingScreen from '../screens/LoadingScreen';
 import { RootStackParamList } from './types';
 
@@ -27,17 +28,24 @@ export default function MainNavigator() {
         name="RecommendMap" 
         component={RecommendMapScreen}
       />
+      {/*
       <Stack.Screen 
         name="RecommendReadyMap" 
         component={RecommendReadyMapScreen}
       />
+      
+      <Stack.Screen 
+        name="DrawTrackReadyMap" 
+        component={DrawTrackReadyMapScreen}
+      />
+      */}
       <Stack.Screen 
         name="DrawTrackMap" 
         component={DrawTrackMapScreen}
       />
       <Stack.Screen 
-        name="DrawTrackReadyMap" 
-        component={DrawTrackReadyMapScreen}
+        name="ReadyMap" 
+        component={ReadyMapScreen}
       />
       <Stack.Screen 
         name="Loading"
