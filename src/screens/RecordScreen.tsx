@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Modal, TouchableOpacity } from 'react-native';
 
 import run from '../assets/images/run.png';
 import left_allow from '../assets/images/left_allow.png';
 import right_allow from '../assets/images/right_allow.png';
-import map_ready from '../assets/images/map_ready.png'
+import map_ready from '../assets/images/map_ready.png';
+
+import Modal_long from '../components/Modal_long';
 
 export default function RecordScreen() {
   const runingcollection_info = [
@@ -16,6 +18,9 @@ export default function RecordScreen() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1); // getMonth()는 0~11 반환
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // 📅 달력용 날짜 배열 생성 함수
   const generateCalendarDays = (year: number, month: number) => {
@@ -64,8 +69,12 @@ export default function RecordScreen() {
   };
 
   const days = generateCalendarDays(year, month);
+  const weekCount = Math.ceil(days.length / 7);
+  const calendarHeight = weekCount === 6 ? 356 : 336;
 
   const highlightedDates = [
+    '2025-10-27',
+    '2025-10-28',
     '2025-11-01',
     '2025-11-03',
     '2025-11-04',
@@ -87,6 +96,11 @@ export default function RecordScreen() {
     '2025-11-28',
   ];
 
+  const formatDate = (date: Date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+      date.getDate()
+  ).padStart(2, '0')}`;
+
   return (
     <View style={styles.container}>
 
@@ -101,18 +115,44 @@ export default function RecordScreen() {
         <Text style={styles.toptext}>지난 28일중 15일 러닝하셨네요!</Text>
       </View>
 
-      <View style={styles.calendarboxview}>
+      <View style={[ styles.calendarboxview,{ height: calendarHeight }]}>
         <View style={styles.calendartopview}>
           <Text style={styles.calendarmonthtitle}>{month}월 러닝 요약</Text>
           <View style={styles.calendarallowview}>
-            <Image
-              source={left_allow}
-              style={{width: 16, height: 16}}
-            />
-            <Image
-              source={right_allow}
-              style={{width: 16, height: 16}}
-            />
+            <TouchableOpacity
+              onPress={() => {
+                setMonth(prevMonth => {
+                  if (prevMonth > 1) {
+                    return prevMonth - 1;
+                  } else {
+                    setYear(prevYear => prevYear - 1); // 🔽 연도 1 감소
+                    return 12; // 🔁 1월에서 넘어가면 12월로
+                  }
+                });
+              }}
+            >
+              <Image
+                source={left_allow}
+                style={{width: 16, height: 16}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setMonth(prevMonth => {
+                  if (prevMonth < 12) {
+                    return prevMonth + 1;
+                  } else {
+                    setYear(prevYear => prevYear + 1); // 🔼 연도 증가
+                    return 1; // 🔁 12월 → 1월
+                  }
+                });
+              }}
+            >
+              <Image
+                source={right_allow}
+                style={{width: 16, height: 16}}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -147,29 +187,47 @@ export default function RecordScreen() {
               // 강조할 날짜인지 확인
               const isHighlighted = highlightedDates.includes(dateString);
 
+              // 조건별 스타일 지정
+              let dayStyle = {};
+              let textColor = 'gray';
+
+              if (isHighlighted && isCurrent) {
+                // ✅ 이번 달 + 강조
+                dayStyle = { backgroundColor: '#39FF14' };
+                textColor = 'black';
+              } else if (isHighlighted && !isCurrent) {
+                // ✅ 이번 달 아님 + 강조
+                dayStyle = { backgroundColor: '#47494b' };
+                textColor = 'white';
+              } else if (isCurrent) {
+                // ✅ 이번 달 일반 날짜
+                textColor = 'white';
+              }
+
               return (
                 <View 
                   key={index} 
-                  style={
-                    styles.calendardayeachview
-                  }
+                  style={styles.calendardayeachview}
                 >
-                  <View style={isHighlighted && styles.highlightedDay}>
+                  <TouchableOpacity
+                    style={[styles.highlightedDay, dayStyle]}
+                    onPress={() => {
+                      if (isHighlighted) {
+                        setSelectedDate(dateString);
+                        setModalVisible(true);
+                      }
+                    }}
+                  >
                     <Text 
-                      style={{ 
-                        color: isHighlighted
-                          ? 'black' // ✅ 하이라이트된 날짜 → 검정색
-                          : isCurrent
-                          ? 'white' // ✅ 이번 달 날짜 → 흰색
-                          : 'gray',
-                        textAlign: 'center', lineHeight: 20,
-                        fontWeight: isHighlighted
-                          ? '700'
-                          : '400',
+                      style={{
+                        color: textColor,
+                        textAlign: 'center',
+                        lineHeight: 20,
+                        fontWeight: isHighlighted ? '700' : '400',
                         fontSize: 14,
                       }}
                     >{day}</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               );
             })}
@@ -208,6 +266,20 @@ export default function RecordScreen() {
           </ScrollView>
         </View>
       </View>
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.overlay}>
+          <Modal_long
+            selectedDate={selectedDate}
+            closeModal={() => setModalVisible(false)} // ✅ 닫기 기능 전달
+          />
+        </View>
+      </Modal>
 
     </View>
   );
@@ -299,7 +371,6 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
   },
   highlightedDay: {
-    backgroundColor: '#39FF14',
     borderRadius: 30,
     height: 26,
     justifyContent: 'center', // 🔹 수직 가운데 정렬
@@ -354,5 +425,10 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     paddingTop: 7,
     paddingLeft: 10,
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'flex-end', // 화면 하단에 붙게
+    backgroundColor: 'rgba(0,0,0,0.4)', // 살짝 어둡게
   },
 });
