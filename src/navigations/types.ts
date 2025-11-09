@@ -36,4 +36,12 @@ export type LoingStackParamList = {
   GuideMain: undefined;
   GuideRight: undefined;
   Login: undefined;
+  PhoneLogin: undefined;
+  PhoneVerfy: undefined;
+  Profile: undefined;
+  ConnectHealth: undefined;
+  ConnectLocation: undefined;
+  ConnectFitenss: undefined;
+  Alam: undefined;
+  BottomBar: undefined;
 };
