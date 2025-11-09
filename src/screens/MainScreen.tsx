@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import PersonalInfo from '../components/PersonalInfo';
 import Myprofile from '../assets/images/Myprofile.png';
 import RecommendRunScreen from './RecommendRunScreen';
 import DrawTrackRunScreen from './DrawTrackRunScreen';
@@ -20,10 +21,14 @@ type MainTabParamList = {
 
 const Tab = createMaterialTopTabNavigator<MainTabParamList>();
 
-type Props = NativeStackScreenProps<RootStackParamList, 'MainScreen'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'MainScreen'> & {
+  onLogout: () => void;
+};
 
-const MainScreen: React.FC<Props> = ({ route }) => {
+const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
   useTabBarVisibility(true);
+
+  const [modalVisible, setModalVisible] = useState(false);
   // route.params?.mode으로 전달받은 값 (optional)
   const mode = route.params?.mode;
   const initialScreen = route.params?.screen; 
@@ -50,14 +55,34 @@ const MainScreen: React.FC<Props> = ({ route }) => {
   
   return (
     <View style={styles.container}>
+
       <View style={styles.topview}/>
+
       <View style={styles.titleview}>
         <Text style={styles.title}>달려볼까요?</Text>
-        <Image 
-          source={Myprofile} 
-          style={{ width: 32, height: 32, marginTop: 9 }} 
-        />
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+        >
+          <Image 
+            source={Myprofile} 
+            style={{ width: 32, height: 32, marginTop: 9 }} 
+          />
+        </TouchableOpacity>
       </View>
+
+      <Modal
+        animationType="slide"   // slide / fade / none
+        transparent={true}      // 배경 투명
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.overlay}>
+          <PersonalInfo
+            closeModal={() => setModalVisible(false)}
+            onLogout={onLogout}
+          />
+        </View>
+      </Modal>
 
       {/* 탭 네비게이션 추가 */}
       <View style={{ flex: 1, backgroundColor: '#141414' }}>
@@ -231,6 +256,11 @@ const styles = StyleSheet.create({
     color: '#141414',
     fontWeight: '900',
     fontSize: 16,
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
 });
 

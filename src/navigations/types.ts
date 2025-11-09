@@ -16,6 +16,7 @@ export type RootStackParamList = {
   //DrawTrackReadyMap: undefined;
   Navigate: undefined;
   ReadyMap: undefined;
+  PersonalInfo: undefined;
 };
 
 export type MyRecordStackParamList = {
@@ -44,4 +45,7 @@ export type LoingStackParamList = {
   ConnectFitenss: undefined;
   Alam: undefined;
   BottomBar: undefined;
+  AppleLogin: undefined;
+  NaverLogin: undefined;
+  GoogleLogin: undefined;
 };

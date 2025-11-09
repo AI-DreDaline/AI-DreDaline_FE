@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
 
-type Props = NativeStackScreenProps<LoingStackParamList, 'Logo'>;
+type Props = NativeStackScreenProps<LoingStackParamList, 'Logo'>
 
 import mainIcon from '../assets/images/mainicon.png';
 import phoneicon from '../assets/images/phone.png';
@@ -12,7 +12,7 @@ import navericon from '../assets/images/naver.png';
 import googleicon from '../assets/images/google.png';
 
 
-const LoginScreen = ({ navigation }: Props) => {
+const LoginScreen = ({ navigation}: Props) => {
     return(
         <View style={styles.container}>
             <Image
@@ -34,6 +34,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('AppleLogin')}
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
@@ -46,6 +47,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('NaverLogin')}
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
@@ -58,6 +60,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('GoogleLogin')}
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 12}}>
