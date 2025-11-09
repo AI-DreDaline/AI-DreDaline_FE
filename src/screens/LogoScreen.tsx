@@ -6,7 +6,7 @@ import { LoingStackParamList } from '../navigations/types';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'Logo'>;
 
-import mainIcon from '../assets/images/main.png';
+import mainIcon from '../assets/images/mainicon.png';
 
 const LogoScreen = ({ navigation }: Props) => {
   useEffect(() => {

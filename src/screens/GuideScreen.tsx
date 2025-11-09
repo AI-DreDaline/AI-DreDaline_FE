@@ -24,7 +24,7 @@ const GuideScreen: React.FC<Props> = () => {
     const navigation = useNavigation<any>(); // Tab 네비게이션 접근용
     
     const pagerRef = useRef<PagerView>(null);
-    const [currentPage, setCurrentPage] = useState(1); // 처음은 Main
+    const [currentPage, setCurrentPage] = useState(0); // 처음은 Main
     
 
     const goToPage = (index: number) => {
@@ -67,7 +67,7 @@ const GuideScreen: React.FC<Props> = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        
+                        onPress={() => navigation.navigate('Login')}
                     >
                         <View style={styles.button_2}>
                             <Text 
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
     },
     buttontext_2: {
         fontSize: 19,
-        color: '#ffffff',
-        fontWeight: '800',
+        color: '#9095A0',
+        fontWeight: '600',
         paddingTop: 15,
         textAlign: 'center',
     },

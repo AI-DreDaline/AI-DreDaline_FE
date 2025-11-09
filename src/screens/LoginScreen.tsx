@@ -21,6 +21,7 @@ const LoginScreen = ({ navigation }: Props) => {
             />
             <View style={styles.buttonview}>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('PhoneLogin')}
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
