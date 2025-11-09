@@ -44,4 +44,7 @@ export type LoingStackParamList = {
   ConnectFitenss: undefined;
   Alam: undefined;
   BottomBar: undefined;
+  AppleLogin: undefined;
+  NaverLogin: undefined;
+  GoogleLogin: undefined;
 };

@@ -24,7 +24,7 @@ const GuideScreen: React.FC<Props> = () => {
     const navigation = useNavigation<any>(); // Tab 네비게이션 접근용
     
     const pagerRef = useRef<PagerView>(null);
-    const [currentPage, setCurrentPage] = useState(0); // 처음은 Main
+    const [currentPage, setCurrentPage] = useState(0);
     
 
     const goToPage = (index: number) => {
@@ -36,7 +36,7 @@ const GuideScreen: React.FC<Props> = () => {
         <View style={styles.container}>
             <PagerView
                 style={{ flex: 1 }}
-                initialPage={1}
+                initialPage={0}
                 ref={pagerRef}
                 onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
             >

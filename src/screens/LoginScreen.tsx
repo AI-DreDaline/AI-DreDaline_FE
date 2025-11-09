@@ -34,6 +34,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('AppleLogin')}
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
@@ -46,6 +47,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('NaverLogin')}
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
@@ -58,6 +60,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('GoogleLogin')}
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 12}}>
