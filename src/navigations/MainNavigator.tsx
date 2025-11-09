@@ -9,17 +9,23 @@ import DrawTrackMapScreen from '../screens/DrawTrackMapScreen';
 //import DrawTrackReadyMapScreen from '../screens/DrawTrackReadyMapScreen';
 import ReadyMapScreen from '../screens/ReadyMapScreen'
 import LoadingScreen from '../screens/LoadingScreen';
+import App from '../../App';
 import { RootStackParamList } from './types';
+
+type MainNavigatorProps = {
+  onLogout: () => void;
+};
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function MainNavigator() {
+export default function MainNavigator({ onLogout }: MainNavigatorProps) {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen 
-        name="MainScreen" 
-        component={MainScreen} 
-      />
+        name="MainScreen"  
+      >
+        {(props) => <MainScreen {...props} onLogout={onLogout} />}
+      </Stack.Screen>
       <Stack.Screen 
         name="Navigate" 
         component={NavigateScreen} 

@@ -16,6 +16,7 @@ export type RootStackParamList = {
   //DrawTrackReadyMap: undefined;
   Navigate: undefined;
   ReadyMap: undefined;
+  PersonalInfo: undefined;
 };
 
 export type MyRecordStackParamList = {

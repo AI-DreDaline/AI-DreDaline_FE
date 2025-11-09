@@ -25,7 +25,7 @@ export default function LoginNavigator() {
     <Stack.Navigator initialRouteName="Logo" screenOptions={{headerShown: false}}>
       <Stack.Screen name="Logo" component={LogoScreen} options={{ }} />
       <Stack.Screen name="Guide" component={GuideScreen} options={{animation: 'none'}} />
-      <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
+      <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}} />
       <Stack.Screen name="PhoneLogin" component={PhoneLoginScreen} options={{}}/>
       <Stack.Screen name="PhoneVerfy" component={PhoneVerfyScreen} options={{}} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{}} />
