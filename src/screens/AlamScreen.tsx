@@ -6,9 +6,11 @@ import { LoingStackParamList } from '../navigations/types';
 
 import mainicon from '../assets/images/mainicon.png';
 
-type Props = NativeStackScreenProps<LoingStackParamList, 'Alam'>;
+type Props = NativeStackScreenProps<LoingStackParamList, 'Alam'>& {
+  onLogIn: () => void;
+};
 
-const AlamScreen = ({ navigation }: Props) => {
+const AlamScreen = ({ navigation, onLogIn }: Props) => {
     return(
         <View style={styles.container}>
 
@@ -31,7 +33,7 @@ const AlamScreen = ({ navigation }: Props) => {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('BottomBar')}
+                    onPress={() => onLogIn()}
                 >
                     <View style={styles.button_1}>
                         <Text 
@@ -43,7 +45,7 @@ const AlamScreen = ({ navigation }: Props) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('BottomBar')}           
+                    onPress={() => onLogIn()}           
                 >
                     <View style={styles.button_2}>
                         <Text 
