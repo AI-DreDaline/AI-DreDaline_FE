@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-na
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
 import { NavigationProp } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
 import x from '../assets/images/x.png';
 import person from '../assets/images/person.png';
@@ -18,7 +19,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'PersonalInfo'>;
 
 interface Personal_Info {
     closeModal: () => void;
-    onLogout: () => void; 
+    onLogout: () => void
 }
 
 export default function PersonalInfoScreen ({closeModal, onLogout}: Personal_Info) {
@@ -34,8 +35,7 @@ export default function PersonalInfoScreen ({closeModal, onLogout}: Personal_Inf
                 text: "확인",
                 style: "destructive",
                 onPress: () => {
-                    console.log("로그아웃 버튼");
-                    onLogout(); 
+                    onLogout() ;
                 }
             },
         ],
@@ -53,8 +53,7 @@ export default function PersonalInfoScreen ({closeModal, onLogout}: Personal_Inf
                 text: "삭제",
                 style: "destructive",
                 onPress: () => {
-                    console.log("로그아웃 버튼");
-                    onLogout(); 
+                    onLogout() ;
                 }
             },
         ],

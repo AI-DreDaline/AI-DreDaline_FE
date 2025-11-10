@@ -17,9 +17,10 @@ const Tab = createBottomTabNavigator();
 
 interface BottomBarProps {
   visible?: boolean;
+  onLogout: () => void;
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({ visible = true }) => {
+const BottomBar: React.FC<BottomBarProps> = ({ visible = true, onLogout }) => {
   if (!visible) return null;
 
   return (
@@ -81,7 +82,9 @@ const BottomBar: React.FC<BottomBarProps> = ({ visible = true }) => {
       })}
     >
       <Tab.Screen name="HomeTab" component={HomeNavigator} />
-      <Tab.Screen name="MainTab" component={MainNavigator} />
+      <Tab.Screen name="MainTab">
+        {() => <MainNavigator onLogout={onLogout} />}
+      </Tab.Screen>
       <Tab.Screen name="RecordTab" component={MyRecordNavigator} />
     </Tab.Navigator>
   );
