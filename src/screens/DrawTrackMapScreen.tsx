@@ -7,6 +7,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
 import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
 import Geolocation from 'react-native-geolocation-service';
+import { getCoordinates } from '../components/SearchAdress';
 
 import back from '../assets/images/back.png';
 import draw from '../assets/images/draw.png';
@@ -90,25 +91,20 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
 
     async function searchPlace(query: string) {
         console.log("검색 활성화",query);
-        const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(query)}.json?key=${API_KEY}&limit=5`;
 
         try {
-            const response = await fetch(url);
-            const result = await response.json();
-            console.log("검색 결과:", result.features);
-            if (result.features && result.features.length > 0) {
-                const place = result.features[0];
-                const [lon, lat] = place.geometry.coordinates;
-                setCenterCoord([lon, lat]);
+            const coords = await getCoordinates(query);
+            if (coords) {
+                const { lat, lng } = coords;
+                setCenterCoord([lng, lat]);
 
-                // Camera를 통해 중심 이동
                 cameraRef.current?.setCamera({
-                    centerCoordinate: [lon, lat],
-                    zoomLevel: 15,
+                    centerCoordinate: [lng, lat],
+                    zoomLevel: 10,
                     animationDuration: 1000,
                 });
             } else {
-                console.log("검색 결과 없음");
+                console.log("좌표를 가져올 수 없음");
             }
         } catch (error) {
             console.error("검색 중 오류:", error);
