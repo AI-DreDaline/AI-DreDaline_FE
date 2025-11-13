@@ -1,15 +1,16 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
+import {WithLocalSvg} from 'react-native-svg/css';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'Logo'>
 
 import mainIcon from '../assets/images/mainicon.png';
-import phoneicon from '../assets/images/phone.png';
-import appleicon from '../assets/images/apple.png';
-import navericon from '../assets/images/naver.png';
-import googleicon from '../assets/images/google.png';
+const phoneicon = require('../assets/images/phone.svg');
+const appleicon = require('../assets/images/apple.svg');
+const navericon = require('../assets/images/naver.svg');
+const googleicon = require('../assets/images/google.svg');
 
 
 const LoginScreen = ({ navigation}: Props) => {
@@ -25,8 +26,8 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
-                            <Image
-                                source={phoneicon}
+                            <WithLocalSvg
+                                asset={phoneicon}
                                 style={{width: 18, height: 25}}
                             />
                         </View>
@@ -38,8 +39,8 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
-                            <Image
-                                source={appleicon}
+                            <WithLocalSvg
+                                asset={appleicon}
                                 style={{width: 20, height: 23}}
                             />
                         </View>
@@ -51,8 +52,8 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
-                            <Image
-                                source={navericon}
+                            <WithLocalSvg
+                                asset={navericon}
                                 style={{width: 23, height: 23}}
                             />
                         </View>
@@ -64,8 +65,8 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 12}}>
-                            <Image
-                                source={googleicon}
+                            <WithLocalSvg
+                                asset={googleicon}
                                 style={{width: 22, height: 26}}
                             />
                         </View>

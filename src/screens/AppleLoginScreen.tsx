@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
 import { LoingStackParamList } from '../navigations/types';
+import {WithLocalSvg} from 'react-native-svg/css';
+
+const back = require('../assets/images/back.svg');
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'AppleLogin'>;
-
-import back from '../assets/images/back.png';
-
 
 const AppleLoginScreen = ({ navigation }: Props) => {
     return (
@@ -18,8 +17,8 @@ const AppleLoginScreen = ({ navigation }: Props) => {
                         style={styles.backButton}
                         onPress={() => navigation.goBack()} // 뒤로가기
                     >
-                        <Image 
-                            source={back}
+                        <WithLocalSvg
+                            asset={back}
                             style={{width: 11, height:18}}
                         />
                     </TouchableOpacity>

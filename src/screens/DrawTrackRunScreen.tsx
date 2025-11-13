@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import {WithLocalSvg} from 'react-native-svg/css';
 
-import round from '../assets/images/round.png';
-import map from '../assets/images/map.png';
-import pin from '../assets/images/pin.png';
-import graph from '../assets/images/graph.png';
-import setting from '../assets/images/setting.png';
-import flag from '../assets/images/flag.png'
+const graph = require('../assets/images/graph.svg');
+const setting = require('../assets/images/setting.svg');
+const round = require('../assets/images/round.svg');
+const map = require('../assets/images/map.svg');
+const pin = require('../assets/images/pin.svg');
+const flag = require('../assets/images/flag.svg');
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DrawTrackRun'>;
 
@@ -26,14 +27,6 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
         }
     }, [address]);
 
-    const handleMinus = () => {
-        setKm(prev => Math.max(0, parseFloat((prev - 0.25).toFixed(2)))); // 0 밑으로 안내려가게
-    };
-
-    const handlePlus = () => {
-        setKm(prev => parseFloat((prev + 0.25).toFixed(2)));
-    };
-
     return (
         <View style={styles.container}>
           <View style={styles.topbox}>
@@ -42,8 +35,8 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
               <Text style={styles.boxTexttwo}>나만의 경로 그리기가 처음이라면</Text>
               <Text style={styles.boxTextthree}>튜토리얼 보러가기 {'>'}</Text>
             </View>
-            <Image
-              source={flag}
+            <WithLocalSvg
+              asset={flag}
               style={{width: 72, height: 72}}
             />
           </View>
@@ -54,33 +47,33 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
 
             <View style={styles.map}>
                 <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
-                    <Image
-                        source={map}
+                    <WithLocalSvg
+                        asset={map}
                         style={styles.mapsize}
                     />
                 </TouchableOpacity>
-                <Image
-                    source={pin}
+                <WithLocalSvg
+                    asset={pin}
                     style={{
                         width:26,
                         height:26,
                         position: 'absolute',
-                        top: 325,
-                        left: 195,
+                        top: 255,
+                        left: 180,
                     }}
                 />
                 
                 <TouchableOpacity onPress={() => navigation.navigate('DrawTrackMap')}>
-                    <Image
-                        source={round}
+                    <WithLocalSvg
+                        asset={round}
                         style={styles.round}
                     />
                 </TouchableOpacity>
             </View>
             
             <View style={styles.buttonview}>
-                <Image
-                    source={graph}
+                <WithLocalSvg
+                    asset={graph}
                     style={{width:20, height: 25}}
                 />
                 <TouchableOpacity 
@@ -89,8 +82,8 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
                 >
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
-                <Image
-                    source={setting}
+                <WithLocalSvg
+                    asset={setting}
                     style={{width:23, height: 24}}
                 />
             </View>
@@ -181,7 +174,6 @@ const styles = StyleSheet.create({
         width: 350,
         height: 350,
         pointerEvents: 'none',
-        top: -5,
     },
     mapsize: {
         width: 330,

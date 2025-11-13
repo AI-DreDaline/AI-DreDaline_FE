@@ -8,14 +8,15 @@ import { RootStackParamList } from '../navigations/types';
 import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
 import Geolocation from 'react-native-geolocation-service';
 import { getCoordinates } from '../components/SearchAdress';
+import {WithLocalSvg} from 'react-native-svg/css';
 
-import back from '../assets/images/back.png';
-import draw from '../assets/images/draw.png';
-import mountain from '../assets/images/mountain.png';
-import camera from '../assets/images/camera.png';
-import draw_active from '../assets/images/draw_active.png';
-import mountain_active from '../assets/images/mountain_active.png';
-import camera_active from '../assets/images/camera_active.png';
+const back = require('../assets/images/back.svg');
+const gps = require('../assets/images/gps.svg');
+const mountain = require('../assets/images/mountain.svg');
+const camera = require('../assets/images/camera.svg');
+const gps_active = require('../assets/images/gps_active.svg');
+const mountain_active = require('../assets/images/mountain_active.svg');
+const camera_active = require('../assets/images/camera_active.svg');
 
 const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
 const API_KEY = "QhGgr94B6Frh1kFgQHuB";
@@ -135,8 +136,8 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         style={styles.backButton}
                         onPress={() => navigation.goBack()} // 뒤로가기
                     >
-                        <Image 
-                            source={back}
+                        <WithLocalSvg
+                            asset={back}
                             style={{width: 11, height:18}}
                         />
                     </TouchableOpacity>
@@ -257,22 +258,22 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         }
                     }}
                 >
-                    <Image
-                        source={selectedTool === 'here' ? draw_active : draw}
+                    <WithLocalSvg
+                        asset={selectedTool === 'here' ? gps_active : gps}
                         style={{ width: 35, height: 35, marginLeft: 23, marginTop: 10 }}
                     />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => setSelectedTool(prev => (prev === 'mountain' ? null : 'mountain'))}>
-                    <Image
-                        source={selectedTool === 'mountain' ? mountain_active : mountain}
+                    <WithLocalSvg
+                        asset={selectedTool === 'mountain' ? mountain_active : mountain}
                         style={{ width: 38, height: 35, marginLeft: 33, marginTop: 14 }}
                     />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => setSelectedTool(prev => (prev === 'camera' ? null : 'camera'))}>
-                    <Image
-                        source={selectedTool === 'camera' ? camera_active : camera}
+                    <WithLocalSvg
+                        asset={selectedTool === 'camera' ? camera_active : camera}
                         style={{ width: 33, height: 33, marginLeft: 33, marginTop: 10 }}
                     />
                 </TouchableOpacity>

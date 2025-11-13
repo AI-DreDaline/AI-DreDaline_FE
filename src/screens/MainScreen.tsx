@@ -1,11 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
 import PersonalInfo from '../components/PersonalInfo';
-import Myprofile from '../assets/images/Myprofile.png';
 import RecommendRunScreen from './RecommendRunScreen';
 import DrawTrackRunScreen from './DrawTrackRunScreen';
 import RecommendReadyScreen from './RecommendReadyScreen';
@@ -13,6 +11,9 @@ import DrawTrackReadyScreen from './DrawTrackReadyScreen';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { Route } from '@react-navigation/native';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
+import { WithLocalSvg } from 'react-native-svg/css';
+
+const myprofile = require('../assets/images/myprofile.svg');
 
 type MainTabParamList = {
   RecommendRun: {address?: string};
@@ -29,12 +30,11 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
   useTabBarVisibility(true);
 
   const [modalVisible, setModalVisible] = useState(false);
-  // route.params?.mode으로 전달받은 값 (optional)
+
   const mode = route.params?.mode;
   const initialScreen = route.params?.screen; 
   // 'RecommendRun' | 'DrawTrackRun'
 
-  // 상태: 어떤 화면을 보여줄지 관리
   const [screenState, setScreenState] = useState({
     recommend: 'run', // 'run' | 'ready'
     draw: 'run', // 'run' | 'ready'
@@ -42,7 +42,6 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
 
   const [currentScreen, setCurrentScreen] = useState(initialScreen || 'RecommendRun');
 
-  // route.params.mode가 들어왔을 때 상태 업데이트
   React.useEffect(() => {
     if (mode === 'recommendReady') {
       setScreenState(prev => ({ ...prev, recommend: 'ready' }));
@@ -63,16 +62,16 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
         >
-          <Image 
-            source={Myprofile} 
+          <WithLocalSvg
+            asset={myprofile} 
             style={{ width: 32, height: 32, marginTop: 9 }} 
           />
         </TouchableOpacity>
       </View>
 
       <Modal
-        animationType="slide"   // slide / fade / none
-        transparent={true}      // 배경 투명
+        animationType="slide"
+        transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
@@ -133,12 +132,12 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
             {props => (
               screenState.recommend === 'run' ? (
                 <RecommendRunScreen
-                  {...props} // navigation, route 포함
+                  {...props}
                   route={{ 
                     ...props.route, 
                     params: { 
                       address, 
-                      mode: screenState.recommend // 'run' | 'ready'
+                      mode: screenState.recommend 
                     } 
                   }}
                 />
@@ -164,12 +163,12 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
             {props => (
               screenState.draw === 'run' ? (
                 <DrawTrackRunScreen
-                  {...props} // navigation, route 포함
+                  {...props}
                   route={{
                     ...props.route,
                     params: {
                       address,
-                      mode: screenState.draw, // 'run' | 'ready'
+                      mode: screenState.draw,
                     },
                   }}
                 />
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 15,
     paddingBottom: 0,
-    flexDirection: 'row',           // 🔹 가로 배치
+    flexDirection: 'row',
         justifyContent: 'space-between',
   },
   title: {
@@ -228,7 +227,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
   },
-  /** 🔽 토글 탭 커스텀 스타일 */
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -238,7 +236,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6.3,
     paddingHorizontal: 37,
     borderRadius: 20,
-    marginHorizontal: 3, // 버튼 사이 간격
+    marginHorizontal: 3,
     alignItems: 'center',
   },
   tabButtonActive: {

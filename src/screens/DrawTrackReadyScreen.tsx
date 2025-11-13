@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import {WithLocalSvg} from 'react-native-svg/css';
 
-import runner from '../assets/images/runner_active.png';
-import graph from '../assets/images/graph.png';
-import setting from '../assets/images/setting.png';
-import map_ready from '../assets/images/map_ready.png';
+const run = require('../assets/images/run.svg');
+const graph = require('../assets/images/graph.svg');
+const setting = require('../assets/images/setting.svg');
+const map_ready = require('../assets/images/map_ready.svg');
 
 import Modal_short from '../components/Modal_short';
 
@@ -24,9 +25,10 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
         return (
             <View style={styles.container}>
                 <View style={styles.topline}>
-                    <Image
-                        source={runner}
-                        style={{width: 35, height: 35}}
+                    <WithLocalSvg
+                        asset={run}
+                        width={35}
+                        height={35}
                     />
                     <TextInput
                         style={styles.toptext}
@@ -41,14 +43,10 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
                         onPress={() => setVisible(true)}
                     >
                         <View style={styles.runbox}>
-                            <Image
-                                source={map_ready}
-                                style={{
-                                    width: 333,
-                                    height: 355,
-                                    borderTopLeftRadius: 10,
-                                    borderTopRightRadius: 10,
-                                }}
+                            <WithLocalSvg
+                                asset={map_ready}
+                                width={333}
+                                height={355}
                             />
                             <View style={styles.runtextview}>
                                 <Text style={styles.runtextone}>{km}km</Text>
@@ -62,8 +60,8 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
                 <View style={styles.buttonview}>
                     <View>
                         <TouchableOpacity >
-                            <Image
-                                source={graph}
+                            <WithLocalSvg
+                                asset={graph}
                                 style={{width:20, height: 25}}
                             />
                         </TouchableOpacity>
@@ -84,8 +82,8 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
                     >
                         <Text style={styles.buttonText}>안내 시작</Text>
                     </TouchableOpacity>
-                    <Image
-                        source={setting}
+                    <WithLocalSvg
+                        asset={setting}
                         style={{width:23, height: 24}}
                     />
                 </View>
@@ -105,13 +103,13 @@ const styles = StyleSheet.create({
         paddingLeft: 29,
         backgroundColor: '#141414',
         marginTop: 7,
+        alignItems: 'center',
     },
     toptext: {
         color: 'rgba(255, 255, 255, 0.95)',
         fontSize: 15,
         fontWeight: '600',
         paddingLeft: 8,
-        paddingTop: 8,
         textDecorationLine: 'underline',
     },
     runview: {
@@ -124,7 +122,8 @@ const styles = StyleSheet.create({
         width: 333,
         height: 430,
         marginTop: 10,
-        marginLeft: 29
+        marginLeft: 29,
+        overflow: 'hidden',
     },
     runtextview:{
         paddingLeft: 20,
