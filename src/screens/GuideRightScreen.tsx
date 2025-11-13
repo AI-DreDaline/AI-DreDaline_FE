@@ -1,21 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import {WithLocalSvg} from 'react-native-svg/css';
 
-import map_ready from '../assets/images/map_ready.png';
+const map_ready = require('../assets/images/map_ready.svg');
 
 export default function GuideRightScreen() {
   return (
     <View style={styles.container}>
-      <Image
-            source={map_ready}
-            style={{
-                width:350,
-                height: 467,
-                borderRadius: 20,
-                marginTop: 95,
-                marginLeft: 22,
-            }}
+      <View
+        style={{
+          borderRadius: 20,
+          overflow: 'hidden',
+          marginTop: 95,
+          marginLeft: 22,
+          width: 350,
+          height: 467,
+        }}
+      >
+        <WithLocalSvg
+          asset={map_ready}
+          width={470}
+          height={480}
         />
+      </View>
         <Text style={styles.title}>지도에 직접 경로를 그려보세요!</Text>
         <Text style={styles.subtitle}>지도 위에서 그림 식력을 뽑내보세요.</Text>
     </View>

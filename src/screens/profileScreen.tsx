@@ -1,7 +1,6 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
 import { LoingStackParamList } from '../navigations/types';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'Profile'>;

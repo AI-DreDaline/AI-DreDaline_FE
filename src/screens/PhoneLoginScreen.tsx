@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
 import { LoingStackParamList } from '../navigations/types';
+import {WithLocalSvg} from 'react-native-svg/css';
+
+const back = require('../assets/images/back.svg');
+const down_arrow = require('../assets/images/down_arrow.svg');
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'PhoneLogin'>;
-
-import down_arrow from '../assets/images/down_arrow.png';
-import back from '../assets/images/back.png';
-
 
 const PhoneLoginScreen = ({ navigation }: Props) => {
     const phone = '';
@@ -29,10 +28,10 @@ const PhoneLoginScreen = ({ navigation }: Props) => {
                 <View style={styles.topview}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => navigation.goBack()} // 뒤로가기
+                        onPress={() => navigation.goBack()}
                     >
-                        <Image 
-                            source={back}
+                        <WithLocalSvg
+                            asset={back}
                             style={{width: 11, height:18}}
                         />
                     </TouchableOpacity>
@@ -55,8 +54,8 @@ const PhoneLoginScreen = ({ navigation }: Props) => {
                 >
                     <View style={styles.countrynumview}>
                         <Text style={styles.countrynumtext}>{selected}</Text>
-                        <Image
-                            source={down_arrow}
+                        <WithLocalSvg
+                            asset={down_arrow}
                             style={{width: 20, height: 20}}
                         />
                     </View>

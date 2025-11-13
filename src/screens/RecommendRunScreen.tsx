@@ -1,27 +1,29 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import {WithLocalSvg} from 'react-native-svg/css';
 
-import runner from '../assets/images/runner.png';
-import runner_active from '../assets/images/runner_active.png';
-import baseball from '../assets/images/baseball.png';
-import baseball_active from '../assets/images/baseball_active.png';
-import butterfly from '../assets/images/butterfly.png';
-import butterfly_active from '../assets/images/butterfly_active.png';
-import duck from '../assets/images/duck.png';
-import duck_active from '../assets/images/duck_active.png';
-import horse from '../assets/images/horse.png';
-import horse_active from '../assets/images/horse_active.png';
-import clover from '../assets/images/clover.png';
-import clover_active from '../assets/images/clover_active.png';
-import round from '../assets/images/round.png';
-import map from '../assets/images/map.png';
-import plus from '../assets/images/plus.png';
-import minus from '../assets/images/minus.png';
-import pin from '../assets/images/pin.png';
-import graph from '../assets/images/graph.png';
-import setting from '../assets/images/setting.png';
+const runner = require('../assets/images/runner.svg');
+const runner_active = require('../assets/images/runner_active.svg');
+const baseball = require('../assets/images/baseball.svg');
+const baseball_active = require('../assets/images/baseball_active.svg');
+const butterfly = require('../assets/images/butterfly.svg');
+const butterfly_active = require('../assets/images/butterfly_active.svg');
+const duck = require('../assets/images/duck.svg');
+const duck_active = require('../assets/images/duck_active.svg');
+const horse = require('../assets/images/horse.svg');
+const horse_active = require('../assets/images/horse_active.svg');
+const clover = require('../assets/images/clover.svg');
+const clover_active = require('../assets/images/clover_active.svg');
+
+const round = require('../assets/images/round.svg');
+const map = require('../assets/images/map.svg');
+const plus = require('../assets/images/plus.svg');
+const minus = require('../assets/images/minus.svg');
+const pin = require('../assets/images/pin.svg');
+const graph = require('../assets/images/graph.svg');
+const setting = require('../assets/images/setting.svg');
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RecommendRun'>;
 
@@ -50,11 +52,12 @@ function RecommendRunScreen({ navigation, route }: Props) {
     }, [address]);
 
     const handleMinus = () => {
-        setKm(prev => Math.max(0, parseFloat((prev - 0.25).toFixed(2)))); // 0 밑으로 안내려가게
+        setKm(prev => Math.max(0, parseFloat((prev - 0.5).toFixed(2))));
+        // 0 밑으로 안내려가게
     };
 
     const handlePlus = () => {
-        setKm(prev => parseFloat((prev + 0.25).toFixed(2)));
+        setKm(prev => parseFloat((prev + 0.5).toFixed(2)));
     };
 
     return (
@@ -63,6 +66,7 @@ function RecommendRunScreen({ navigation, route }: Props) {
                 <Text style={styles.title}>모양 선택하기</Text>
                 <Text style={styles.more}>더보기</Text>
             </View>
+
             <View style={styles.template}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {templates.map((item) => {
@@ -78,12 +82,11 @@ function RecommendRunScreen({ navigation, route }: Props) {
                                 }
                                 activeOpacity={0.7}
                             >
-                                <Image
-                                    source={isActive ? item.imgActive : item.img}
-                                    style={{
-                                        width: isActive ? 65 : 52,
-                                        height: isActive ? 65 : 52,
-                                    }}
+                                <WithLocalSvg
+                                    key={item.id}
+                                    asset={isActive ? item.imgActive : item.img}
+                                    width={isActive ? 65 : 52}
+                                    height={isActive ? 65 : 52}
                                 />
                                 <Text
                                     style={[
@@ -101,47 +104,54 @@ function RecommendRunScreen({ navigation, route }: Props) {
 
             <View style={styles.map}>
                 <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
-                    <Image
-                        source={map}
+                    <WithLocalSvg
+                        asset={map}
                         style={styles.mapsize}
                     />
                 </TouchableOpacity>
-                <Image
-                    source={pin}
+                <WithLocalSvg
+                    asset={pin}
                     style={{
                         width:26,
                         height:26,
                         position: 'absolute',
-                        top: 325,
-                        left: 195,
+                        top: 275,
+                        left: 185,
                     }}
                 />
                 <View style={styles.mapgreen}>
                     <Text style={styles.subtitle}>오늘의 목표</Text>
                     <View style={[styles.kmview, { zIndex: 10 }]}>
                         <TouchableOpacity onPress={handleMinus}>
-                            <Image source={minus} style={{ width: 30, height: 30, marginTop: 9 }} />
+                            <WithLocalSvg asset={minus} style={{ width: 30, height: 30, marginTop: 9 }} />
                         </TouchableOpacity>
                             <View style={{width: 160}}>
                                 <Text style={styles.km}>{km.toFixed(2)} km</Text>
                             </View>
                         <TouchableOpacity onPress={handlePlus}>
-                            <Image source={plus} style={{ width: 30, height: 30, marginTop: 9 }} />
+                            <WithLocalSvg asset={plus} style={{ width: 30, height: 30, marginTop: 9 }} />
                         </TouchableOpacity>
                     </View>
+
                     <Text style={styles.sub}>{message}</Text>
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
-                    <Image
-                        source={round}
-                        style={styles.round}
+                    <WithLocalSvg
+                        asset={round}
+                        style={{
+                            width: 350,
+                            height: 350,
+                            position: 'absolute',
+                            top: -339,
+                            left: -174,
+                        }}
                     />
                 </TouchableOpacity>
             </View>
             
             <View style={styles.buttonview}>
-                <Image
-                    source={graph}
+                <WithLocalSvg
+                    asset={graph}
                     style={{width:20, height: 25}}
                 />
                 <TouchableOpacity
@@ -154,8 +164,8 @@ function RecommendRunScreen({ navigation, route }: Props) {
                 >
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
-                <Image
-                    source={setting}
+                <WithLocalSvg
+                    asset={setting}
                     style={{width:23, height: 24}}
                 />
             </View>
@@ -203,23 +213,16 @@ const styles = StyleSheet.create({
         width: 53,
         alignItems: 'center',
         marginRight: 20,
+        paddingLeft: 13,
     },
     eachtitle: {
         paddingTop: 3,
         color: '#ffffff',
         fontSize: 12,
     },
-    round: {
-        width: 350,
-        height: 350,
-        pointerEvents: 'none',
-    },
     mapsize: {
         width: 330,
         height: 330,
-        position: 'absolute',
-        top: 10,
-        left: -165,
         pointerEvents: 'none',
     },
     map:{

@@ -1,21 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
+import {WithLocalSvg} from 'react-native-svg/css';
 
-import map_ready from '../assets/images/map_ready.png';
+const map_ready = require('../assets/images/map_ready.svg');
 
 export default function GuideMainScreen() {
   return (
     <View style={styles.container}>
-      <Image
-            source={map_ready}
-            style={{
-                width:350,
-                height: 467,
-                borderRadius: 20,
-                marginTop: 95,
-                marginLeft: 22,
-            }}
+      <View
+        style={{
+          borderRadius: 20,
+          overflow: 'hidden',
+          marginTop: 95,
+          marginLeft: 22,
+          width: 350,
+          height: 467,
+        }}
+      >
+        <WithLocalSvg
+          asset={map_ready}
+          width={470}
+          height={480}
         />
+      </View>
         <Text style={styles.title}>음성 경로 안내를 경험해보세요!</Text>
         <Text style={styles.subtitle}>경로를 보며 달릴 경우 사고 발생 확률이 올라갑니다.</Text>
     </View>

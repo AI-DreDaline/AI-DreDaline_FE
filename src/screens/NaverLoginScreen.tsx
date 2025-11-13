@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
+import {WithLocalSvg} from 'react-native-svg/css';
+
+const back = require('../assets/images/back.svg');
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'NaverLogin'>;
-
-import back from '../assets/images/back.png';
-
 
 const NaverLoginScreen = ({ navigation }: Props) => {
     return (
@@ -17,8 +17,8 @@ const NaverLoginScreen = ({ navigation }: Props) => {
                         style={styles.backButton}
                         onPress={() => navigation.goBack()} // 뒤로가기
                     >
-                        <Image 
-                            source={back}
+                        <WithLocalSvg
+                            asset={back}
                             style={{width: 11, height:18}}
                         />
                     </TouchableOpacity>
