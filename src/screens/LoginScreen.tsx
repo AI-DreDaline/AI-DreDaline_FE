@@ -11,7 +11,7 @@ const phoneicon = require('../assets/images/phone.svg');
 const appleicon = require('../assets/images/apple.svg');
 const navericon = require('../assets/images/naver.svg');
 const googleicon = require('../assets/images/google.svg');
-
+const map_arrow = require('../assets/images/map_arrow.svg');
 
 const LoginScreen = ({ navigation}: Props) => {
     return(

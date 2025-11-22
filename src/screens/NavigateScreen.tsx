@@ -4,6 +4,7 @@ import PagerView from 'react-native-pager-view';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import MapLibreGL, { UserTrackingMode } from '@maplibre/maplibre-react-native';
 
 import MainNavigate from './MainNavigateScreen';
 import LeftNavigate from './LeftNavigateScreen';
@@ -17,8 +18,10 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Navigate'>;
 const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     useTabBarVisibility(false);
 
-    const selectedDate = new Date().toISOString().split('T')[0];
+    const [routeGeoJSON, setRouteGeoJSON] = useState<any>(null);
+    const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
 
+    const selectedDate = new Date().toISOString().split('T')[0];
 
     const pagerRef = useRef<PagerView>(null);
     const [currentPage, setCurrentPage] = useState(1); // 처음은 Main

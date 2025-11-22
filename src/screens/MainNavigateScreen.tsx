@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Text } from 'react-native';
 import MapLibreGL, { UserTrackingMode } from '@maplibre/maplibre-react-native';
+import type { CameraRef } from '@maplibre/maplibre-react-native';
+import { Feature, LineString } from 'geojson';
+import {WithLocalSvg} from 'react-native-svg/css';
 
 import line from '../assets/images/line.png';
 import line_active from '../assets/images/line_active.png';
@@ -9,8 +12,10 @@ import endpin from '../assets/images/endpin.png';
 import run from '../assets/images/run.png';
 import round_4 from '../assets/images/round_4.png';
 import allow_navigate from '../assets/images/allow_navigate.png';
+const map_user = require('../assets/images/map_user.svg');
 
 const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
+type Coordinate = [number, number];
 
 const MainNavigateScreen = () => {
     const km = 1.79;
@@ -22,36 +27,153 @@ const MainNavigateScreen = () => {
     const navigatetext = "다음 안내까지 직진";
 
     const [percent, setPercent] = useState<number>(0);
-    const [routeGeoJSON, setRouteGeoJSON] = useState<any>(null);
-    const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
-    const [cameraKey, setCameraKey] = useState(0);
-
-    useEffect(() => {
-        if (userLocation) {
-            setCameraKey(prev => prev + 1); // Camera 강제 리렌더링
-        }
-    }, [userLocation]);
-
-    const exampleRoute = [
-        [126.5618, 33.4553], // 제주대학교 근처
-        [126.5625, 33.4560],
-        [126.5635, 33.4565],
-    ];
+    const cameraRef = useRef<CameraRef>(null);
+    const [routeGeoJson, setRouteGeoJson] = useState<Feature<LineString> | null>(null);
+    const [originalCoords, setOriginalCoords] = useState<[number, number][]>([]);
+    const [userLocation, setUserLocation] = useState<[number, number]>([126.5612, 33.4553]);
 
     const go = () => {
         setPercent(prev => Math.min(prev + 10, 100)); // 10 증가, 최대 100
     };
 
     useEffect(() => {
-            const geojson = {
-                type: 'Feature',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: exampleRoute,
-                },
-            };
-            setRouteGeoJSON(geojson);
-        }, []);
+        const coords: [number, number][] = [
+            [126.5612, 33.4553],
+            [126.5612, 33.4600],
+            [126.4800, 33.4700],
+            [126.5312, 33.4997]
+        ];
+    
+        setOriginalCoords(coords);
+        setRouteGeoJson({
+            type: "Feature",
+            geometry: {
+                type: "LineString",
+                coordinates: coords,
+            },
+            properties: {}
+        });
+    }, []);
+
+    function closestPointOnSegment(p: Coordinate, a: Coordinate, b: Coordinate): Coordinate {
+        const px = p[0], py = p[1];
+        const ax = a[0], ay = a[1];
+        const bx = b[0], by = b[1];
+    
+        const ABx = bx - ax;
+        const ABy = by - ay;
+        const APx = px - ax;
+        const APy = py - ay;
+    
+        const ab2 = ABx * ABx + ABy * ABy;
+            if (ab2 === 0) {
+                // A와 B가 동일한 점인 경우 A를 반환
+                return [ax, ay];
+            }
+    
+        const ap_ab = APx * ABx + APy * ABy;
+        let t = ap_ab / ab2;
+        t = Math.max(0, Math.min(1, t)); // clamp to [0,1]
+    
+        return [ax + ABx * t, ay + ABy * t];
+    }
+    
+    function euclideanDistance(a: Coordinate, b: Coordinate): number {
+        const dx = a[0] - b[0];
+        const dy = a[1] - b[1];
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    
+    function findClosestPointOnPath(
+        userPos: Coordinate,
+        coords: Coordinate[]
+    ): { closest: Coordinate | null; closestSegmentIndex: number; distance: number } {
+        if (!coords || coords.length === 0) {
+            return { closest: null, closestSegmentIndex: -1, distance: Infinity };
+        }
+        if (coords.length === 1) {
+            const dist = euclideanDistance(userPos, coords[0]);
+            return { closest: coords[0], closestSegmentIndex: 0, distance: dist };
+        }
+    
+        let closest: Coordinate | null = null;
+        let minDist = Infinity;
+        let closestSegmentIndex = 0;
+    
+        for (let i = 0; i < coords.length - 1; i++) {
+            const a = coords[i];
+            const b = coords[i + 1];
+            const cp = closestPointOnSegment(userPos, a, b);
+            const dist = euclideanDistance(cp, userPos);
+            if (dist < minDist) {
+                minDist = dist;
+                closest = cp;
+                closestSegmentIndex = i;
+            }
+        }
+    
+        return { closest, closestSegmentIndex, distance: minDist };
+    }
+    
+    function trimPathToClosestPoint(
+        userPos: Coordinate,
+        coords: Coordinate[]
+    ): Coordinate[] {
+        if (!coords || coords.length === 0) return [];
+        if (coords.length === 1) return coords;
+    
+        const { closest, closestSegmentIndex } = findClosestPointOnPath(userPos, coords);
+    
+        if (!closest) return coords.slice(); // 안전장치
+    
+        // 새 경로: closest (스냅점) + 원래 coords의 (closestSegmentIndex + 1) 이후 점들
+        const newCoords: Coordinate[] = [closest, ...coords.slice(closestSegmentIndex + 1)];
+    
+        // (선택) 만약 newCoords의 첫 점이 원래 coords[closestSegmentIndex+1]과 거의 같다면
+        // 중복 방지를 위해 조정할 수 있음. 여기서는 그대로 반환.
+        return newCoords;
+    }
+    
+    const [lastUserLocation, setLastUserLocation] = useState<[number, number] | null>(null);
+    const [heading, setHeading] = useState(0);
+    
+    function getHeading(from: [number, number], to: [number, number]): number {
+        const lon1 = (from[0] * Math.PI) / 180;
+        const lat1 = (from[1] * Math.PI) / 180;
+        const lon2 = (to[0] * Math.PI) / 180;
+        const lat2 = (to[1] * Math.PI) / 180;
+    
+        const dLon = lon2 - lon1;
+    
+        const y = Math.sin(dLon) * Math.cos(lat2);
+        const x =
+            Math.cos(lat1) * Math.sin(lat2) -
+            Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+    
+        const brng = Math.atan2(y, x);
+        return ((brng * 180) / Math.PI + 360) % 360; // 0~360°
+    }
+    
+    useEffect(() => {
+        console.log("main 현재 위치:", userLocation);
+        if (!userLocation || originalCoords.length < 2) return;
+    
+        const updated = trimPathToClosestPoint(userLocation, originalCoords);
+        setOriginalCoords(updated);
+    
+        setRouteGeoJson({
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: updated },
+            properties: {}
+        });
+    
+        if (lastUserLocation) {
+            const newHeading = getHeading(lastUserLocation, userLocation);
+            setHeading(newHeading);
+        }
+    
+        setLastUserLocation(userLocation);
+    }, [userLocation]);
     
     return (
         <View style={styles.container}>
@@ -60,23 +182,83 @@ const MainNavigateScreen = () => {
                     <MapLibreGL.MapView 
                         style={{ flex: 1 }} 
                         mapStyle={MAP_STYLE_URL}
+                        scrollEnabled={false}     // 지도 스크롤 금지
+                        zoomEnabled={false}       // 줌 금지
+                        rotateEnabled={false}     // 회전 금지
+                        pitchEnabled={false}      // 기울기 금지
                     >
                         {/* 카메라: 내 위치 따라가기 */}
                         <MapLibreGL.Camera
-                            zoomLevel={15}
-                            followUserLocation={true}
+                            zoomLevel={16}
+                            centerCoordinate={userLocation} // 제주대 기본값
+                            // followUserLocation={true}
                             followUserMode={UserTrackingMode.Follow}
+                            animationDuration={300}
+                            heading={heading}
+                            animationMode="easeTo"
                         />
+
+                        {routeGeoJson && (
+                            <MapLibreGL.ShapeSource
+                                id="routeSource"
+                                shape={routeGeoJson}
+                            >
+                                <MapLibreGL.LineLayer
+                                    id="routeLayer"
+                                    style={{
+                                        lineWidth: 14,
+                                        lineColor: "#39FF14",
+                                        lineJoin: "round",
+                                        lineCap: "round"
+                                    }}
+                                />
+                            </MapLibreGL.ShapeSource>
+                            )}
                     
                         {/* 현재 위치 표시 */}
                         <MapLibreGL.UserLocation
-                            visible={true}
+                            visible={false}
                             showsUserHeadingIndicator={true}
                             onUpdate={(location) => {
                                 const { longitude, latitude } = location.coords;
-                                setUserLocation([longitude, latitude]);
+                                const newPos: [number, number] = [longitude, latitude];
+
+                                setUserLocation(newPos);
+                                const updatedPath = trimPathToClosestPoint(newPos, originalCoords);
+                                setOriginalCoords(updatedPath);
+                                setRouteGeoJson({
+                                    type: "Feature",
+                                    geometry: {
+                                        type: "LineString",
+                                        coordinates: updatedPath,
+                                    },
+                                    properties: {}
+                                });
+                                // cameraRef.current?.setCamera({
+                                //     centerCoordinate: newPos,
+                                //     animationDuration: 500,
+                                // });
+                                console.log("main 현재 위치:", newPos);
                             }}
                         />
+
+                        <MapLibreGL.PointAnnotation
+                            id="userCursor"
+                            coordinate={userLocation}
+                        >
+                            <View
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                }}
+                            >
+                                <WithLocalSvg
+                                    asset={map_user}
+                                    width={50}
+                                    height={50}
+                                />
+                            </View>
+                        </MapLibreGL.PointAnnotation>
                     </MapLibreGL.MapView>
                 </View>
                 <View style={styles.navigateview}>
