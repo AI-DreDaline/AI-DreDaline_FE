@@ -20,6 +20,8 @@ type Coordinate = [number, number];
 
 const MainNavigateScreen = () => {
     const { totalDistance } = useNavigateCtx();
+    const { avgpace } = useNavigateCtx();
+
     const km = (totalDistance / 1000).toFixed(2);
     const [time, setTime] = useState("00:00");
 
@@ -33,6 +35,7 @@ const MainNavigateScreen = () => {
 
         return `${pad(minutes)}:${pad(seconds)}`;
     };
+
     useEffect(() => {
         const updateTime = () => {
             const total = timeIntervals.reduce((acc, [start, end]) => {
@@ -48,8 +51,18 @@ const MainNavigateScreen = () => {
         return () => clearInterval(interval);
     }, [timeIntervals]);
 
+    function formatPace(pace: number) {
+        if (!pace || pace <= 0) return "0'00\"/KM";
 
-    const pace = "6'12''";
+        const minutes = Math.floor(pace);            // 분
+        const seconds = Math.round((pace - minutes) * 60); // 초
+
+        const paddedSeconds = seconds.toString().padStart(2, '0');
+
+        return `${minutes}'${paddedSeconds}\"`;
+    }
+
+    const pace = avgpace ? formatPace(avgpace) : "0\'00\"";
     const kcal = 13;
     const runway = 2;
     const BPM = 145;

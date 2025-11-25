@@ -9,6 +9,7 @@ const map = require('../assets/images/map_ready_1.svg');
 const LeftNavigateScreen = () => {
 
     const {timeIntervals} = useNavigateCtx();
+    const { lappace } = useNavigateCtx();
 
     const [race, setRace] = useState<
         {
@@ -19,6 +20,17 @@ const LeftNavigateScreen = () => {
             power: number;
         }[]
     >([]);
+
+    function formatPace(pace: number) {
+        if (!pace || pace <= 0) return "0'00\"/KM";
+
+        const minutes = Math.floor(pace);            // 분
+        const seconds = Math.round((pace - minutes) * 60); // 초
+
+        const paddedSeconds = seconds.toString().padStart(2, '0');
+
+        return `${minutes}'${paddedSeconds}\"/KM`;
+    }
 
     useEffect(() => {
         console.log("timeIntervals 변경됨", timeIntervals);
@@ -35,17 +47,19 @@ const LeftNavigateScreen = () => {
             const diff = calculatedEnd - start;
             const minutes = Math.floor(diff / 60000);
             const seconds = Math.floor((diff % 60000) / 1000);
+            const pace = lappace[index] ? formatPace(lappace[index]) : '0\'00\"/KM';
 
             return {
                 lap: index + 1,
                 time: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
-                pace: "6'14''/KM",
-                heartRate: 152,
-                power: 142,
+                pace: pace,
+                heartRate: 0,
+                power: 0,
             };
         });
 
         setRace(newRace);
+        console.log("newrace:",newRace);
     }, [timeIntervals]);
 
     return (
@@ -75,20 +89,24 @@ const LeftNavigateScreen = () => {
                     <Text style={styles.listtoptext}>Power</Text>
                 </View>
 
-                <ScrollView>
-                    {race.map((r, index) => (
-                        <View key={index}>
-                            <View key={index} style={styles.list}>
-                                <Text style={styles.lap}>{r.lap}</Text>
-                                <Text style={styles.time}>{r.time}</Text>
-                                <Text style={styles.pace}>{r.pace}</Text>
-                                <Text style={styles.heartRate}>{r.heartRate}BPM</Text>
-                                <Text style={styles.power}>{r.power}W</Text>
+                <View style={{ width: 500, backgroundColor: 'green'}}>
+                    <ScrollView
+                        contentContainerStyle={{ paddingBottom: 50 }}
+                    >
+                        {race.map((r, index) => (
+                            <View key={index}>
+                                <View key={index} style={styles.list}>
+                                    <Text style={styles.lap}>{r.lap}</Text>
+                                    <Text style={styles.time}>{r.time}</Text>
+                                    <Text style={styles.pace}>{r.pace}</Text>
+                                    <Text style={styles.heartRate}>{r.heartRate}BPM</Text>
+                                    <Text style={styles.power}>{r.power}W</Text>
+                                </View>
+                                <View style={styles.separator}></View>
                             </View>
-                            <View style={styles.separator}></View>
-                        </View>
-                    ))}
-                </ScrollView>
+                        ))}
+                    </ScrollView>
+                </View>
             </View>
         </View>
     );
