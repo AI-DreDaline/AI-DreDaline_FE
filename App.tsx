@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginNavigator from './src/navigations/LoginNavigator';
 import MainNavigator from "./src/navigations/MainNavigator";
 import BottomBar from './src/navigations/BottomBar';
+import { NavigateProvider } from './src/screens/NavigateContext';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,11 +22,13 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? (
-        <BottomBar onLogout={handleLogout} />
-      ) : (
-        <LoginNavigator onLogIn={handleLogin} />
-      )}
+      <NavigateProvider>
+        {isLoggedIn ? (
+          <BottomBar onLogout={handleLogout} />
+        ) : (
+          <LoginNavigator onLogIn={handleLogin} />
+        )}
+      </NavigateProvider>
     </NavigationContainer>
   );
 }

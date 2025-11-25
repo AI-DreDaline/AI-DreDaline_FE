@@ -35,14 +35,14 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
         if (!center) return;
 
         const [longitude, latitude] = center;
-        console.log("Reverse geocoding 요청 좌표:", latitude, longitude);
+       // console.log("Reverse geocoding 요청 좌표:", latitude, longitude);
 
         try {
             const response = await fetch(
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
             );
             const result = await response.json();
-            console.log("Reverse geocoding 결과:", result);
+            //console.log("Reverse geocoding 결과:", result);
 
             if (result?.display_name) {
                 const fullAddress = result.display_name;
@@ -50,6 +50,7 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                 setPlace(parts[0].trim());
 
                 const shortAddress = parts.slice(1, 4).map((part: string) => part.trim()).join(', ');
+                //console.log("좌표 주소:", latitude, longitude);
                 setAddress(shortAddress);
             } else {
                 setAddress('주소를 불러올 수 없습니다.');

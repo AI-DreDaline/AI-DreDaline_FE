@@ -4,7 +4,7 @@ import PagerView from 'react-native-pager-view';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
-import MapLibreGL, { UserTrackingMode } from '@maplibre/maplibre-react-native';
+import { useNavigateCtx } from './NavigateContext';
 
 import MainNavigate from './MainNavigateScreen';
 import LeftNavigate from './LeftNavigateScreen';
@@ -18,9 +18,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Navigate'>;
 const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     useTabBarVisibility(false);
 
-    const [routeGeoJSON, setRouteGeoJSON] = useState<any>(null);
-    const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
-
     const selectedDate = new Date().toISOString().split('T')[0];
 
     const pagerRef = useRef<PagerView>(null);
@@ -28,12 +25,13 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
 
     const [buttonText, setButtonText] = useState('계속 달리기');
     const timerRef = useRef<number | null>(null);
+    const [timeIntervals, setTimeIntervals] = useState<[number, number | null][]>([]);
+
     const [isPressed, setIsPressed] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const zoneColors = ['#3ca3f9', '#42f1e1', '#bdff00', '#ff8208', '#ff0c6e'];
-
     const handlePressIn = () => {
+        stopTimer();
         // 3초 타이머 시작
         timerRef.current = setTimeout(() => {
             setModalVisible(true);
@@ -53,14 +51,20 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
         }
     };
 
+    const { startTimer } = useNavigateCtx();
+    const { stopTimer } = useNavigateCtx();
+
     const handlePress = () => {
-        // 클릭만 했을 때 텍스트 변경
-        if (isPressed) {
-            setButtonText('계속 달리기');
-            setIsPressed(false);
-        } else {
+        const now = Date.now();
+
+        if (!isPressed) {
             setButtonText('일시 정지');
             setIsPressed(true);
+            startTimer();
+        } else {
+            setButtonText('계속 달리기');
+            setIsPressed(false);
+            stopTimer();
         }
     };
 
@@ -105,6 +109,7 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
                             >{buttonText}</Text>
                         </View>
                     </TouchableOpacity>
+                    
                     <Text style={styles.tabtitle}>러닝을 끝낼 경우 버튼을 3초 이상 눌러주세요.</Text>
 
                 </View>

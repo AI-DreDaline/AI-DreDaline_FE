@@ -4,23 +4,52 @@ import MapLibreGL, { UserTrackingMode } from '@maplibre/maplibre-react-native';
 import type { CameraRef } from '@maplibre/maplibre-react-native';
 import { Feature, LineString } from 'geojson';
 import {WithLocalSvg} from 'react-native-svg/css';
+import { useNavigateCtx } from "./NavigateContext";
 
-import line from '../assets/images/line.png';
 import line_active from '../assets/images/line_active.png';
-import start from '../assets/images/start.png';
-import endpin from '../assets/images/endpin.png';
-import run from '../assets/images/run.png';
-import round_4 from '../assets/images/round_4.png';
-import allow_navigate from '../assets/images/allow_navigate.png';
+const line = require('../assets/images/line.svg');
+const start = require('../assets/images/start.svg');
+const endpin = require('../assets/images/endpin.svg');
+const round_4 = require('../assets/images/round_4.svg');
+const allow_navigate = require('../assets/images/allow_navigate.svg');
+const run = require('../assets/images/run.svg');
 const map_user = require('../assets/images/map_user.svg');
 
 const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
 type Coordinate = [number, number];
 
 const MainNavigateScreen = () => {
-    const km = 1.79;
+    const { totalDistance } = useNavigateCtx();
+    const km = (totalDistance / 1000).toFixed(2);
+    const [time, setTime] = useState("00:00");
+
+    const { timeIntervals } = useNavigateCtx();
+    const formatTime = (ms: number) => {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        const pad = (n: number) => String(n).padStart(2, "0");
+
+        return `${pad(minutes)}:${pad(seconds)}`;
+    };
+    useEffect(() => {
+        const updateTime = () => {
+            const total = timeIntervals.reduce((acc, [start, end]) => {
+                const effectiveEnd = end ?? Date.now();
+                return acc + (effectiveEnd - start);
+            }, 0);
+
+            setTime(formatTime(total));
+        };
+
+        updateTime();
+        const interval = setInterval(updateTime, 1000);
+        return () => clearInterval(interval);
+    }, [timeIntervals]);
+
+
     const pace = "6'12''";
-    const time = "08:12";
     const kcal = 13;
     const runway = 2;
     const BPM = 145;
@@ -263,33 +292,41 @@ const MainNavigateScreen = () => {
                 </View>
                 <View style={styles.navigateview}>
                     <Text style={styles.navigatetext}>{navigatetext}</Text>
-                    <Image
-                        source={allow_navigate}
-                        style={{width: 48.79, height: 100, marginTop: 30}}
+                    <WithLocalSvg
+                        asset={allow_navigate}
+                        width={48.79}
+                        height={100}
+                        style={{marginTop: 30}}
                     />
                 </View>
             </View>
             <View style={styles.parentview}>
-                <Image
-                        source={round_4}
-                        style={{width: 393, height: 98, marginLeft: 1}}
+                <WithLocalSvg
+                        asset={round_4}
+                        width={393}
+                        height={98}
+                        style={{marginLeft: 1}}
                     />
-                <Image
-                    source={line}
+                <WithLocalSvg
+                    asset={line}
+                    width={322}
+                    height={3}
                     style={{
-                        width: 322,
-                        height: 3,
                         position: 'absolute',
                         top: 73,
                         left: 35,
                     }}
                 />
-                <Image
-                    source={start}
+                <WithLocalSvg
+                    asset={start}
+                    width={31}
+                    height={35}
                     style={styles.start}
                 />
-                <Image
-                    source={endpin}
+                <WithLocalSvg
+                    asset={endpin}
+                    width={30}
+                    height={30}
                     style={styles.endpin}
                 />
                 <Text 
@@ -305,7 +342,7 @@ const MainNavigateScreen = () => {
                 <Image
                     source={line_active}
                     style={{
-                        width: 322*(percent/100),
+                        width: 320*(percent/100),
                         height: 5,
                         position: 'absolute',
                         top: 72,
@@ -320,12 +357,10 @@ const MainNavigateScreen = () => {
                         left: 28+320*(percent/100),
                     }}
                 >
-                    <Image
-                        source={run}
-                        style={{
-                            width: 35,
-                            height: 35,
-                        }}
+                    <WithLocalSvg
+                        asset={run}
+                        width={35}
+                        height={35}
                     />
                 </TouchableOpacity>
             </View>
@@ -399,15 +434,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#1B1B1B',
     },
     start:{
-        width: 31,
-        height: 35,
         position: 'absolute',
         top: 43,
         left: 27,
     },
     endpin:{
-        width: 30,
-        height: 30,
         position: 'absolute',
         top: 40,
         right: 21,

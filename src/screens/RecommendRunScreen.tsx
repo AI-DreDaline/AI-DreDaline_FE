@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
 import {WithLocalSvg} from 'react-native-svg/css';
@@ -47,7 +47,8 @@ function RecommendRunScreen({ navigation, route }: Props) {
 
     React.useEffect(() => {
         if (address) {
-        setMessage('시작 위치가 설정되었습니다');
+            console.log('RecommendRunScreen 주소:', address);
+            setMessage('시작 위치가 설정되었습니다');
         }
     }, [address]);
 
@@ -58,6 +59,16 @@ function RecommendRunScreen({ navigation, route }: Props) {
 
     const handlePlus = () => {
         setKm(prev => parseFloat((prev + 0.5).toFixed(2)));
+    };
+
+    const miss_data_alert = () => {
+        Alert.alert(
+            "경로 설정을 위해 시작점을 입력해주세요.",
+        );
+    };
+
+    const Make_route_EVENT = () => { 
+        console.log("경로 생성 버튼 클릭");
     };
 
     return (
@@ -156,10 +167,12 @@ function RecommendRunScreen({ navigation, route }: Props) {
                 />
                 <TouchableOpacity
                     style={styles.button}
-                    disabled={!address}
+                    //disabled={!address}
                     onPress={() =>
+                        !address ? miss_data_alert() :
+                        (Make_route_EVENT(),
                         navigation.navigate('MainScreen',
-                        { address: address ?? '', mode: 'recommendReady' })
+                        { address: address ?? '', mode: 'recommendReady' }))
                     }
                 >
                     <Text style={styles.buttonText}>경로 생성</Text>

@@ -1,44 +1,66 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import {WithLocalSvg} from 'react-native-svg/css';
+import { useNavigateCtx } from './NavigateContext';
 
-import round_3 from '../assets/images/round_3.png';
-import map from '../assets/images/map_ready.png';
+const round_3 = require('../assets/images/round_3.svg');
+const map = require('../assets/images/map_ready_1.svg');
 
 const LeftNavigateScreen = () => {
-    const race = [
-        {
-            lap: 1,
-            time: "06:14",
-            pace: "6'14''/KM",
-            heartRate: 152,
-            power: 142
-        },
-        {
-            lap: 2,
-            time: "05:58",
-            pace: "5'58''/KM",
-            heartRate: 172,
-            power: 162
-        },
-        {
-            lap: 3,
-            time: "05:53",
-            pace: "5'53''/KM",
-            heartRate: 176,
-            power: 166
-        }
-    ];
 
+    const {timeIntervals} = useNavigateCtx();
+
+    const [race, setRace] = useState<
+        {
+            lap: number;
+            time: string;
+            pace: string;
+            heartRate: number;
+            power: number;
+        }[]
+    >([]);
+
+    useEffect(() => {
+        console.log("timeIntervals 변경됨", timeIntervals);
+        
+        if (timeIntervals.length === 0) return;
+
+        const lastInterval = timeIntervals[timeIntervals.length - 1];
+        const [, end] = lastInterval;
+
+        if (end === null) return; // 아직 마지막 구간이 진행 중이면 업데이트 안 함
+
+        const newRace = timeIntervals.map(([start, end], index) => {
+            const calculatedEnd = end ?? Date.now();
+            const diff = calculatedEnd - start;
+            const minutes = Math.floor(diff / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+
+            return {
+                lap: index + 1,
+                time: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+                pace: "6'14''/KM",
+                heartRate: 152,
+                power: 142,
+            };
+        });
+
+        setRace(newRace);
+    }, [timeIntervals]);
 
     return (
         <View style={styles.container}>
             <View style={styles.mapview}>
-                <Image
-                    source={map}
+                <WithLocalSvg
+                    asset={map}
+                    width= {315}
+                    height={277}
                     style={styles.map}
                 />
-                <Image 
-                    source={round_3}
+                <WithLocalSvg
+                    asset={round_3}
+                    width={319}
+                    height={280}
                     style={styles.round}
                 />
             </View>
@@ -53,19 +75,20 @@ const LeftNavigateScreen = () => {
                     <Text style={styles.listtoptext}>Power</Text>
                 </View>
 
-                {race.map((r, index) => (
-                    <View key={index}>
-                        <View key={index} style={styles.list}>
-                            <Text style={styles.lap}>{r.lap}</Text>
-                            <Text style={styles.time}>{r.time}</Text>
-                            <Text style={styles.pace}>{r.pace}</Text>
-                            <Text style={styles.heartRate}>{r.heartRate}BPM</Text>
-                            <Text style={styles.power}>{r.power}W</Text>
+                <ScrollView>
+                    {race.map((r, index) => (
+                        <View key={index}>
+                            <View key={index} style={styles.list}>
+                                <Text style={styles.lap}>{r.lap}</Text>
+                                <Text style={styles.time}>{r.time}</Text>
+                                <Text style={styles.pace}>{r.pace}</Text>
+                                <Text style={styles.heartRate}>{r.heartRate}BPM</Text>
+                                <Text style={styles.power}>{r.power}W</Text>
+                            </View>
+                            <View style={styles.separator}></View>
                         </View>
-                        <View style={styles.separator}></View>
-                    </View>
-                ))}
-                
+                    ))}
+                </ScrollView>
             </View>
         </View>
     );
@@ -83,14 +106,10 @@ const styles = StyleSheet.create({
         height: 400,
     },
     map: {
-        width: 315,
-        height: 277,
         marginTop: 92,
         marginLeft: 32,
     },
     round: {
-        width: 319,
-        height: 280,
         position: 'absolute',
         top: 90,
         left: 30,

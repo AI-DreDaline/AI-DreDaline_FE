@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, use } from 'react';
 import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Text } from 'react-native';
 import MapLibreGL, { UserTrackingMode } from '@maplibre/maplibre-react-native';
 import type { CameraRef } from '@maplibre/maplibre-react-native';
 import { Feature, LineString } from 'geojson';
 import {WithLocalSvg} from 'react-native-svg/css';
+import { useNavigateCtx } from './NavigateContext';
 
-import line from '../assets/images/line.png';
 import line_active from '../assets/images/line_active.png';
-import start from '../assets/images/start.png';
-import endpin from '../assets/images/endpin.png';
-import run from '../assets/images/run.png';
-const map_arrow = require('../assets/images/map_arrow.svg');
+const line = require('../assets/images/line.svg');
+const start = require('../assets/images/start.svg');
+const endpin = require('../assets/images/endpin.svg');
+const run = require('../assets/images/run.svg');
 const map_user = require('../assets/images/map_user.svg');
 
 const { width, height } = Dimensions.get('window');
@@ -26,6 +26,7 @@ type RouteFeature = {
 };
 type Coordinate = [number, number];
 
+
 const RightNavigateScreen = () => {
     const cameraRef = useRef<CameraRef>(null);
 
@@ -34,7 +35,8 @@ const RightNavigateScreen = () => {
     const [userLocation, setUserLocation] = useState<[number, number]>([126.5612, 33.4553]);
     const [percent, setPercent] = useState<number>(0);
 
-    /*
+    const { setUserlocation } = useNavigateCtx();
+    /*  
     useEffect(() => {
         setRouteGeoJson({
             type: "Feature",
@@ -60,7 +62,8 @@ const RightNavigateScreen = () => {
     useEffect(() => {
         const coords: [number, number][] = [
             [126.5612, 33.4553],
-            [126.5612, 33.4600],
+            [126.5612, 33.4650],
+            [126.5613, 33.4651],
             [126.4800, 33.4700],
             [126.5312, 33.4997]
         ];
@@ -199,13 +202,17 @@ const RightNavigateScreen = () => {
         if (!userLocation) return;
 
         const newLocation: [number, number] = [
-            userLocation[0],
-            userLocation[1]+0.0001,
+            userLocation[0]- 0.00009,
+            userLocation[1]+ 0.000005,
         ];
         setUserLocation(newLocation);
         
         console.log("목적지로 이동:", newLocation);
     };
+
+    useEffect(() => {
+        setUserlocation(userLocation);
+    }, [userLocation]);
 
     const go = () => {
         setPercent(prev => Math.min(prev + 10, 100));
@@ -215,18 +222,23 @@ const RightNavigateScreen = () => {
         <View style={styles.container}>
             <View style={styles.topview}>
                 <View style={{ position: 'relative' }}>
-                    <Image
-                        source={line}
-                        style={{width: 322, marginTop: 109, marginLeft: 34}}
+                    <WithLocalSvg
+                        asset={line}
+                        width={322}
+                        height={3}
+                        style={{marginTop: 109, marginLeft: 34}}
                     />
-                    <Image
-                        source={start}
+                    <WithLocalSvg
+                        asset={start}
+                        width={31}
+                        height={35}
                         style={styles.start}
                     />
                     <TouchableOpacity style={styles.endpin} onPress={handleMapPress}>
-                        <Image
-                            source={endpin}
-                            style={{width: 30, height: 30}}
+                        <WithLocalSvg
+                            asset={endpin}
+                            width={30}
+                            height={30}
                         />
                     </TouchableOpacity>
                     <Text 
@@ -243,8 +255,9 @@ const RightNavigateScreen = () => {
                         source={line_active}
                         style={{
                             width: 322*(percent/100),
+                            height: 7,
                             position: 'absolute',
-                            top: 106,
+                            top: 108,
                             left: 30,
                         }}
                     />
@@ -256,12 +269,10 @@ const RightNavigateScreen = () => {
                             left: 21+320*(percent/100),
                         }}
                     >
-                        <Image
-                            source={run}
-                            style={{
-                                width: 35,
-                                height: 35,
-                            }}
+                        <WithLocalSvg
+                            asset={run}
+                            width={35}
+                            height={35}
                         />
                     </TouchableOpacity>
                 </View>
@@ -270,7 +281,7 @@ const RightNavigateScreen = () => {
                 <MapLibreGL.MapView style={{ flex: 1 }} mapStyle={MAP_STYLE_URL}>
                     {/* 카메라: 내 위치 따라가기 */}
                     <MapLibreGL.Camera
-                        zoomLevel={18}
+                        zoomLevel={19}
                         centerCoordinate={userLocation} // 제주대 기본값
                         // followUserLocation={true}
                         followUserMode={UserTrackingMode.Follow}
@@ -319,7 +330,7 @@ const RightNavigateScreen = () => {
                             //     centerCoordinate: newPos,
                             //     animationDuration: 500,
                             // });
-                            console.log("현재 위치:", newPos);
+                            console.log("업데이트 되는 위치:", newPos);
                         }}
                     />
                     <MapLibreGL.PointAnnotation
@@ -357,8 +368,6 @@ const styles = StyleSheet.create({
         height: 132,
     },
     start:{
-        width: 31,
-        height: 35,
         position: 'absolute',
         top: 79,
         left: 21,
