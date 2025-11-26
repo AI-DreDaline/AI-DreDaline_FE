@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { voiceCache ,loadRouteData } from "../services/VoiceGuidanceCache";
+import { Feature, LineString } from 'geojson';
 
 // 타입 ----------------------------------------------------
 export type Coordinate = [number, number];
@@ -26,6 +26,13 @@ interface NavigateContextType {
     lappace: number[];
 
     setResponseData: (data: any) => void;
+    setTotalInfo: (data: any) => void;
+    percent: number;
+    audio: string;
+    kmAudio: number;
+
+    routeGeoJson: Feature<LineString> | null;
+    setRouteGeoJson: (data: any) => void;
 }
 
 const NavigateContext = createContext<NavigateContextType | null>(null);
@@ -34,8 +41,10 @@ const NavigateContext = createContext<NavigateContextType | null>(null);
 // 거리 계산 함수 --------------------------------------------
 function distanceMeters(c1: Coordinate, c2: Coordinate) {
     const R = 6371000;
-    const [lon1, lat1] = c1.map(v => v * Math.PI / 180);
-    const [lon2, lat2] = c2.map(v => v * Math.PI / 180);
+    const lon1 = c1[0] * Math.PI / 180;
+    const lat1 = c1[1] * Math.PI / 180;
+    const lon2 = c2[0] * Math.PI / 180;
+    const lat2 = c2[1] * Math.PI / 180;
 
     const dLat = lat2 - lat1;
     const dLon = lon2 - lon1;
@@ -51,7 +60,10 @@ function distanceMeters(c1: Coordinate, c2: Coordinate) {
 // Provider --------------------------------------------------
 export function NavigateProvider({ children }: { children: ReactNode }) {
 
-    const [responceData, setResponseData] = useState<any>(null);
+    const [responseData, setResponseData] = useState<any>(null);
+    const [totalInfo, setTotalInfo] = useState([0,0]);
+    const [percent, setPercent] = useState<number>(0);
+
     const [timeIntervals, setTimeIntervals] = useState<[number, number | null][]>([]);
     const [pace, setPace] = useState(0);
 
@@ -72,14 +84,19 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
 
     // 누적 페이스(Average Pace: 총 시간 / 총 거리)
     const [avgpace, setAvgPace] = useState<number>(0);
+
     // 구간 페이스(Lap Pace: 최근 위치 변화로 계산)
     const [lappace, setLapPace] = useState<number[]>([]);
-
     const [lab,setLab] = useState(0);
+
+    const [audio, setAudio] = useState<string>("");
+    const [kmAudio, setKmAudio] = useState<number>(0);
+
+    const [routeGeoJson, setRouteGeoJson] = useState<Feature<LineString> | null>(null);
 
     useEffect(() => {
         console.log("responceData 변경됨:");
-    }, [responceData]);
+    }, [responseData]);
 
     /** 거리 누적 로직 */
     useEffect(() => {
@@ -95,12 +112,13 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
 
             // 1km 단위 증가했을 때만 Alarm_Pace() 실행
             if (currentKm > lastPaceKm) {
-                Alarm_pace(currentKm);
+                setKmAudio(currentKm);
                 setLastPaceKm(currentKm);
             }
 
             return newTotal;
-     });
+        });
+        console.log("경로 총거리:",totalDistance);
     }, [userLocation]);
 
     // prevLocation 업데이트
@@ -137,7 +155,6 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
             });
         }
 
-
     }, [userLocation]);
 
     useEffect(() => {
@@ -161,8 +178,11 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
             if (totalKm > 0) {
                 const avgPace = totalMinutes / totalKm;
                 setAvgPace(Number(avgPace.toFixed(2)));
-
             }
+
+            console.log('totlakm:', totalKm, "totlaInfo", totalInfo[1]/1000);
+            setPercent(Math.round((totalKm / (totalInfo[1]/1000)) * 100));
+            console.log("움직인 %:",percent);
 
         }, 1000); // 1초마다
 
@@ -177,8 +197,12 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
         const nextPoint = coords[nextIndex];
         if (!nextPoint) return;
 
+        const guidanceList = responseData?.guidance_points ?? [];
+        const guidanceId = guidanceList[nextIndex]?.guidance_id;
+
         if (nextIndex >= coords.length - 1) {
             console.log("종로지점만을 앞두고 있습니다.");
+            return;
         };
 
         const totaldist = distanceMeters(coords[nextIndex], coords[nextIndex + 1]);
@@ -188,7 +212,7 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
 
         if (!passedIndexes.includes(nextIndex)) {
             if (totaldist >= 50 && dist === 50) {
-                Alarm_50m();
+                setAudio(guidanceId);
             } 
             else if (dist === 15 && !passedIndexes.includes(nextIndex)) {
                 Alarm_15m();
@@ -236,6 +260,23 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
         setTotalDistance(prev => prev + meters);
     };
 
+        // 알람 이벤트 ---------------------------------------------
+    function Alarm_50m() {
+        console.log("50m 후 turn");
+    }
+
+    function Alarm_15m() {
+        console.log("15m 후 turn");  
+    }
+
+    function Alarm_m() {
+        console.log("곧 turn");
+    }
+
+    function Alarm_km(km: number) {
+        console.log(`${km}km 달성!`);
+    }
+
     return (
         <NavigateContext.Provider
             value={{
@@ -258,6 +299,13 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
                 pace,
 
                 setResponseData,
+                setTotalInfo,
+                percent,
+                audio,
+                kmAudio,
+
+                routeGeoJson,
+                setRouteGeoJson,
             }}
         >
             {children}
@@ -270,21 +318,4 @@ export function useNavigateCtx() {
     const ctx = useContext(NavigateContext);
     if (!ctx) throw new Error("NavigateContext not found");
     return ctx;
-}
-
-// 알람 이벤트 ---------------------------------------------
-function Alarm_50m() {
-    console.log("50m 후 turn");
-}
-
-function Alarm_15m() {
-    console.log("15m 후 turn");
-}
-
-function Alarm_m() {
-    console.log("곧 turn");
-}
-
-function Alarm_pace(km: number) {
-    console.log(`${km}km 달성!`);
 }

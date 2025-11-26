@@ -4,22 +4,28 @@ import axios from 'axios';
 class VoiceGuidanceCache {
 
     guidancePoints: any[]; // 메모리
+    guidance_total_info: any[];
     audioCache: Map<string, string>; // 오디오 파일도 캐싱
 
     // 처음 생성할때 초기화
     constructor() {
         this.guidancePoints = [];
+        this.guidance_total_info = [];
         this.audioCache = new Map();
     }
 
     // 데이터를 리스트로 저장
-    setGuidancePoints(list) {
-        this.guidancePoints = list;
+    setGuidancePoints(lists) {
+        this.guidancePoints = lists;
+    }
+
+    setGuidanceTotalInfo(list) {
+        this.guidance_total_info = list;
     }
 
     // 오디오 캐시 저장 함수 (id:"TRUN_LEFT_30", "file://")
-    setAudio(id, uri) {
-        this.audioCache.set(id, uri);
+    setAudio(id, file) {
+        this.audioCache.set(id, file);
     }
 
     // 오디오 캐시 불러오기 함수
@@ -30,6 +36,10 @@ class VoiceGuidanceCache {
     // 데이터 반환 함수
     getGuidancePoints() {
         return this.guidancePoints;
+    }
+
+    getGuidanceTotalInfo() {
+        return this.guidance_total_info;
     }
 }
 
@@ -81,7 +91,7 @@ export async function loadRouteData(routeId:string) {
             }
         ],
         "total_points": 3,
-        "total_distance": 1200.5
+        "total_distance": 236.5
     }
     //response.data;
     if (response) {
@@ -90,7 +100,21 @@ export async function loadRouteData(routeId:string) {
 
     const guidance_points = response.guidance_points;
 
+    const total_info = [response.total_points, response.total_distance];
+
     voiceCache.setGuidancePoints(guidance_points);
+    voiceCache.setGuidanceTotalInfo(total_info);
+
+    voiceCache.setAudio("TURN_LEFT_15", "file://path_to_turn_left_30.mp3");
+    voiceCache.setAudio("TURN_RIGHT_15", "file://path_to_turn_right_10.mp3");
+    voiceCache.setAudio("GO_STRAIGHT_100", "file://path_to_go_straight_100.mp3");
+    voiceCache.setAudio("CHECKPOINT_KM", (km_mark: number) => {
+        return `${km_mark}km 달렸습니다.`;
+    });
+
+    voiceCache.setAudio("ROUTE_START", "file://path_to_route_start.mp3");
+    voiceCache.setAudio("ROUTE_COMPLETE", "file://path_to_route_complete.mp3");
+    voiceCache.setAudio("ROUTE_REROUTE", "file://path_to_route_reroute.mp3");
 
     console.log("캐싱 완료:", voiceCache.getGuidancePoints());
 }

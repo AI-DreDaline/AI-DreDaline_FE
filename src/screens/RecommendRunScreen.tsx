@@ -67,8 +67,8 @@ function RecommendRunScreen({ navigation, route }: Props) {
         );
     };
 
-    const Make_route_EVENT = () => { 
-        console.log("경로 생성 버튼 클릭");
+    const Make_route_EVENT = (dataaddress, datakm:number) => { 
+        console.log("경로 생성 버튼 클릭", dataaddress,datakm);
     };
 
     return (
@@ -168,12 +168,24 @@ function RecommendRunScreen({ navigation, route }: Props) {
                 <TouchableOpacity
                     style={styles.button}
                     //disabled={!address}
-                    onPress={() =>
-                        !address ? miss_data_alert() :
-                        (Make_route_EVENT(),
-                        navigation.navigate('MainScreen',
-                        { address: address ?? '', mode: 'recommendReady' }))
-                    }
+                    onPress={() => {
+                        const invalidAddresses = [
+                            '',
+                            '위치를 불러오는 중...',
+                            '주소를 불러올 수 없습니다.',
+                            '주소를 불러오는 중 오류가 발생했습니다.'
+                        ];
+
+                        if (!address || invalidAddresses.includes(address)) {
+                            miss_data_alert();
+                        } else {
+                            Make_route_EVENT(address,km);
+                            navigation.navigate('MainScreen', {
+                                address: address,
+                                mode: 'recommendReady'
+                            });
+                        }
+                    }}
                 >
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
