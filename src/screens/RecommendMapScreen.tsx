@@ -1,17 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, Image, TextInput, Alert } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Image, TextInput, PermissionsAndroid, Alert, Platform, FlatList } from "react-native";
 import MapLibreGL from "@maplibre/maplibre-react-native";
-import { useNavigation } from "@react-navigation/native";
-import back from '../assets/images/back.png';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
 import MapView from 'react-native-maps';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
-import { getCoordinates } from '../components/SearchAdress';
+//import { getCoordinates } from '../components/SearchAdress';
+import { getAutocomplete, getPlaceDetail, getCoordinates } from "../components/SearchAdress";
+import Geolocation from 'react-native-geolocation-service';
+import {WithLocalSvg} from 'react-native-svg/css';
+
+const back = require('../assets/images/back.svg');
+const gps = require('../assets/images/gps_black.svg');
 
 const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
 //const API_KEY = "QhGgr94B6Frh1kFgQHuB";
+type AutocompleteItem = {
+    description: string;
+    place_id: string;
+};
 
 // 올바른 방법
 function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'RecommendMap'>) {
@@ -27,7 +35,24 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
     const [place, setPlace] = useState('장소를 불러오는 중...');
     const cameraRef = useRef<MapLibreGL.CameraRef>(null);
     const [query, setQuery] = useState('');
+    const [querylist, setQuerylist] = useState<AutocompleteItem[]>([]);
     const [centerCoord, setCenterCoord] = useState<[number, number]>([126.9780, 37.5665]);
+
+    const handleSelect = async (placeId: string, placeFullName: string, placeName: string) => {
+        setQuery(placeName);
+        searchPlace(placeFullName);
+        const coord = await getPlaceDetail(placeId);
+        console.log('선택한 좌표:', coord);
+    };
+    useEffect(() => {
+        if (query.length > 1) {
+            getAutocomplete(query).then(setQuerylist);
+            console.log("쿼리 리스트",querylist);
+            //searchPlace(query);
+        } else {
+            setQuerylist([]);
+        }
+    }, [query]);
 
     const handleRegionChange = async (region: any) => {
     // region 객체 안에 geometry.coordinates에 [lng, lat] 있음
@@ -35,14 +60,14 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
         if (!center) return;
 
         const [longitude, latitude] = center;
-        console.log("Reverse geocoding 요청 좌표:", latitude, longitude);
+       // console.log("Reverse geocoding 요청 좌표:", latitude, longitude);
 
         try {
             const response = await fetch(
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
             );
             const result = await response.json();
-            console.log("Reverse geocoding 결과:", result);
+            //console.log("Reverse geocoding 결과:", result);
 
             if (result?.display_name) {
                 const fullAddress = result.display_name;
@@ -50,6 +75,7 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                 setPlace(parts[0].trim());
 
                 const shortAddress = parts.slice(1, 4).map((part: string) => part.trim()).join(', ');
+                //console.log("좌표 주소:", latitude, longitude);
                 setAddress(shortAddress);
             } else {
                 setAddress('주소를 불러올 수 없습니다.');
@@ -82,6 +108,35 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
         }
     };
 
+    const FocusHere = async (cameraRef: React.RefObject<MapLibreGL.CameraRef | null>) => {
+        let hasPermission = true;
+    
+        if (Platform.OS === 'android') {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            );
+            hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
+        }
+    
+        if (!hasPermission) {
+            Alert.alert('권한 없음', '위치 권한이 필요합니다.');
+            return;
+        }
+    
+        Geolocation.getCurrentPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                cameraRef.current?.setCamera({
+                    centerCoordinate: [longitude, latitude],
+                    zoomLevel: 15,
+                    animationDuration: 1000,
+                });
+            },
+            (err) => console.error(err),
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+    };
+
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.topscreen}>
@@ -90,8 +145,8 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         style={styles.backButton}
                         onPress={() => navigation.goBack()} // 뒤로가기
                     >
-                        <Image 
-                            source={back}
+                        <WithLocalSvg
+                            asset={back}
                             style={{width: 11, height:18}}
                         />
                     </TouchableOpacity>
@@ -117,11 +172,44 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         onSubmitEditing={() => searchPlace(query)}
                     />
                 </View>
+
+                { querylist.length > 0 && (
+                    <View style={styles.modalBackground}>
+                        <View style={styles.modalContainer}>
+                            <FlatList
+                                data={querylist}
+                                keyExtractor={(item) => item.place_id}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacity
+                                        style={styles.itemButton}
+                                        onPress={() => handleSelect(item.place_id, item.description, item.structured_formatting?.main_text || item.description)}
+                                    >
+                                        <Text style={styles.itemText}>{item.structured_formatting?.main_text || item.description}</Text>
+                                    </TouchableOpacity>
+                                )}
+                            />
+                        </View>
+                    </View>
+                )}
+
+                <TouchableOpacity
+                    style={styles.gpsbutton}
+                    onPress={() => FocusHere(cameraRef)} // 뒤로가기
+                >
+                    <WithLocalSvg
+                        asset={gps}
+                        width={40}
+                        height={40}
+                    />
+                </TouchableOpacity>
+
                 <MapLibreGL.Camera
                     ref={cameraRef}
                     zoomLevel={15}
                     centerCoordinate={centerCoord}
                 />
+
+
             </MapLibreGL.MapView>
 
 
@@ -267,5 +355,31 @@ const styles = StyleSheet.create({
         color: '#000000',
         paddingLeft: 153,
         paddingTop: 16,
+    },
+    modalBackground: {
+        flex: 1,
+        marginTop: 60,
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        marginHorizontal: 20,
+        borderRadius: 12,
+        padding: 10,
+        maxHeight: '20%',
+    },
+    itemButton: {
+        paddingVertical: 12,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#ccc',
+    },
+    itemText: {
+        fontSize: 13,
+    },
+    gpsbutton: {
+        position: 'absolute',
+        bottom: 189, // 바닥에 붙이기
+        left: 9,
+        right: 0,
+        //backgroundColor: 'green',
     },
 });

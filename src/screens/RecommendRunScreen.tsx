@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import {useState} from 'react';
+import * as React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
 import {WithLocalSvg} from 'react-native-svg/css';
@@ -47,7 +48,8 @@ function RecommendRunScreen({ navigation, route }: Props) {
 
     React.useEffect(() => {
         if (address) {
-        setMessage('시작 위치가 설정되었습니다');
+            console.log('RecommendRunScreen 주소:', address);
+            setMessage('시작 위치가 설정되었습니다');
         }
     }, [address]);
 
@@ -58,6 +60,16 @@ function RecommendRunScreen({ navigation, route }: Props) {
 
     const handlePlus = () => {
         setKm(prev => parseFloat((prev + 0.5).toFixed(2)));
+    };
+
+    const miss_data_alert = () => {
+        Alert.alert(
+            "경로 설정을 위해 시작점을 입력해주세요.",
+        );
+    };
+
+    const Make_route_EVENT = (dataaddress, datakm:number) => { 
+        console.log("경로 생성 버튼 클릭", dataaddress,datakm);
     };
 
     return (
@@ -156,11 +168,25 @@ function RecommendRunScreen({ navigation, route }: Props) {
                 />
                 <TouchableOpacity
                     style={styles.button}
-                    disabled={!address}
-                    onPress={() =>
-                        navigation.navigate('MainScreen',
-                        { address: address ?? '', mode: 'recommendReady' })
-                    }
+                    //disabled={!address}
+                    onPress={() => {
+                        const invalidAddresses = [
+                            '',
+                            '위치를 불러오는 중...',
+                            '주소를 불러올 수 없습니다.',
+                            '주소를 불러오는 중 오류가 발생했습니다.'
+                        ];
+
+                        if (!address || invalidAddresses.includes(address)) {
+                            miss_data_alert();
+                        } else {
+                            Make_route_EVENT(address,km);
+                            navigation.navigate('MainScreen', {
+                                address: address,
+                                mode: 'recommendReady'
+                            });
+                        }
+                    }}
                 >
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>

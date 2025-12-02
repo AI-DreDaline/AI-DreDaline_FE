@@ -21,6 +21,10 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
     const [title, setTitle] = useState(`무제1_${formattedToday}`);
 
     const [visible, setVisible] = useState(false);
+
+    const Make_navigate_EVENT = () => {
+        console.log("네비게이트 생성 이벤트 실행");
+    }
       
         return (
             <View style={styles.container}>
@@ -78,7 +82,7 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
                     </View>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={()=>{navigation.navigate('Loading')}}
+                        onPress={()=>{Make_navigate_EVENT(),navigation.navigate('Loading')}}
                     >
                         <Text style={styles.buttonText}>안내 시작</Text>
                     </TouchableOpacity>

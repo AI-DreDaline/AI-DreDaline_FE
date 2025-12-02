@@ -14,6 +14,10 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
     const km = 6.17;
     
     const [visible, setVisible] = useState(false);
+
+    const Make_navigate_EVENT = () => {
+        console.log("네비게이트 시작 이벤트 실행");
+    }
     
     return (
         <View style={styles.container}>
@@ -75,6 +79,7 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
                     style={styles.button}
                     onPress={() => {
                         navigation.navigate('Loading');
+                        Make_navigate_EVENT();
                     }}
                 >
                     <Text style={styles.buttonText}>안내 시작</Text>

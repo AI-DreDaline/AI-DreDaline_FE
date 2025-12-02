@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
 import {WithLocalSvg} from 'react-native-svg/css';
@@ -15,17 +15,15 @@ type Props = NativeStackScreenProps<RootStackParamList, 'DrawTrackRun'>;
 
 function DrawTrackRunScreen({ navigation, route }: Props) {
 
-    const [km, setKm] = useState(5.00);
-    const { address, mode } = route.params;
-    const [message, setMessage] = React.useState(
-        '지도를 터치해 시작 위치를 선택할 수 있습니다'
-    );
+    const miss_data_alarm = () => {
+        Alert.alert(
+          "경로를 설정하려면 시작점과 도착점을 입력해주세요.",
+        );
+    };
 
-    React.useEffect(() => {
-        if (address) {
-        setMessage('시작 위치가 설정되었습니다');
-        }
-    }, [address]);
+    const Make_route_EVENT = () => {
+        console.log("경로 생성 이벤트 실행");
+    }
 
     return (
         <View style={styles.container}>
@@ -78,8 +76,9 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
                 />
                 <TouchableOpacity 
                   style={styles.button} 
-                  onPress={() => navigation.navigate('Loading')}
+                  onPress={() =>  miss_data_alarm()}
                 >
+
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
                 <WithLocalSvg

@@ -1,9 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, StyleSheet, Modal, Image, ScrollView } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import { useNavigateCtx } from './NavigateContext';
+import { voiceCache ,loadRouteData } from "../services/VoiceGuidanceCache";
 
 import MainNavigate from './MainNavigateScreen';
 import LeftNavigate from './LeftNavigateScreen';
@@ -14,25 +16,76 @@ import { toString } from '@maptiler/sdk';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Navigate'>;
 
+type Coordinate = [number, number];
+
 const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     useTabBarVisibility(false);
+    const { setCoord, setResponseData, audio, kmAudio, setTotalInfo, setRouteGeoJson } = useNavigateCtx();
 
     const selectedDate = new Date().toISOString().split('T')[0];
-
 
     const pagerRef = useRef<PagerView>(null);
     const [currentPage, setCurrentPage] = useState(1); // 처음은 Main
 
     const [buttonText, setButtonText] = useState('계속 달리기');
     const timerRef = useRef<number | null>(null);
+
     const [isPressed, setIsPressed] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const zoneColors = ['#3ca3f9', '#42f1e1', '#bdff00', '#ff8208', '#ff0c6e'];
+    const [originalCoords, setOriginalCoords] = useState<[number, number][]>([]);
+    const [coords, setCoords] = useState<Coordinate[]>([]);
+    
+    useEffect(() => {
+        async function start() {
+            await loadRouteData("temp_abc123"); // 서버 요청 + 캐싱
+            console.log("캐시된 guidancePoints:", voiceCache.getGuidancePoints());
+    
+            // 경로 넘기기
+            setResponseData(voiceCache.getGuidancePoints());
+            const coords: Coordinate[] = voiceCache.getGuidancePoints().map(
+                (p): Coordinate => [p.lng, p.lat]
+            );
+    
+            // 총거리, 총 경로 포인트 넘기기
+            setTotalInfo(voiceCache.getGuidanceTotalInfo());
+    
+            console.log("right 성공적으로 서버 통신 성공:", coords);
+            setCoord(coords);
+            setCoords(coords);
+        }
+        console.log('useEffect 실행');
+        start();
+    
+        setOriginalCoords(coords);
+        setRouteGeoJson({
+            type: "Feature",
+            geometry: {
+                type: "LineString",
+                coordinates: coords,
+            },
+            properties: {}
+        });
+    }, []);
+
+    useEffect(() => {
+        // 오디오 플레이
+        voiceCache.getAudio(audio);
+    }, [audio]);
+
+    useEffect(() => {
+        // km 오디오 플레이
+        const Message = voiceCache.setAudio("CHECKPOINT_KM",kmAudio);
+        //playAudio(message); 이거 프론트가 하는지?
+    }, [kmAudio]);
 
     const handlePressIn = () => {
+        setButtonText('계속 달리기');
+        setIsPressed(false);
+        stopTimer();
         // 3초 타이머 시작
         timerRef.current = setTimeout(() => {
+            stopTimer();
             setModalVisible(true);
             navigation.navigate('MainScreen', {
                 address: '',
@@ -50,14 +103,20 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
         }
     };
 
+    const { startTimer } = useNavigateCtx();
+    const { stopTimer } = useNavigateCtx();
+
     const handlePress = () => {
-        // 클릭만 했을 때 텍스트 변경
-        if (isPressed) {
-            setButtonText('계속 달리기');
-            setIsPressed(false);
-        } else {
+        const now = Date.now();
+
+        if (!isPressed) {
             setButtonText('일시 정지');
             setIsPressed(true);
+            startTimer();
+        } else {
+            setButtonText('계속 달리기');
+            setIsPressed(false);
+            stopTimer();
         }
     };
 
@@ -65,6 +124,8 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
         pagerRef.current?.setPage(index);
         setCurrentPage(index);
     };
+
+
 
     return (
         <View style={{ flex: 1}}>
@@ -102,6 +163,7 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
                             >{buttonText}</Text>
                         </View>
                     </TouchableOpacity>
+                    
                     <Text style={styles.tabtitle}>러닝을 끝낼 경우 버튼을 3초 이상 눌러주세요.</Text>
 
                 </View>

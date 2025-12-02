@@ -127,6 +127,13 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
         }
     }
 
+    const MakeRoute = (data: any) => {
+        console.log('경로를 생성합니다', data);
+    };
+
+    const LessPoint = () => {
+        Alert.alert('두 점 이상을 선택해야 합니다.');
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -143,13 +150,18 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                     </TouchableOpacity>
                     <Text style={styles.title}>지도에서 그리기</Text>
                     <TouchableOpacity
-                        onPress={() =>
-                            navigation.navigate('MainScreen', {
-                                screen: 'DrawTrackRun', // 두 번째 탭 이름
-                                address,
-                                mode: 'drawReady',       // Ready 상태
-                            })
-                        }
+                        onPress={() => {
+                            if (lineCoords.length >= 2) {
+                                MakeRoute(lineCoords);
+                                navigation.navigate('MainScreen', {
+                                    screen: 'DrawTrackRun', // 두 번째 탭 이름
+                                    address,
+                                    mode: 'drawReady',       // Ready 상태
+                                })
+                            } else {
+                                LessPoint();
+                            }
+                        }}
                     >
                         <Text style={styles.subtitle}>완료</Text>
                     </TouchableOpacity>
