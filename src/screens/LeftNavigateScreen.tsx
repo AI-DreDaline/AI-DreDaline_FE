@@ -89,7 +89,7 @@ const LeftNavigateScreen = () => {
                     <Text style={styles.listtoptext}>Power</Text>
                 </View>
 
-                <View style={{ width: 500, backgroundColor: 'green'}}>
+                <View style={{ width: 500, }}>
                     <ScrollView
                         contentContainerStyle={{ paddingBottom: 50 }}
                     >
