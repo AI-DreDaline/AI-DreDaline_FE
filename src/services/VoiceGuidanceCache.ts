@@ -69,8 +69,8 @@ export async function loadRouteData(routeId:string) {
             },
             {
             "sequence": 2,
-            "lat": 33.5003891,
-            "lng": 126.5320155,
+            "lat": 33.499800962235,
+            "lng": 126.5312442,
             "direction": "right",
             "angle": 52.8,
             "distance_from_start": 450.2,
@@ -80,8 +80,8 @@ export async function loadRouteData(routeId:string) {
             },
             {
             "sequence": 3,
-            "lat": 33.5012456,
-            "lng": 126.5328903,
+            "lat": 33.49998062447,
+            "lng": 126.5312442,
             "direction": "straight",
             "angle": 5.2,
             "distance_from_start": 850.0,
@@ -91,7 +91,7 @@ export async function loadRouteData(routeId:string) {
             }
         ],
         "total_points": 3,
-        "total_distance": 236.5
+        "total_distance": 80.0
     }
     //response.data;
     if (response) {

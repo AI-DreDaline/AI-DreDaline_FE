@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, ButtonHTMLAttributes } from 'react';
 import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Text } from 'react-native';
 import MapLibreGL, { UserTrackingMode } from '@maplibre/maplibre-react-native';
 //import type { cameraRef } from '@maplibre/maplibre-react-native';
@@ -21,58 +21,11 @@ const RightNavigateScreen = () => {
     const { setUserlocation, coords, routeGeoJson, setRouteGeoJson , percent } = useNavigateCtx();
 
     const [originalCoords, setOriginalCoords] = useState<[number, number][]>([]);
-    const [userLocation, setUserLocation] = useState<[number, number]>([126.5612, 33.4553]);
+    const [userLocation, setUserLocation] = useState<[number, number]>([126.5312442, 33.4996213]);
+    //const [userLocation, setUserLocation] = useState<[number, number]>([126.5612, 33.4553]);
     const [lastPoint, setLastPoint] = useState(0);
 
     let lineCoords: Coordinate[] = [];
-
-    //const [coord, setCoord] = useState<Coordinate[]>([]);
-    //const [routeGeoJsons, setRouteGeoJsons] = useState<Feature<LineString> | null>(null);
-
-    // useFocusEffect(() => {
-    //     async function start() {
-    //         console.log("아오");
-    //         await loadRouteData("temp_abc123"); // 서버 요청 + 캐싱
-    //         console.log("캐시된 guidancePoints:", voiceCache.getGuidancePoints());
-
-    //         // 경로 넘기기
-    //         setResponseData(voiceCache.getGuidancePoints());
-    //         const coords: Coordinate[] = voiceCache.getGuidancePoints().map(
-    //             (p): Coordinate => [p.lng, p.lat]
-    //         );
-
-    //         // 총거리, 총 경로 포인트 넘기기
-    //         setTotalInfo(voiceCache.getGuidanceTotalInfo());
-
-    //         console.log("right 성공적으로 서버 통신 성공:", coords);
-    //         setCoord(coords);
-    //         setCoords(coords);
-    //     }
-    //     console.log('useEffect 실행');
-    //     start();
-
-    //     setOriginalCoords(coords);
-    //     console.log('경로 get');
-    //     setRouteGeoJson({
-    //         type: "Feature",
-    //         geometry: {
-    //             type: "LineString",
-    //             coordinates: coords,
-    //         },
-    //         properties: {}
-    //     });
-    //     console.log('루트 로딩됨?');
-    // }, []);
-
-    // useEffect(() => {
-    //     setCoord(coords);
-    //     console.log('경로 업데이트',coord);
-    //     setRouteGeoJsons(routeGeoJson);
-    //     console.log('루트 제이슨 업데이트',routeGeoJsons);
-    //     if (coords.length >= 2) {
-    //         console.log("rightnavigate coord:", coord); // 최신 coords
-    //     }
-    // }, [coords]);
 
     useEffect(() => {
         if (coords.length > 1) {
@@ -149,11 +102,15 @@ const RightNavigateScreen = () => {
         coord: Coordinate[]
     ): Coordinate[] {
         if (!coord || coord.length === 0) return [];
-        if (coord.length === 1) return coord;
+        if (coord.length === 1) {
+            console.log('경로 리스트가 1개밖에 되지 않아서 경로 잘리지 않음');
+            return coord;
+        }
 
-        const { closest, closestSegmentIndex } = findClosestPointOnPath(userPos, coords);
+        const { closest, closestSegmentIndex } = findClosestPointOnPath(userPos, coord);
 
         if (!closest) return coord.slice(); // 안전장치
+        console.log("closet: ",closest);
 
         const newCoords: Coordinate[] = [closest, ...coord.slice(closestSegmentIndex + 1)];
 
@@ -180,38 +137,67 @@ const RightNavigateScreen = () => {
         return ((brng * 180) / Math.PI + 360) % 360; // 0~360°
     }
 
+    function distanceMeters(coord1: Coordinate, coord2: Coordinate) {
+        const R = 6371000;
+        const toRad = (d: number) => (d * Math.PI) / 180;
+
+        const lat1 = coord1[1], lon1 = coord1[0];
+        const lat2 = coord2[1], lon2 = coord2[0];
+
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+
+        const a =
+            Math.sin(dLat / 2) ** 2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
+
+        return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
     useEffect(() => {
-        if (!userLocation || originalCoords.length < 2) {
-            if (originalCoords.length === 1 && lastPoint === 0) {
-                console.log("originalCoords: ",originalCoords);
-                // 마지막 점만 남았을 때 사용자 위치에서 연결
-                setLastPoint(0);
-                lineCoords = [userLocation, originalCoords[0]];
-                console.log('마지막 포인트',originalCoords[0])
-                setRouteGeoJson({
-                    type: "Feature",
-                    geometry: { type: "LineString", coordinates: lineCoords },
-                    properties: {}
-                });
-                console.log('마지막 routegeojson: ', lineCoords,'마지막 사용자 위치:',userLocation);
+        if (!userLocation) return;
 
-                if (lastUserLocation) {
-                    const newHeading = getHeading(lastUserLocation, userLocation);
-                    setHeading(newHeading);
-                }
+        const REACH_TOLERANCE = 5;
+        let coordsToTrim = originalCoords;
 
-                setLastUserLocation(userLocation);
-            } else {
-                if (userLocation === originalCoords[0]) {
+        const updated = trimPathToClosestPoint(userLocation, coordsToTrim);
+
+         // --- CASE 1: 남은 경로가 1개 이하일 때 ---
+        if (updated.length < 2) {
+            coordsToTrim[0]=updated[0];
+            console.log("좌표가 하나뿐이라 LineString 생성 안 함", coordsToTrim, 'updated: ',updated);
+
+            // 마지막 좌표 안전하게 가져오기
+            const lastCoord = coordsToTrim[coordsToTrim.length - 1];
+
+            if (lastCoord) {
+                const distToLast = distanceMeters(userLocation, lastCoord);
+                console.log("distToLast:", distToLast);
+
+                // 오차 범위 안이면 도착 처리
+                if (distToLast <= REACH_TOLERANCE) {
+                    console.log("마지막 점 도달(오차 허용)", distToLast, "m");
                     setLastPoint(1);
+                    return; // ← 반드시 return
                 }
-                return
             }
-        };
 
-        const updated = trimPathToClosestPoint(userLocation, originalCoords);
+            setOriginalCoords(coordsToTrim);
+            setRouteGeoJson({
+                type: "Feature",
+                geometry: { type: "LineString", coordinates: coordsToTrim },
+                properties: {}
+            });
+            if (lastUserLocation) {
+                const newHeading = getHeading(lastUserLocation, userLocation);
+                setHeading(newHeading);
+            }
+            return;
+        }
+
+        console.log("잘 실행되는 updated: ",updated);
         setOriginalCoords(updated);
-
         setRouteGeoJson({
             type: "Feature",
             geometry: { type: "LineString", coordinates: updated },
@@ -258,11 +244,12 @@ const RightNavigateScreen = () => {
         if (!userLocation) return;
 
         const newLocation: [number, number] = [
-            userLocation[0] -0.0299558,
-            userLocation[1] +0.0443213,
+            userLocation[0] ,
+            userLocation[1] +0.00001,
             //[=126.5312442, =33.4996213][합: -0.0299558, +0.0443213] +0.00001
         ];
         setUserLocation(newLocation);
+        console.log("userlocation:", userLocation);
     };
 
     useEffect(() => {
@@ -331,7 +318,7 @@ const RightNavigateScreen = () => {
                 <MapLibreGL.MapView style={{ flex: 1 }} mapStyle={MAP_STYLE_URL}>
                     {/* 카메라: 내 위치 따라가기 */}
                     <MapLibreGL.Camera
-                        zoomLevel={16}
+                        zoomLevel={18}
                         centerCoordinate={userLocation} // 제주대 기본값
                         // followUserLocation={true}
                         followUserMode={UserTrackingMode.Follow}
@@ -345,15 +332,15 @@ const RightNavigateScreen = () => {
                             id="routeSource"
                             shape={routeGeoJson}
                         >
-                        <MapLibreGL.LineLayer
-                            id="routeLayer"
-                            style={{
-                                lineWidth: 14,
-                                lineColor: "#39FF14",
-                                lineJoin: "round",
-                                lineCap: "round"
-                            }}
-                        />
+                            <MapLibreGL.LineLayer
+                                id="routeLayer"
+                                style={{
+                                    lineWidth: 14,
+                                    lineColor: "#39FF14",
+                                    lineJoin: "round",
+                                    lineCap: "round"
+                                }}
+                            />
                         </MapLibreGL.ShapeSource>
                     )}
 

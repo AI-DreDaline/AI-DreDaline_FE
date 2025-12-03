@@ -233,7 +233,12 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.placeText}>{place}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('MainScreen', { address })}>
+                <TouchableOpacity 
+                    onPress={() => {
+                        if (address === '위치를 불러오는 중...') return; // ← 클릭 무시
+                        navigation.navigate('MainScreen', { address });
+                    }}
+                >
                     <View style={styles.buttonview}>
                         <Text style={styles.buttonText}>선택</Text>
                     </View>

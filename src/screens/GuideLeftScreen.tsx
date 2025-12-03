@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import {WithLocalSvg} from 'react-native-svg/css';
 
-const map_ready = require('../assets/images/map_ready.svg');
+const map_ready = require('../assets/images/map_ready_login.svg');
 
 export default function GuideLeftScreen() {
   return (
@@ -19,8 +19,8 @@ export default function GuideLeftScreen() {
       >
         <WithLocalSvg
           asset={map_ready}
-          width={470}
-          height={480}
+          width={350}
+          height={467}
         />
       </View>
       <Text style={styles.title}>AI 경로 생성 기능을 이용해보세요!</Text>

@@ -201,18 +201,18 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
         const guidanceId = guidanceList[nextIndex]?.guidance_id;
 
         if (nextIndex >= coords.length - 1) {
-            console.log("종로지점만을 앞두고 있습니다.");
-            return;
+            console.log("종로지점만을 앞두고 있습니다.",coords,nextIndex);
         };
 
-        const totaldist = distanceMeters(coords[nextIndex], coords[nextIndex + 1]);
+        const totaldist = distanceMeters(coords[nextIndex-1], coords[nextIndex]);
 
         const dist = Math.floor(distanceMeters(userLocation, nextPoint));
-        console.log(`다음 포인트까지 거리: ${dist}m`);
+        console.log(`다음 포인트까지 거리: ${dist}m 그리고 현재 index: ${nextIndex}`);
 
         if (!passedIndexes.includes(nextIndex)) {
             if (totaldist >= 50 && dist === 50) {
                 setAudio(guidanceId);
+                console.log("50m 지점")
             } 
             else if (dist === 15 && !passedIndexes.includes(nextIndex)) {
                 Alarm_15m();
