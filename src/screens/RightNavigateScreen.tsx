@@ -6,7 +6,7 @@ import { Feature, LineString } from 'geojson';
 import {WithLocalSvg} from 'react-native-svg/css';
 import { useNavigateCtx } from './NavigateContext';
 
-import line_active from '../assets/images/line_active.png';
+//import line_active from '../assets/images/line_active.png';
 const line = require('../assets/images/line.svg');
 const start = require('../assets/images/start.svg');
 const endpin = require('../assets/images/endpin.svg');
@@ -289,11 +289,11 @@ const RightNavigateScreen = () => {
                             left: 21+145*(percent/100),
                         }}
                     >{percent}%</Text>
-                    <Image
-                        source={line_active}
+                    <View
                         style={{
-                            width: 322*(percent/100),
-                            height: 7,
+                            width: 325*(percent/100),
+                            height: 5,
+                            backgroundColor: '#39FF14',
                             position: 'absolute',
                             top: 108,
                             left: 30,
