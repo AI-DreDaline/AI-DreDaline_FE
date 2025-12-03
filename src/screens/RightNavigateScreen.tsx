@@ -183,6 +183,7 @@ const RightNavigateScreen = () => {
     useEffect(() => {
         if (!userLocation || originalCoords.length < 2) {
             if (originalCoords.length === 1 && lastPoint === 0) {
+                console.log("originalCoords: ",originalCoords);
                 // 마지막 점만 남았을 때 사용자 위치에서 연결
                 setLastPoint(0);
                 lineCoords = [userLocation, originalCoords[0]];
@@ -194,22 +195,19 @@ const RightNavigateScreen = () => {
                 });
                 console.log('마지막 routegeojson: ', lineCoords,'마지막 사용자 위치:',userLocation);
 
-                 if (lastUserLocation) {
+                if (lastUserLocation) {
                     const newHeading = getHeading(lastUserLocation, userLocation);
                     setHeading(newHeading);
                 }
 
                 setLastUserLocation(userLocation);
-                return
             } else {
                 if (userLocation === originalCoords[0]) {
                     setLastPoint(1);
                 }
                 return
             }
-
         };
-
 
         const updated = trimPathToClosestPoint(userLocation, originalCoords);
         setOriginalCoords(updated);
@@ -260,8 +258,8 @@ const RightNavigateScreen = () => {
         if (!userLocation) return;
 
         const newLocation: [number, number] = [
-            userLocation[0] +0.00001,
-            userLocation[1] +0.00001,
+            userLocation[0] -0.0299558,
+            userLocation[1] +0.0443213,
             //[=126.5312442, =33.4996213][합: -0.0299558, +0.0443213] +0.00001
         ];
         setUserLocation(newLocation);

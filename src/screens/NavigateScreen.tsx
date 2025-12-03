@@ -80,10 +80,6 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     }, [kmAudio]);
 
     const handlePressIn = () => {
-        setButtonText('계속 달리기');
-        setIsPressed(false);
-        stopTimer();
-        // 3초 타이머 시작
         timerRef.current = setTimeout(() => {
             stopTimer();
             setModalVisible(true);
@@ -107,16 +103,14 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     const { stopTimer } = useNavigateCtx();
 
     const handlePress = () => {
-        const now = Date.now();
-
         if (!isPressed) {
             setButtonText('일시 정지');
-            setIsPressed(true);
             startTimer();
+            setIsPressed(true);
         } else {
             setButtonText('계속 달리기');
-            setIsPressed(false);
             stopTimer();
+            setIsPressed(false);
         }
     };
 
@@ -124,8 +118,6 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
         pagerRef.current?.setPage(index);
         setCurrentPage(index);
     };
-
-
 
     return (
         <View style={{ flex: 1}}>
