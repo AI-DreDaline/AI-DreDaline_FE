@@ -8,8 +8,7 @@ const map = require('../assets/images/map_ready_1.svg');
 
 const LeftNavigateScreen = () => {
 
-    const {timeIntervals} = useNavigateCtx();
-    const { lappace } = useNavigateCtx();
+    const { timeIntervals, lappace, setRaceInfo } = useNavigateCtx();
 
     const [race, setRace] = useState<
         {
@@ -59,6 +58,7 @@ const LeftNavigateScreen = () => {
         });
 
         setRace(newRace);
+        setRaceInfo(newRace);
         console.log("newrace:",newRace);
     }, [timeIntervals]);
 

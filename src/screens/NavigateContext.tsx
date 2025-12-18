@@ -3,36 +3,59 @@ import { Feature, LineString } from 'geojson';
 
 // 타입 ----------------------------------------------------
 export type Coordinate = [number, number];
+export type race = {
+  lap: number;
+  time: string;
+  pace: string;
+  heartRate: number;
+  power: number;
+};
+
 
 interface NavigateContextType {
-    userLocation: Coordinate | null;
-    setUserlocation: (pos: Coordinate) => void;
+  userLocation: Coordinate | null;
+  setUserlocation: (pos: Coordinate) => void;
 
-    isRunning: boolean;
+  isRunning: boolean;
 
-    coords: Coordinate[];
-    setCoord: (c: Coordinate[]) => void;
-    nextIndex: number;
+  coords: Coordinate[];
+  setCoord: (c: Coordinate[]) => void;
+  nextIndex: number;
 
-    distance: [number, number][];
-    totalDistance: number;
-    timeIntervals: [number, number | null][];
-    startTimer: () => void;
-    stopTimer: () => void;
-    addDistance: (meters: number) => void;
+  distance: [number, number][];
+  totalDistance: number;
+  timeIntervals: [number, number | null][];
+  startTimer: () => void;
+  stopTimer: () => void;
+  addDistance: (meters: number) => void;
 
-    pace: number;
-    avgpace: number;
-    lappace: number[];
+  pace: number;
+  avgpace: number;
+  lappace: number[];
+  totalInfo: [number, number];
 
-    setResponseData: (data: any) => void;
-    setTotalInfo: (data: any) => void;
-    percent: number;
-    audio: string;
-    kmAudio: number;
+  setResponseData: (data: any) => void;
+  setTotalInfo: (data: any) => void;
+  percent: number;
+  audio: string;
+  kmAudio: number;
 
-    routeGeoJson: Feature<LineString> | null;
-    setRouteGeoJson: (data: any) => void;
+  routeGeoJson: Feature<LineString> | null;
+  setRouteGeoJson: (data: any) => void;
+
+  trimmedCoords: Coordinate[];
+  setTrimmedCoords: (coords: Coordinate[]) => void;
+
+  heading: number;
+  setHeading: (h: number) => void;
+
+  lastPoint: number;
+  setLastPoint: (x: number) => void;
+
+  setRaceInfo: (info: race[]) => void;
+  raceInfo: race[];
+
+  resetRunData: () => void;
 }
 
 const NavigateContext = createContext<NavigateContextType | null>(null);
@@ -61,7 +84,7 @@ function distanceMeters(c1: Coordinate, c2: Coordinate) {
 export function NavigateProvider({ children }: { children: ReactNode }) {
 
     const [responseData, setResponseData] = useState<any>(null);
-    const [totalInfo, setTotalInfo] = useState([0,0]);
+    const [totalInfo, setTotalInfo] = useState<[number, number]>([0,0]);
     const [percent, setPercent] = useState<number>(0);
 
     const [timeIntervals, setTimeIntervals] = useState<[number, number | null][]>([]);
@@ -93,6 +116,16 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
     const [kmAudio, setKmAudio] = useState<number>(0);
 
     const [routeGeoJson, setRouteGeoJson] = useState<Feature<LineString> | null>(null);
+    
+    const [trimmedCoords, setTrimmedCoords] = useState<Coordinate[]>([]);
+    const [heading, setHeading] = useState(0);
+    const [lastPoint, setLastPoint] = useState(0);
+
+    const [raceInfo, setRaceInfo] = useState<race[]>([]);
+
+    useEffect( () => {
+       console.log("lab 업데이트 됨"); 
+    }, [raceInfo]);
 
     useEffect(() => {
         console.log("responceData 변경됨:");
@@ -277,39 +310,60 @@ export function NavigateProvider({ children }: { children: ReactNode }) {
         console.log(`${km}km 달성!`);
     }
 
+    const resetRunData = () => {
+      setTotalInfo([0, 0]); // 총거리 초기화
+      setAvgPace(0); // 평균 페이스 초기화
+      setTimeIntervals([]); // 시간 기록 초기화
+      setRaceInfo([]); // lap 데이터 초기화
+      setTimeIntervals([]);
+    };
+
     return (
-        <NavigateContext.Provider
-            value={{
-                userLocation,
-                setUserlocation,
-                isRunning,
-                distance,
-                totalDistance,
-                coords,
-                setCoord,
-                nextIndex,
+      <NavigateContext.Provider
+        value={{
+          userLocation,
+          setUserlocation,
+          isRunning,
+          distance,
+          totalDistance,
+          coords,
+          setCoord,
+          nextIndex,
 
-                avgpace,
-                lappace,
+          avgpace,
+          lappace,
 
-                timeIntervals,
-                startTimer,
-                stopTimer,
-                addDistance,
-                pace,
+          timeIntervals,
+          startTimer,
+          stopTimer,
+          addDistance,
+          pace,
+          totalInfo,
 
-                setResponseData,
-                setTotalInfo,
-                percent,
-                audio,
-                kmAudio,
+          setResponseData,
+          setTotalInfo,
+          percent,
+          audio,
+          kmAudio,
 
-                routeGeoJson,
-                setRouteGeoJson,
-            }}
-        >
-            {children}
-        </NavigateContext.Provider>
+          routeGeoJson,
+          setRouteGeoJson,
+
+          trimmedCoords,
+          setTrimmedCoords,
+          heading,
+          setHeading,
+          lastPoint,
+          setLastPoint,
+
+          raceInfo,
+          setRaceInfo,
+
+          resetRunData,
+        }}
+      >
+        {children}
+      </NavigateContext.Provider>
     );
 }
 

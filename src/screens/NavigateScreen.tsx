@@ -18,9 +18,18 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Navigate'>;
 
 type Coordinate = [number, number];
 
+type race =
+    {
+        lap: number;
+        time: string;
+        pace: string;
+        heartRate: number;
+        power: number;
+    };
+
 const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     useTabBarVisibility(false);
-    const { setCoord, setResponseData, audio, kmAudio, setTotalInfo, setRouteGeoJson } = useNavigateCtx();
+    const { setCoord, setResponseData, audio, kmAudio, setTotalInfo, setRouteGeoJson, totalInfo, avgpace, timeIntervals, raceInfo } = useNavigateCtx();
 
     const selectedDate = new Date().toISOString().split('T')[0];
 
@@ -35,6 +44,9 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
 
     const [originalCoords, setOriginalCoords] = useState<[number, number][]>([]);
     const [coords, setCoords] = useState<Coordinate[]>([]);
+
+    const [finishpress, setFinishPress] = useState(false);
+
     
     useEffect(() => {
         async function start() {
@@ -46,10 +58,9 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
             const coords: Coordinate[] = voiceCache.getGuidancePoints().map(
                 (p): Coordinate => [p.lng, p.lat]
             );
-    
-            // 총거리, 총 경로 포인트 넘기기
+
             setTotalInfo(voiceCache.getGuidanceTotalInfo());
-    
+
             console.log("right 성공적으로 서버 통신 성공:", coords);
             setCoord(coords);
             setCoords(coords);
@@ -80,14 +91,17 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     }, [kmAudio]);
 
     const handlePressIn = () => {
+        if (isPressed) return;
+
         timerRef.current = setTimeout(() => {
-            stopTimer();
+            setFinishPress(true);
             setModalVisible(true);
             navigation.navigate('MainScreen', {
                 address: '',
                 mode: '',
                 screen: 'RecommendRun',
             });
+            giveData();
         }, 2000);
     };
 
@@ -103,6 +117,7 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     const { stopTimer } = useNavigateCtx();
 
     const handlePress = () => {
+        if (finishpress) return;
         if (!isPressed) {
             setButtonText('일시 정지');
             startTimer();
@@ -112,6 +127,19 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
             stopTimer();
             setIsPressed(false);
         }
+    };
+
+    const giveData = () => {
+        const totaldistance = totalInfo; //총 거리
+        const level = 0;  // 경사도
+        const pace = avgpace;  // 평균 페이스
+        const time = timeIntervals.reduce((acc, [start, end]) => {
+            const effectiveEnd = end ?? Date.now();
+            return acc + (effectiveEnd - start);
+        }, 0);  // 총 시간
+        const race = raceInfo; // 각 lab 데이터
+        console.log("총거리",totaldistance,"평균 페이스",pace,"총 시간",time, "각 lab",race);
+        
     };
 
     const goToPage = (index: number) => {

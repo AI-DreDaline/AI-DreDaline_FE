@@ -164,36 +164,46 @@ const RightNavigateScreen = () => {
         const updated = trimPathToClosestPoint(userLocation, coordsToTrim);
 
          // --- CASE 1: 남은 경로가 1개 이하일 때 ---
-        if (updated.length < 2) {
-            coordsToTrim[0]=updated[0];
-            console.log("좌표가 하나뿐이라 LineString 생성 안 함", coordsToTrim, 'updated: ',updated);
+        if (updated.length == 2) {
+            const lastload = originalCoords[0];
 
-            // 마지막 좌표 안전하게 가져오기
-            const lastCoord = coordsToTrim[coordsToTrim.length - 1];
-
-            if (lastCoord) {
-                const distToLast = distanceMeters(userLocation, lastCoord);
-                console.log("distToLast:", distToLast);
-
-                // 오차 범위 안이면 도착 처리
-                if (distToLast <= REACH_TOLERANCE) {
-                    console.log("마지막 점 도달(오차 허용)", distToLast, "m");
-                    setLastPoint(1);
-                    return; // ← 반드시 return
-                }
+            if (
+              userLocation[0] === lastload[0] &&
+              userLocation[1] === lastload[1]
+            ) {
+              console.log("마지막 점 도달");
+              setLastPoint(1);
+              return;
             }
+            // coordsToTrim[0]=updated[0];
+            // console.log("좌표가 하나뿐이라 LineString 생성 안 함", coordsToTrim, 'updated: ',updated);
 
-            setOriginalCoords(coordsToTrim);
-            setRouteGeoJson({
-                type: "Feature",
-                geometry: { type: "LineString", coordinates: coordsToTrim },
-                properties: {}
-            });
-            if (lastUserLocation) {
-                const newHeading = getHeading(lastUserLocation, userLocation);
-                setHeading(newHeading);
-            }
-            return;
+            // // 마지막 좌표 안전하게 가져오기
+            // const lastCoord = coordsToTrim[coordsToTrim.length - 1];
+
+            // if (lastCoord) {
+            //     const distToLast = distanceMeters(userLocation, lastCoord);
+            //     console.log("distToLast:", distToLast);
+
+            //     // 오차 범위 안이면 도착 처리
+            //     if (distToLast <= REACH_TOLERANCE) {
+            //         console.log("마지막 점 도달(오차 허용)", distToLast, "m");
+            //         setLastPoint(1);
+            //         return; // ← 반드시 return
+            //     }
+            // }
+
+            // setOriginalCoords(coordsToTrim);
+            // setRouteGeoJson({
+            //     type: "Feature",
+            //     geometry: { type: "LineString", coordinates: coordsToTrim },
+            //     properties: {}
+            // });
+            // if (lastUserLocation) {
+            //     const newHeading = getHeading(lastUserLocation, userLocation);
+            //     setHeading(newHeading);
+            // }
+            // return;
         }
 
         console.log("잘 실행되는 updated: ",updated);
@@ -349,28 +359,6 @@ const RightNavigateScreen = () => {
                         visible={false}
                         showsUserHeadingIndicator={true}
                         onUpdate={handleUserLocationUpdate}
-                        // onUpdate={(location) => {
-                        //     const { longitude, latitude } = location.coords;
-                        //     const newPos: [number, number] = [longitude, latitude];
-
-                        //     setUserLocation(newPos);
-                        //     const updatedPath = trimPathToClosestPoint(newPos, originalCoords);
-                        //     setOriginalCoords(updatedPath);
-                        //     setRouteGeoJson({
-                        //         type: "Feature",
-                        //         geometry: {
-                        //             type: "LineString",
-                        //             coordinates: updatedPath,
-                        //         },
-                        //         properties: {}
-                        //     });
-                        //     console.log("지오제이슨:", routeGeoJson);
-                        //     // cameraRef.current?.setCamera({
-                        //     //     centerCoordinate: newPos,
-                        //     //     animationDuration: 500,
-                        //     // });
-                        //     //console.log("업데이트 되는 위치:", newPos);
-                        // }}
                     />
                     <MapLibreGL.PointAnnotation
                         id="userCursor"
