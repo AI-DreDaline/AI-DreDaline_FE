@@ -29,7 +29,7 @@ type race =
 
 const NavigateScreen: React.FC<Props> = ({ navigation }) => {
     useTabBarVisibility(false);
-    const { setCoord, setResponseData, audio, kmAudio, setTotalInfo, setRouteGeoJson, totalInfo, avgpace, timeIntervals, raceInfo } = useNavigateCtx();
+    const { setCoord, setResponseData, audio, kmAudio, setTotalInfo, setRouteGeoJson, totalInfo, avgpace, timeIntervals, raceInfo, resetRunData } = useNavigateCtx();
 
     const selectedDate = new Date().toISOString().split('T')[0];
 
@@ -96,6 +96,7 @@ const NavigateScreen: React.FC<Props> = ({ navigation }) => {
         timerRef.current = setTimeout(() => {
             setFinishPress(true);
             setModalVisible(true);
+            resetRunData();
             navigation.navigate('MainScreen', {
                 address: '',
                 mode: '',

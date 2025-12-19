@@ -328,7 +328,7 @@ const RightNavigateScreen = () => {
                 <MapLibreGL.MapView style={{ flex: 1 }} mapStyle={MAP_STYLE_URL}>
                     {/* 카메라: 내 위치 따라가기 */}
                     <MapLibreGL.Camera
-                        zoomLevel={18}
+                        zoomLevel={16}
                         centerCoordinate={userLocation} // 제주대 기본값
                         // followUserLocation={true}
                         followUserMode={UserTrackingMode.Follow}

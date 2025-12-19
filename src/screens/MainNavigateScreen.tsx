@@ -38,6 +38,7 @@ const MainNavigateScreen = () => {
     trimmedCoords,
     heading,
     lastPoint,
+    timeIntervals,
   } = useNavigateCtx();
 
   const [originalCoords, setOriginalCoords] = useState<[number, number][]>([]);
@@ -47,7 +48,6 @@ const MainNavigateScreen = () => {
   const km = (totalDistance / 1000).toFixed(2);
   const [time, setTime] = useState("00:00");
 
-  const { timeIntervals } = useNavigateCtx();
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
