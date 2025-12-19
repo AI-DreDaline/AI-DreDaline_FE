@@ -89,9 +89,9 @@ const LeftNavigateScreen = () => {
                     <Text style={styles.listtoptext}>Power</Text>
                 </View>
 
-                <View style={{ width: 500, }}>
+                <View style={{ width: 500, height: 229 }}>
                     <ScrollView
-                        contentContainerStyle={{ paddingBottom: 50 }}
+                        contentContainerStyle={{ paddingBottom: 30 }}
                     >
                         {race.map((r, index) => (
                             <View key={index}>
