@@ -8,8 +8,7 @@ const map = require('../assets/images/map_ready_1.svg');
 
 const LeftNavigateScreen = () => {
 
-    const {timeIntervals} = useNavigateCtx();
-    const { lappace } = useNavigateCtx();
+    const { timeIntervals, lappace, setRaceInfo } = useNavigateCtx();
 
     const [race, setRace] = useState<
         {
@@ -59,6 +58,7 @@ const LeftNavigateScreen = () => {
         });
 
         setRace(newRace);
+        setRaceInfo(newRace);
         console.log("newrace:",newRace);
     }, [timeIntervals]);
 
@@ -89,9 +89,9 @@ const LeftNavigateScreen = () => {
                     <Text style={styles.listtoptext}>Power</Text>
                 </View>
 
-                <View style={{ width: 500, }}>
+                <View style={{ width: 500, height: 229 }}>
                     <ScrollView
-                        contentContainerStyle={{ paddingBottom: 50 }}
+                        contentContainerStyle={{ paddingBottom: 30 }}
                     >
                         {race.map((r, index) => (
                             <View key={index}>
