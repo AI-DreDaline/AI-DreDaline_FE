@@ -28,6 +28,8 @@ const BottomBar: React.FC<BottomBarProps> = ({ visible = true, onLogout }) => {
       initialRouteName="MainTab"
       screenOptions={({ route }) => ({
         headerShown: false,
+        lazy: true,
+        freezeOnBlur: true,
         tabBarStyle: {
           backgroundColor: '#1B1B1B',
           height: 102,

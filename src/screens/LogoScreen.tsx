@@ -10,10 +10,10 @@ import mainIcon from '../assets/images/mainicon.png';
 
 const LogoScreen = ({ navigation }: Props) => {
   useEffect(() => {
-    // 1초 뒤 GuideScreen으로 이동
+    // Avoid holding the user on a static splash longer than necessary.
     const timer = setTimeout(() => {
       navigation.replace('Guide'); // 또는 replace('Guide')
-    }, 1000);
+    }, 150);
 
     return () => clearTimeout(timer); // 언마운트 시 타이머 정리
   }, [navigation]);

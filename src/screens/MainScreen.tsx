@@ -90,6 +90,8 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
             tabBarStyle: { backgroundColor: 'transparent', elevation: 0, shadowOpacity: 0 },
             tabBarIndicatorStyle: { backgroundColor: 'transparent' }, // 밑줄 제거
             swipeEnabled: false,
+            lazy: true,
+            lazyPreloadDistance: 0,
           }}
           tabBar={(props: MaterialTopTabBarProps) => {
             const { state, descriptors, navigation } = props;
@@ -261,4 +263,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
 });
-

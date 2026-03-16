@@ -6,6 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types'; // 스택 타입 정의
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Loading'>;
+const LOADING_TRANSITION_MS = 600;
 
 const LoadingScreen: React.FC<Props> = ({ navigation}) => {
     useTabBarVisibility(false);
@@ -27,7 +28,7 @@ const LoadingScreen: React.FC<Props> = ({ navigation}) => {
         const timer = setTimeout(() => {
             setLoading(false);
             navigation.replace('Navigate');
-        }, 2000);
+        }, LOADING_TRANSITION_MS);
 
         return () => clearTimeout(timer);
     }, [navigation]);
@@ -36,7 +37,7 @@ const LoadingScreen: React.FC<Props> = ({ navigation}) => {
 
     useEffect(() => {
         let start = 0;
-        const duration = 2000; // 2초
+        const duration = LOADING_TRANSITION_MS;
         const interval = 16; // 약 60fps
         const increment = interval / duration;
 
