@@ -8,18 +8,17 @@ import { RootStackParamList } from '../navigations/types';
 import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
 import Geolocation from 'react-native-geolocation-service';
 import { getCoordinates } from '../components/SearchAdress';
-import {WithLocalSvg} from 'react-native-svg/css';
+import { API_KEY } from '@env';
 
-const back = require('../assets/images/back.svg');
-const gps = require('../assets/images/gps.svg');
-const mountain = require('../assets/images/mountain.svg');
-const camera = require('../assets/images/camera.svg');
-const gps_active = require('../assets/images/gps_active.svg');
-const mountain_active = require('../assets/images/mountain_active.svg');
-const camera_active = require('../assets/images/camera_active.svg');
+import BackSvg from '../assets/images/back.svg';
+import GpsSvg from '../assets/images/gps.svg';
+import MountainSvg from '../assets/images/mountain.svg';
+import CameraSvg from '../assets/images/camera.svg';
+import GpsActiveSvg from '../assets/images/gps_active.svg';
+import MountainActiveSvg from '../assets/images/mountain_active.svg';
+import CameraActiveSvg from '../assets/images/camera_active.svg';
 
-const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
-const API_KEY = "QhGgr94B6Frh1kFgQHuB";
+const MAP_STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`;
 
 // 올바른 방법
 function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'DrawTrackMap'>) {
@@ -143,10 +142,9 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         style={styles.backButton}
                         onPress={() => navigation.goBack()} // 뒤로가기
                     >
-                        <WithLocalSvg
-                            asset={back}
+                        <BackSvg
                             style={{width: 11, height:18}}
-                        />
+/>
                     </TouchableOpacity>
                     <Text style={styles.title}>지도에서 그리기</Text>
                     <TouchableOpacity
@@ -270,24 +268,27 @@ function DrawTrackMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         }
                     }}
                 >
-                    <WithLocalSvg
-                        asset={selectedTool === 'here' ? gps_active : gps}
-                        style={{ width: 35, height: 35, marginLeft: 23, marginTop: 10 }}
-                    />
+                    {selectedTool === 'here' ? (
+                        <GpsActiveSvg style={{ width: 35, height: 35, marginLeft: 23, marginTop: 10 }} />
+                    ) : (
+                        <GpsSvg style={{ width: 35, height: 35, marginLeft: 23, marginTop: 10 }} />
+                    )}
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => setSelectedTool(prev => (prev === 'mountain' ? null : 'mountain'))}>
-                    <WithLocalSvg
-                        asset={selectedTool === 'mountain' ? mountain_active : mountain}
-                        style={{ width: 38, height: 35, marginLeft: 33, marginTop: 14 }}
-                    />
+                    {selectedTool === 'mountain' ? (
+                        <MountainActiveSvg style={{ width: 38, height: 35, marginLeft: 33, marginTop: 14 }} />
+                    ) : (
+                        <MountainSvg style={{ width: 38, height: 35, marginLeft: 33, marginTop: 14 }} />
+                    )}
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => setSelectedTool(prev => (prev === 'camera' ? null : 'camera'))}>
-                    <WithLocalSvg
-                        asset={selectedTool === 'camera' ? camera_active : camera}
-                        style={{ width: 33, height: 33, marginLeft: 33, marginTop: 10 }}
-                    />
+                    {selectedTool === 'camera' ? (
+                        <CameraActiveSvg style={{ width: 33, height: 33, marginLeft: 33, marginTop: 10 }} />
+                    ) : (
+                        <CameraSvg style={{ width: 33, height: 33, marginLeft: 33, marginTop: 10 }} />
+                    )}
                 </TouchableOpacity>
                 <Text style={styles.kmText}>0.00</Text>
                 <Text style={styles.km}>km</Text>

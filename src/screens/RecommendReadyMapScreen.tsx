@@ -4,11 +4,11 @@ import useTabBarVisibility from "../assets/useTabBarVisibility";
 import MapLibreGL, { MapViewRef, CameraRef } from '@maplibre/maplibre-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
+import { API_KEY } from '@env';
 
 import x_black from '../assets/images/x_black.png';
 
-const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
-const API_KEY = "QhGgr94B6Frh1kFgQHuB";
+const MAP_STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`;
 const centerCoord: [number, number] = [126.9780, 37.5665]; // 서울 좌표 예시
 
 // 올바른 방법

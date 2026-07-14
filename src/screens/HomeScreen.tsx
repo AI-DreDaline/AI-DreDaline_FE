@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Modal } fr
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '../navigations/types';
 import { useNavigation } from '@react-navigation/native';
-import {WithLocalSvg} from 'react-native-svg/css';
 
 type HomeNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 

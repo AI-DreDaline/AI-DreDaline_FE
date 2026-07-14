@@ -2,9 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const Locationicon = require('../assets/images/location.svg');
+import LocationiconSvg from '../assets/images/location.svg';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'ConnectLocation'>;
 
@@ -19,10 +18,9 @@ const ConnectLocationScreen = ({ navigation }: Props) => {
             </View>
 
             <View style={styles.mainview}>
-                <WithLocalSvg
-                    asset={Locationicon}
+                <LocationiconSvg
                     style={{width: 40, height: 40, borderRadius: 10}}
-                />
+/>
                 <Text style={styles.maintext}>위치</Text>
             </View>
 

@@ -9,13 +9,13 @@ import { RootStackParamList } from '../navigations/types';
 //import { getCoordinates } from '../components/SearchAdress';
 import { getAutocomplete, getPlaceDetail, getCoordinates } from "../components/SearchAdress";
 import Geolocation from 'react-native-geolocation-service';
-import {WithLocalSvg} from 'react-native-svg/css';
+import { API_KEY } from '@env';
 
-const back = require('../assets/images/back.svg');
-const gps = require('../assets/images/gps_black.svg');
+import BackSvg from '../assets/images/back.svg';
+import GpsSvg from '../assets/images/gps_black.svg';
 
-const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
-//const API_KEY = "QhGgr94B6Frh1kFgQHuB";
+const MAP_STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`;
+
 type AutocompleteItem = {
     description: string;
     place_id: string;
@@ -145,10 +145,9 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                         style={styles.backButton}
                         onPress={() => navigation.goBack()} // 뒤로가기
                     >
-                        <WithLocalSvg
-                            asset={back}
+                        <BackSvg
                             style={{width: 11, height:18}}
-                        />
+/>
                     </TouchableOpacity>
                     <Text style={styles.title}>지도에서 선택</Text>
                 </View>
@@ -196,11 +195,10 @@ function RecommendMapScreen({ navigation, route }: NativeStackScreenProps<RootSt
                     style={styles.gpsbutton}
                     onPress={() => FocusHere(cameraRef)} // 뒤로가기
                 >
-                    <WithLocalSvg
-                        asset={gps}
+                    <GpsSvg
                         width={40}
                         height={40}
-                    />
+/>
                 </TouchableOpacity>
 
                 <MapLibreGL.Camera

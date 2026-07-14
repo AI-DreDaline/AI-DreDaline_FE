@@ -1,10 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-import {WithLocalSvg} from 'react-native-svg/css';
 import { useNavigateCtx } from './NavigateContext';
 
-const round_3 = require('../assets/images/round_3.svg');
-const map = require('../assets/images/map_ready_1.svg');
+import Round3Svg from '../assets/images/round_3.svg';
 
 const LeftNavigateScreen = () => {
 
@@ -65,18 +63,16 @@ const LeftNavigateScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.mapview}>
-                <WithLocalSvg
-                    asset={map}
-                    width= {315}
-                    height={277}
-                    style={styles.map}
+                <Image
+                    source={require('../assets/images/map_ready_1.png')}
+                    style={[styles.map, { width: 315, height: 277 }]}
+                    resizeMode="cover"
                 />
-                <WithLocalSvg
-                    asset={round_3}
+                <Round3Svg
                     width={319}
                     height={280}
                     style={styles.round}
-                />
+/>
             </View>
             <View style={styles.listview}>
 

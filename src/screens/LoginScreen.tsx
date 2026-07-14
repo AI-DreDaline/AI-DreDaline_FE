@@ -2,16 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-type Props = NativeStackScreenProps<LoingStackParamList, 'Logo'>
+type Props = NativeStackScreenProps<LoingStackParamList, 'Login'>
 
 import mainIcon from '../assets/images/mainicon.png';
-const phoneicon = require('../assets/images/phone.svg');
-const appleicon = require('../assets/images/apple.svg');
-const navericon = require('../assets/images/naver.svg');
-const googleicon = require('../assets/images/google.svg');
-const map_arrow = require('../assets/images/map_arrow.svg');
+import PhoneiconSvg from '../assets/images/phone.svg';
+import AppleiconSvg from '../assets/images/apple.svg';
+import NavericonSvg from '../assets/images/naver.svg';
+import GoogleiconSvg from '../assets/images/google.svg';
+import MapArrowSvg from '../assets/images/map_arrow.svg';
 
 const LoginScreen = ({ navigation}: Props) => {
     return(
@@ -26,10 +25,9 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
-                            <WithLocalSvg
-                                asset={phoneicon}
+                            <PhoneiconSvg
                                 style={{width: 18, height: 25}}
-                            />
+/>
                         </View>
                         <Text style={styles.buttontext}>휴대폰 번호로 계속하기</Text>
                     </View>
@@ -39,10 +37,9 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
-                            <WithLocalSvg
-                                asset={appleicon}
+                            <AppleiconSvg
                                 style={{width: 20, height: 23}}
-                            />
+/>
                         </View>
                         <Text style={styles.buttontext}>애플 아이디로 계속하기</Text>
                     </View>
@@ -52,10 +49,9 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 13}}>
-                            <WithLocalSvg
-                                asset={navericon}
+                            <NavericonSvg
                                 style={{width: 23, height: 23}}
-                            />
+/>
                         </View>
                         <Text style={styles.buttontext}>네이버 아이디로 계속하기</Text>
                     </View>
@@ -65,10 +61,9 @@ const LoginScreen = ({ navigation}: Props) => {
                 >
                     <View style={styles.button}>
                         <View style={{width:110, paddingLeft: 50, paddingTop: 12}}>
-                            <WithLocalSvg
-                                asset={googleicon}
+                            <GoogleiconSvg
                                 style={{width: 22, height: 26}}
-                            />
+/>
                         </View>
                         <Text style={styles.buttontext}>구글 아이디로 계속하기</Text>
                     </View>

@@ -2,14 +2,12 @@ import React, {useState} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const graph = require('../assets/images/graph.svg');
-const setting = require('../assets/images/setting.svg');
-const round = require('../assets/images/round.svg');
-const map = require('../assets/images/map.svg');
-const pin = require('../assets/images/pin.svg');
-const flag = require('../assets/images/flag.svg');
+import GraphSvg from '../assets/images/graph.svg';
+import SettingSvg from '../assets/images/setting.svg';
+import RoundSvg from '../assets/images/round.svg';
+import PinSvg from '../assets/images/pin.svg';
+import FlagSvg from '../assets/images/flag.svg';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DrawTrackRun'>;
 
@@ -33,10 +31,9 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
               <Text style={styles.boxTexttwo}>나만의 경로 그리기가 처음이라면</Text>
               <Text style={styles.boxTextthree}>튜토리얼 보러가기 {'>'}</Text>
             </View>
-            <WithLocalSvg
-              asset={flag}
+            <FlagSvg
               style={{width: 72, height: 72}}
-            />
+/>
           </View>
             <View style={styles.topline}>
                 <Text style={styles.title}>지도를 클릭하여 나만의 경로를 만드세요</Text>
@@ -45,13 +42,13 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
 
             <View style={styles.map}>
                 <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
-                    <WithLocalSvg
-                        asset={map}
+                    <Image
+                        source={require('../assets/images/map.png')}
                         style={styles.mapsize}
+                        resizeMode="cover"
                     />
                 </TouchableOpacity>
-                <WithLocalSvg
-                    asset={pin}
+                <PinSvg
                     style={{
                         width:26,
                         height:26,
@@ -59,21 +56,19 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
                         top: 255,
                         left: 180,
                     }}
-                />
+/>
                 
                 <TouchableOpacity onPress={() => navigation.navigate('DrawTrackMap')}>
-                    <WithLocalSvg
-                        asset={round}
+                    <RoundSvg
                         style={styles.round}
-                    />
+/>
                 </TouchableOpacity>
             </View>
             
             <View style={styles.buttonview}>
-                <WithLocalSvg
-                    asset={graph}
+                <GraphSvg
                     style={{width:20, height: 25}}
-                />
+/>
                 <TouchableOpacity 
                   style={styles.button} 
                   onPress={() =>  miss_data_alarm()}
@@ -81,10 +76,9 @@ function DrawTrackRunScreen({ navigation, route }: Props) {
 
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
-                <WithLocalSvg
-                    asset={setting}
+                <SettingSvg
                     style={{width:23, height: 24}}
-                />
+/>
             </View>
         </View>
     );

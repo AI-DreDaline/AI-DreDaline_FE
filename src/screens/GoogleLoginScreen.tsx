@@ -2,9 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const back = require('../assets/images/back.svg');
+import BackSvg from '../assets/images/back.svg';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'GoogleLogin'>;
 
@@ -17,10 +16,9 @@ const GoogleLoginScreen = ({ navigation }: Props) => {
                         style={styles.backButton}
                         onPress={() => navigation.goBack()} // 뒤로가기
                     >
-                        <WithLocalSvg 
-                            asset={back}
+                        <BackSvg
                             style={{width: 11, height:18}}
-                        />
+/>
                     </TouchableOpacity>
                 </View>
             </View>

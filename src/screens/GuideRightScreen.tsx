@@ -1,8 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import {WithLocalSvg} from 'react-native-svg/css';
-
-const map_ready = require('../assets/images/map_ready_login.svg');
+import { View, Text, StyleSheet, Image } from 'react-native';
 
 export default function GuideRightScreen() {
   return (
@@ -17,10 +14,10 @@ export default function GuideRightScreen() {
           height: 467,
         }}
       >
-        <WithLocalSvg
-          asset={map_ready}
-          width={350}
-          height={467}
+        <Image
+          source={require('../assets/images/map_ready_login.png')}
+          style={{ width: 350, height: 467 }}
+          resizeMode="cover"
         />
       </View>
         <Text style={styles.title}>지도에 직접 경로를 그려보세요!</Text>

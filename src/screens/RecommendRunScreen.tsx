@@ -1,30 +1,27 @@
 import {useState} from 'react';
 import * as React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
+import RunnerSvg from '../assets/images/runner.svg';
+import RunnerActiveSvg from '../assets/images/runner_active.svg';
+import BaseballSvg from '../assets/images/baseball.svg';
+import BaseballActiveSvg from '../assets/images/baseball_active.svg';
+import ButterflySvg from '../assets/images/butterfly.svg';
+import ButterflyActiveSvg from '../assets/images/butterfly_active.svg';
+import DuckSvg from '../assets/images/duck.svg';
+import DuckActiveSvg from '../assets/images/duck_active.svg';
+import HorseSvg from '../assets/images/horse.svg';
+import HorseActiveSvg from '../assets/images/horse_active.svg';
+import CloverSvg from '../assets/images/clover.svg';
+import CloverActiveSvg from '../assets/images/clover_active.svg';
 
-const runner = require('../assets/images/runner.svg');
-const runner_active = require('../assets/images/runner_active.svg');
-const baseball = require('../assets/images/baseball.svg');
-const baseball_active = require('../assets/images/baseball_active.svg');
-const butterfly = require('../assets/images/butterfly.svg');
-const butterfly_active = require('../assets/images/butterfly_active.svg');
-const duck = require('../assets/images/duck.svg');
-const duck_active = require('../assets/images/duck_active.svg');
-const horse = require('../assets/images/horse.svg');
-const horse_active = require('../assets/images/horse_active.svg');
-const clover = require('../assets/images/clover.svg');
-const clover_active = require('../assets/images/clover_active.svg');
-
-const round = require('../assets/images/round.svg');
-const map = require('../assets/images/map.svg');
-const plus = require('../assets/images/plus.svg');
-const minus = require('../assets/images/minus.svg');
-const pin = require('../assets/images/pin.svg');
-const graph = require('../assets/images/graph.svg');
-const setting = require('../assets/images/setting.svg');
+import RoundSvg from '../assets/images/round.svg';
+import PlusSvg from '../assets/images/plus.svg';
+import MinusSvg from '../assets/images/minus.svg';
+import PinSvg from '../assets/images/pin.svg';
+import GraphSvg from '../assets/images/graph.svg';
+import SettingSvg from '../assets/images/setting.svg';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RecommendRun'>;
 
@@ -32,12 +29,12 @@ function RecommendRunScreen({ navigation, route }: Props) {
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
     const templates = [
-        { id: 'runner', label: '러닝', img: runner, imgActive: runner_active },
-        { id: 'baseball', label: '야구공', img: baseball, imgActive: baseball_active },
-        { id: 'butterfly', label: '나비', img: butterfly, imgActive: butterfly_active },
-        { id: 'duck', label: '오리', img: duck, imgActive: duck_active },
-        { id: 'horse', label: '체스말', img: horse, imgActive: horse_active },
-        { id: 'clover', label: '클로버', img: clover, imgActive: clover_active },
+        { id: 'runner', label: '러닝', img: RunnerSvg, imgActive: RunnerActiveSvg },
+        { id: 'baseball', label: '야구공', img: BaseballSvg, imgActive: BaseballActiveSvg },
+        { id: 'butterfly', label: '나비', img: ButterflySvg, imgActive: ButterflyActiveSvg },
+        { id: 'duck', label: '오리', img: DuckSvg, imgActive: DuckActiveSvg },
+        { id: 'horse', label: '체스말', img: HorseSvg, imgActive: HorseActiveSvg },
+        { id: 'clover', label: '클로버', img: CloverSvg, imgActive: CloverActiveSvg },
     ];
 
     const [km, setKm] = useState(5.00);
@@ -94,12 +91,11 @@ function RecommendRunScreen({ navigation, route }: Props) {
                                 }
                                 activeOpacity={0.7}
                             >
-                                <WithLocalSvg
-                                    key={item.id}
-                                    asset={isActive ? item.imgActive : item.img}
-                                    width={isActive ? 65 : 52}
-                                    height={isActive ? 65 : 52}
-                                />
+                                {isActive ? (
+                                    <item.imgActive width={65} height={65} />
+                                ) : (
+                                    <item.img width={52} height={52} />
+                                )}
                                 <Text
                                     style={[
                                         styles.eachtitle,
@@ -116,13 +112,13 @@ function RecommendRunScreen({ navigation, route }: Props) {
 
             <View style={styles.map}>
                 <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
-                    <WithLocalSvg
-                        asset={map}
+                    <Image
+                        source={require('../assets/images/map.png')}
                         style={styles.mapsize}
+                        resizeMode="cover"
                     />
                 </TouchableOpacity>
-                <WithLocalSvg
-                    asset={pin}
+                <PinSvg
                     style={{
                         width:26,
                         height:26,
@@ -135,21 +131,20 @@ function RecommendRunScreen({ navigation, route }: Props) {
                     <Text style={styles.subtitle}>오늘의 목표</Text>
                     <View style={[styles.kmview, { zIndex: 10 }]}>
                         <TouchableOpacity onPress={handleMinus}>
-                            <WithLocalSvg asset={minus} style={{ width: 30, height: 30, marginTop: 9 }} />
+                            <MinusSvg style={{ width: 30, height: 30, marginTop: 9 }} />
                         </TouchableOpacity>
                             <View style={{width: 160}}>
                                 <Text style={styles.km}>{km.toFixed(2)} km</Text>
                             </View>
                         <TouchableOpacity onPress={handlePlus}>
-                            <WithLocalSvg asset={plus} style={{ width: 30, height: 30, marginTop: 9 }} />
+                            <PlusSvg style={{ width: 30, height: 30, marginTop: 9 }} />
                         </TouchableOpacity>
                     </View>
 
                     <Text style={styles.sub}>{message}</Text>
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate('RecommendMap')}>
-                    <WithLocalSvg
-                        asset={round}
+                    <RoundSvg
                         style={{
                             width: 350,
                             height: 350,
@@ -162,8 +157,7 @@ function RecommendRunScreen({ navigation, route }: Props) {
             </View>
             
             <View style={styles.buttonview}>
-                <WithLocalSvg
-                    asset={graph}
+                <GraphSvg
                     style={{width:20, height: 25}}
                 />
                 <TouchableOpacity
@@ -190,8 +184,7 @@ function RecommendRunScreen({ navigation, route }: Props) {
                 >
                     <Text style={styles.buttonText}>경로 생성</Text>
                 </TouchableOpacity>
-                <WithLocalSvg
-                    asset={setting}
+                <SettingSvg
                     style={{width:23, height: 24}}
                 />
             </View>

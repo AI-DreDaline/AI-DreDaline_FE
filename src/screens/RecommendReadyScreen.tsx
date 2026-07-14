@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const runner = require('../assets/images/runner_active.svg');
-const graph = require('../assets/images/graph.svg');
-const setting = require('../assets/images/setting.svg');
-const map_ready = require('../assets/images/map_ready.svg');
+import RunnerSvg from '../assets/images/runner_active.svg';
+import GraphSvg from '../assets/images/graph.svg';
+import SettingSvg from '../assets/images/setting.svg';
 import Modal_short from '../components/Modal_short';
 
 function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackParamList, 'RecommendReady'>) {
@@ -22,11 +20,10 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
     return (
         <View style={styles.container}>
             <View style={styles.topline}>
-                <WithLocalSvg
-                    asset={runner}
+                <RunnerSvg
                     width={26}
                     height={26}
-                />
+/>
                 <Text style={styles.toptext}>
                     <Text style={{ fontWeight: 'bold' }}>러닝 </Text>
                     모양{' '}
@@ -39,10 +36,10 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
                     onPress={() => setVisible(true)}
                 >
                     <View style={styles.runbox}>
-                        <WithLocalSvg
-                            asset={map_ready}
-                            width={333}
-                            height={355}
+                        <Image
+                            source={require('../assets/images/map_ready.png')}
+                            style={{ width: 333, height: 355 }}
+                            resizeMode="cover"
                         />
                         <View style={styles.runtextview}>
                             <Text style={styles.runtextone}>{km}km</Text>
@@ -57,10 +54,9 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
                 <View>
                     <TouchableOpacity
                     >
-                        <WithLocalSvg
-                            asset={graph}
+                        <GraphSvg
                             style={{width:20, height: 25}}
-                        />
+/>
                     </TouchableOpacity>
                     
                     <Modal visible={visible} animationType="slide" transparent>
@@ -84,10 +80,9 @@ function RecommendReadyScreen({ navigation }: NativeStackScreenProps<RootStackPa
                 >
                     <Text style={styles.buttonText}>안내 시작</Text>
                 </TouchableOpacity>
-                    <WithLocalSvg
-                        asset={setting}
+                    <SettingSvg
                         style={{width:23, height: 24}}
-                    />
+/>
             </View>
         </View>
     );
