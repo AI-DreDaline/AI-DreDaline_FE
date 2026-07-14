@@ -2,9 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const Fitenssicon = require('../assets/images/fitenss.svg');
+import FitenssiconSvg from '../assets/images/fitenss.svg';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'ConnectFitenss'>;
 
@@ -19,10 +18,9 @@ const ConnectFitenssScreen = ({ navigation }: Props) => {
             </View>
 
             <View style={styles.mainview}>
-                <WithLocalSvg
-                    asset={Fitenssicon}
+                <FitenssiconSvg
                     style={{width: 40, height: 40, borderRadius: 10}}
-                />
+/>
                 <Text style={styles.maintext}>피트니스</Text>
             </View>
 

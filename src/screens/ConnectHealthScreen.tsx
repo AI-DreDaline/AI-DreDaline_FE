@@ -2,9 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const healthicon = require('../assets/images/health.svg');
+import HealthiconSvg from '../assets/images/health.svg';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'ConnectHealth'>;
 
@@ -19,10 +18,9 @@ const ConnectHealthScreen = ({ navigation }: Props) => {
             </View>
 
             <View style={styles.mainview}>
-                <WithLocalSvg
-                    asset={healthicon}
+                <HealthiconSvg
                     style={{width: 40, height: 40, borderRadius: 10}}
-                />
+/>
                 <Text style={styles.maintext}>건강</Text>
             </View>
 

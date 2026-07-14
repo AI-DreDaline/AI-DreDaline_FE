@@ -12,19 +12,18 @@ import ConnectHealthScreen from '../screens/ConnectHealthScreen.tsx';
 import ConnectLocationScreen from '../screens/ConnectLocationScreen.tsx';
 import ConnectFitenssScreen from '../screens/ConnectFitenssScreen.tsx';
 import AlamScreen from '../screens/AlamScreen.tsx';
-import BottomBar from './BottomBar.tsx';
 import AppleLoginScreen from '../screens/AppleLoginScreen.tsx';
 import NaverLoginScreen from '../screens/NaverLoginScreen.tsx';
 import GoogleLoginScreen from '../screens/GoogleLoginScreen.tsx';
 import { LoingStackParamList } from './types.ts';
 
-type LoginNavigatorProps = {
+type Props = {
   onLogIn: () => void;
 };
 
 const Stack = createNativeStackNavigator<LoingStackParamList>();
 
-export default function LoginNavigator({ onLogIn }: LoginNavigatorProps) {
+export default function LoginNavigator({ onLogIn }: Props) {
   return (
     <Stack.Navigator initialRouteName="Logo" screenOptions={{headerShown: false}}>
       <Stack.Screen name="Logo" component={LogoScreen} options={{ }} />
@@ -36,8 +35,8 @@ export default function LoginNavigator({ onLogIn }: LoginNavigatorProps) {
       <Stack.Screen name="ConnectHealth" component={ConnectHealthScreen} options={{animation: 'none'}} />
       <Stack.Screen name="ConnectLocation" component={ConnectLocationScreen} options={{animation: 'none'}} />
       <Stack.Screen name="ConnectFitenss" component={ConnectFitenssScreen} options={{animation: 'none'}} />
-      <Stack.Screen name="Alam" options={{headerShown: false}} >
-         {(props) => <AlamScreen {...props} onLogIn={onLogIn} />}
+      <Stack.Screen name="Alam" options={{ headerShown: false }}>
+        {(props) => <AlamScreen {...props} onLogIn={onLogIn} />}
       </Stack.Screen>
       <Stack.Screen name="AppleLogin" component={AppleLoginScreen} options={{}} />
       <Stack.Screen name="NaverLogin" component={NaverLoginScreen} options={{}} />

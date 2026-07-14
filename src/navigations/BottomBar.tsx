@@ -1,17 +1,16 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, Text } from 'react-native';
-import {WithLocalSvg} from 'react-native-svg/css';
 
 import MainNavigator from './MainNavigator';
 import HomeNavigator from './HomeNavigator';
 import MyRecordNavigator from './MyRecord';
 
-const homeIcon = require('../assets/images/home.svg');
-const homeActiveIcon = require('../assets/images/home_active.svg');
+import HomeIconSvg from '../assets/images/home.svg';
+import HomeActiveIconSvg from '../assets/images/home_active.svg';
 import mainIcon from '../assets/images/main.png';
-const recordIcon = require('../assets/images/myrecord.svg');
-const recordActiveIcon = require('../assets/images/myrecord_active.svg');
+import RecordIconSvg from '../assets/images/myrecord.svg';
+import RecordActiveIconSvg from '../assets/images/myrecord_active.svg';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +27,8 @@ const BottomBar: React.FC<BottomBarProps> = ({ visible = true, onLogout }) => {
       initialRouteName="MainTab"
       screenOptions={({ route }) => ({
         headerShown: false,
+        lazy: true,
+        freezeOnBlur: true,
         tabBarStyle: {
           backgroundColor: '#1B1B1B',
           height: 102,
@@ -67,25 +68,19 @@ const BottomBar: React.FC<BottomBarProps> = ({ visible = true, onLogout }) => {
               />
             );
 
-          case 'HomeTab':
+          case 'HomeTab': {
+            const HomeTabIcon = focused ? HomeActiveIconSvg : HomeIconSvg;
             return (
-              <WithLocalSvg
-                asset={focused ? homeActiveIcon : homeIcon}
-                width={28}
-                height={28}
-                style={{ marginTop: 43 }}
-              />
+              <HomeTabIcon width={28} height={28} style={{ marginTop: 43 }} />
             );
+          }
 
-          case 'RecordTab':
+          case 'RecordTab': {
+            const RecordTabIcon = focused ? RecordActiveIconSvg : RecordIconSvg;
             return (
-              <WithLocalSvg
-                asset={focused ? recordActiveIcon : recordIcon}
-                width={28}
-                height={28}
-                style={{ marginTop: 43 }}
-              />
+              <RecordTabIcon width={28} height={28} style={{ marginTop: 43 }} />
             );
+          }
         }
       },
 

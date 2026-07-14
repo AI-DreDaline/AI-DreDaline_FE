@@ -11,9 +11,8 @@ import DrawTrackReadyScreen from './DrawTrackReadyScreen';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { Route } from '@react-navigation/native';
 import useTabBarVisibility from "../assets/useTabBarVisibility";
-import { WithLocalSvg } from 'react-native-svg/css';
 
-const myprofile = require('../assets/images/myprofile.svg');
+import MyprofileSvg from '../assets/images/myprofile.svg';
 
 type MainTabParamList = {
   RecommendRun: {address?: string};
@@ -62,10 +61,9 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
         >
-          <WithLocalSvg
-            asset={myprofile} 
+          <MyprofileSvg 
             style={{ width: 32, height: 32, marginTop: 9 }} 
-          />
+/>
         </TouchableOpacity>
       </View>
 
@@ -90,6 +88,8 @@ const MainScreen: React.FC<Props> = ({ navigation, route, onLogout }) => {
             tabBarStyle: { backgroundColor: 'transparent', elevation: 0, shadowOpacity: 0 },
             tabBarIndicatorStyle: { backgroundColor: 'transparent' }, // 밑줄 제거
             swipeEnabled: false,
+            lazy: true,
+            lazyPreloadDistance: 0,
           }}
           tabBar={(props: MaterialTopTabBarProps) => {
             const { state, descriptors, navigation } = props;
@@ -261,4 +261,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
 });
-

@@ -3,17 +3,17 @@ import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Text } from 'rea
 import MapLibreGL, { UserTrackingMode } from '@maplibre/maplibre-react-native';
 //import type { cameraRef } from '@maplibre/maplibre-react-native';
 import { Feature, LineString } from 'geojson';
-import {WithLocalSvg} from 'react-native-svg/css';
 import { useNavigateCtx } from './NavigateContext';
+import { API_KEY } from '@env';
 
 //import line_active from '../assets/images/line_active.png';
-const line = require('../assets/images/line.svg');
-const start = require('../assets/images/start.svg');
-const endpin = require('../assets/images/endpin.svg');
-const run = require('../assets/images/run.svg');
-const map_user = require('../assets/images/map_user.svg');
+import LineSvg from '../assets/images/line.svg';
+import StartSvg from '../assets/images/start.svg';
+import EndpinSvg from '../assets/images/endpin.svg';
+import RunSvg from '../assets/images/run.svg';
+import MapUserSvg from '../assets/images/map_user.svg';
 
-const MAP_STYLE_URL = 'https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB';
+const MAP_STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`;
 
 type Coordinate = [number, number];
 
@@ -270,24 +270,21 @@ const RightNavigateScreen = () => {
         <View style={styles.container}>
             <View style={styles.topview}>
                 <View style={{ position: 'relative' }}>
-                    <WithLocalSvg
-                        asset={line}
+                    <LineSvg
                         width={322}
                         height={3}
                         style={{marginTop: 109, marginLeft: 34}}
-                    />
-                    <WithLocalSvg
-                        asset={start}
+/>
+                    <StartSvg
                         width={31}
                         height={35}
                         style={styles.start}
-                    />
+/>
                     <TouchableOpacity style={styles.endpin} onPress={handleMapPress}>
-                        <WithLocalSvg
-                            asset={endpin}
+                        <EndpinSvg
                             width={30}
                             height={30}
-                        />
+/>
                     </TouchableOpacity>
                     <Text 
                         style={{
@@ -316,11 +313,10 @@ const RightNavigateScreen = () => {
                             left: 21+320*(percent/100),
                         }}
                     >
-                        <WithLocalSvg
-                            asset={run}
+                        <RunSvg
                             width={35}
                             height={35}
-                        />
+/>
                     </View>
                 </View>
             </View>
@@ -370,11 +366,10 @@ const RightNavigateScreen = () => {
                                 height: 70,
                             }}
                         >
-                            <WithLocalSvg
-                                asset={map_user}
+                            <MapUserSvg
                                 width={70}
                                 height={70}
-                            />
+/>
                         </View>
                     </MapLibreGL.PointAnnotation>
                 </MapLibreGL.MapView>

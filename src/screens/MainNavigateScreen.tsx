@@ -10,20 +10,19 @@ import {
 import MapLibreGL, { UserTrackingMode } from "@maplibre/maplibre-react-native";
 import type { CameraRef } from "@maplibre/maplibre-react-native";
 import { Feature, LineString } from "geojson";
-import { WithLocalSvg } from "react-native-svg/css";
 import { useNavigateCtx } from "./NavigateContext";
+import { API_KEY } from "@env";
 
 //import line_active from '../assets/images/line_active.png';
-const line = require("../assets/images/line.svg");
-const start = require("../assets/images/start.svg");
-const endpin = require("../assets/images/endpin.svg");
-const round_4 = require("../assets/images/round_4.svg");
-const allow_navigate = require("../assets/images/allow_navigate.svg");
-const run = require("../assets/images/run.svg");
-const map_user = require("../assets/images/map_user.svg");
+import LineSvg from "../assets/images/line.svg";
+import StartSvg from "../assets/images/start.svg";
+import EndpinSvg from "../assets/images/endpin.svg";
+import Round4Svg from "../assets/images/round_4.svg";
+import AllowNavigateSvg from "../assets/images/allow_navigate.svg";
+import RunSvg from "../assets/images/run.svg";
+import MapUserSvg from "../assets/images/map_user.svg";
 
-const MAP_STYLE_URL =
-  "https://api.maptiler.com/maps/streets-v2/style.json?key=QhGgr94B6Frh1kFgQHuB";
+const MAP_STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`;
 type Coordinate = [number, number];
 
 const MainNavigateScreen = () => {
@@ -158,30 +157,27 @@ const MainNavigateScreen = () => {
                   height: 58,
                 }}
               >
-                <WithLocalSvg asset={map_user} width={50} height={50} />
+                <MapUserSvg width={50} height={50}/>
               </View>
             </MapLibreGL.PointAnnotation>
           </MapLibreGL.MapView>
         </View>
         <View style={styles.navigateview}>
           <Text style={styles.navigatetext}>{navigatetext}</Text>
-          <WithLocalSvg
-            asset={allow_navigate}
+          <AllowNavigateSvg
             width={48.79}
             height={100}
             style={{ marginTop: 30 }}
-          />
+/>
         </View>
       </View>
       <View style={styles.parentview}>
-        <WithLocalSvg
-          asset={round_4}
+        <Round4Svg
           width={393}
           height={98}
           style={{ marginLeft: 1 }}
-        />
-        <WithLocalSvg
-          asset={line}
+/>
+        <LineSvg
           width={322}
           height={3}
           style={{
@@ -189,19 +185,17 @@ const MainNavigateScreen = () => {
             top: 73,
             left: 35,
           }}
-        />
-        <WithLocalSvg
-          asset={start}
+/>
+        <StartSvg
           width={31}
           height={35}
           style={styles.start}
-        />
-        <WithLocalSvg
-          asset={endpin}
+/>
+        <EndpinSvg
           width={30}
           height={30}
           style={styles.endpin}
-        />
+/>
         <Text
           style={{
             fontSize: 12,
@@ -231,7 +225,7 @@ const MainNavigateScreen = () => {
             left: 28 + 320 * (percent / 100),
           }}
         >
-          <WithLocalSvg asset={run} width={35} height={35} />
+          <RunSvg width={35} height={35}/>
         </TouchableOpacity>
       </View>
       <View style={styles.infoview}>

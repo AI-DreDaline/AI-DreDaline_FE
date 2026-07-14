@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const run = require('../assets/images/run.svg');
-const graph = require('../assets/images/graph.svg');
-const setting = require('../assets/images/setting.svg');
-const map_ready = require('../assets/images/map_ready.svg');
+import RunSvg from '../assets/images/run.svg';
+import GraphSvg from '../assets/images/graph.svg';
+import SettingSvg from '../assets/images/setting.svg';
 
 import Modal_short from '../components/Modal_short';
 
@@ -29,11 +27,10 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
         return (
             <View style={styles.container}>
                 <View style={styles.topline}>
-                    <WithLocalSvg
-                        asset={run}
+                    <RunSvg
                         width={35}
                         height={35}
-                    />
+/>
                     <TextInput
                         style={styles.toptext}
                         value={title}
@@ -47,10 +44,10 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
                         onPress={() => setVisible(true)}
                     >
                         <View style={styles.runbox}>
-                            <WithLocalSvg
-                                asset={map_ready}
-                                width={333}
-                                height={355}
+                            <Image
+                                source={require('../assets/images/map_ready.png')}
+                                style={{ width: 333, height: 355 }}
+                                resizeMode="cover"
                             />
                             <View style={styles.runtextview}>
                                 <Text style={styles.runtextone}>{km}km</Text>
@@ -64,10 +61,9 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
                 <View style={styles.buttonview}>
                     <View>
                         <TouchableOpacity >
-                            <WithLocalSvg
-                                asset={graph}
+                            <GraphSvg
                                 style={{width:20, height: 25}}
-                            />
+/>
                         </TouchableOpacity>
                                       
                         <Modal visible={visible} animationType="slide" transparent>
@@ -86,10 +82,9 @@ function DrawTrackReadyScreen({navigation}: NativeStackScreenProps<RootStackPara
                     >
                         <Text style={styles.buttonText}>안내 시작</Text>
                     </TouchableOpacity>
-                    <WithLocalSvg
-                        asset={setting}
+                    <SettingSvg
                         style={{width:23, height: 24}}
-                    />
+/>
                 </View>
             </View>
         );

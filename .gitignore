@@ -2,7 +2,20 @@
 node_modules/
 
 # iOS Pods
-ios/Pods/
+ios/Pods
 
 ios/build/
+build
+
+# Android build artifacts
+android/.gradle/
+android/build/
+android/app/build/
+
+xcuserdata/
+*.xcuserstate
 ios/*.xcworkspace/xcuserdata/
+
+# env
+.env
+.env.*

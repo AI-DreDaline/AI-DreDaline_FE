@@ -2,10 +2,9 @@ import React, {useState} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoingStackParamList } from '../navigations/types';
-import {WithLocalSvg} from 'react-native-svg/css';
 
-const back = require('../assets/images/back.svg');
-const down_arrow = require('../assets/images/down_arrow.svg');
+import BackSvg from '../assets/images/back.svg';
+import DownArrowSvg from '../assets/images/down_arrow.svg';
 
 type Props = NativeStackScreenProps<LoingStackParamList, 'PhoneLogin'>;
 
@@ -30,10 +29,9 @@ const PhoneLoginScreen = ({ navigation }: Props) => {
                         style={styles.backButton}
                         onPress={() => navigation.goBack()}
                     >
-                        <WithLocalSvg
-                            asset={back}
+                        <BackSvg
                             style={{width: 11, height:18}}
-                        />
+/>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -54,10 +52,9 @@ const PhoneLoginScreen = ({ navigation }: Props) => {
                 >
                     <View style={styles.countrynumview}>
                         <Text style={styles.countrynumtext}>{selected}</Text>
-                        <WithLocalSvg
-                            asset={down_arrow}
+                        <DownArrowSvg
                             style={{width: 20, height: 20}}
-                        />
+/>
                     </View>
                 </TouchableOpacity>
 
