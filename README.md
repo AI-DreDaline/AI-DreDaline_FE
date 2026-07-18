@@ -1,97 +1,41 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# AI-DreDaline — Frontend
 
-# Getting Started
+사용자가 **도형 템플릿(예: 별 모양)**, **시작점**, **목표 거리**만 지정하면, 시스템이 자동으로 실제 보행 가능한 **GPS 아트 러닝 경로**를 생성해 주는 서비스입니다. 러닝 중에는 **Turn-by-Turn 한국어 음성 안내**를 제공하여, 지도를 계속 확인하지 않고도 복잡한 GPS 아트 경로를 안전하게 완주할 수 있도록 돕습니다.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+기존 러닝앱의 맵매칭이 GPS 궤적을 도로에 맞추는 *역추론*이라면, 본 프로젝트는 반대로 도형을 입력받아 도로망 제약을 만족하는 경로를 만들어 내는 **순생성(도형 → 실제 도로 위 경로)** 으로 문제를 재정의하였습니다.
 
-## Step 1: Start Metro
+> iOS 기반 지원
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+---
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 주요 기능
 
-```sh
-# Using npm
-npm start
+- **GPS 아트 경로 생성** — 도형 템플릿·시작점·목표 거리를 입력하면 실제 보행 가능한 러닝 경로를 자동 생성
+- **Turn-by-Turn 음성 안내** — 방향 전환 지점마다 한국어 음성으로 안내해 지도를 보지 않고도 완주 (`VoiceGuidanceCache`로 오디오 캐싱)
+- **실시간 GPS 추적 & 러닝 통계** — 경로를 따라 위치를 추적하고 거리·시간·페이스를 실시간 표시
+- **러닝 기록 관리** — 히스토리·캘린더 기반으로 기록을 조회하고 프로필 관리
+- **소셜/휴대폰 로그인 & 온보딩** — 휴대폰 인증, Apple / Google / Naver 로그인, 건강·위치·피트니스 권한 연결 및 알림 설정
 
-# OR using Yarn
-yarn start
+---
+
+## 기술 스택
+
+| 구분 | 사용 기술 |
+| --- | --- |
+| 프레임워크 | React Native 0.81.4, React 19.1 |
+| 언어 | TypeScript |
+| 지도 | MapLibre / MapTiler SDK, react-native-maps |
+| 네트워크 | axios |
+
+---
+
+## 프로젝트 구조
+
 ```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+src/
+├── navigations/        # 내비게이터 (Login / Main / Home / MyRecord / BottomBar)
+├── screens/            # 화면 컴포넌트 (로그인, 지도, 러닝, 기록, 온보딩 등)
+├── components/         # 공용 컴포넌트 (모달, 주소 검색, 개인정보 등)
+├── services/           # 음성 안내 캐시 등 서비스 로직
+└── assets/             # 이미지 · SVG 아이콘
 ```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
